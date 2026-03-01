@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "239803553427",
+    "project_id": "auction-netherlands",
+    "storage_bucket": "auction-netherlands.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239803553427:android:6361a4fc433675a864df66",
+        "android_client_info": {
+          "package_name": "com.acutio_netherland"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuIK_tZEFzMCdJ95eXcsftVxvSksKXLHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:239803553427:android:a482b5ebd03a31e064df66",
+        "android_client_info": {
+          "package_name": "com.example.auction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuIK_tZEFzMCdJ95eXcsftVxvSksKXLHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

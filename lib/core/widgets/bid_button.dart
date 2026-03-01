@@ -1,0 +1,1 @@
+// Bid button widget
