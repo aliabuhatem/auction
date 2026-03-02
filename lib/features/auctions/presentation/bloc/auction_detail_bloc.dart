@@ -1,91 +1,124 @@
-// Auction detail BLoC
-
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/auction_entity.dart';
 import '../../domain/usecases/get_auction_detail_usecase.dart';
-import '../../domain/usecases/place_bid_usecase.dart';
 import '../../domain/usecases/watch_auction_usecase.dart';
-import 'dart:async';
+import '../../domain/repositories/auction_repository.dart';
 
 part 'auction_detail_event.dart';
 part 'auction_detail_state.dart';
 
-class AuctionDetailBloc extends Bloc<AuctionDetailEvent, AuctionDetailState> {
+class AuctionDetailBloc
+    extends Bloc<AuctionDetailEvent, AuctionDetailState> {
+
   final GetAuctionDetailUseCase getAuctionDetail;
-  final PlaceBidUseCase placeBid;
-  final WatchAuctionUseCase watchAuction;
-  StreamSubscription? _auctionSubscription;
+  final WatchAuctionUseCase     watchAuction;
+  final AuctionRepository       repository;
+
+  StreamSubscription<AuctionEntity>? _streamSub;
 
   AuctionDetailBloc({
     required this.getAuctionDetail,
-    required this.placeBid,
     required this.watchAuction,
+    required this.repository,
   }) : super(AuctionDetailInitial()) {
-    on<LoadAuctionDetail>(_onLoadAuctionDetail);
-    on<SubscribeToAuction>(_onSubscribeToAuction);
-    on<AuctionUpdated>(_onAuctionUpdated);
-    on<PlaceBidRequested>(_onPlaceBidRequested);
+    on<LoadAuctionDetail>     (_onLoad);
+    on<RefreshAuctionDetail>  (_onRefresh);
+    on<AuctionDetailStreamUpdated>(_onStreamUpdate);
+    on<ToggleAuctionAlarm>    (_onToggleAlarm);
+    on<ToggleAuctionWatchlist>(_onToggleWatchlist);
   }
 
-  Future<void> _onLoadAuctionDetail(
-      LoadAuctionDetail event,
-      Emitter<AuctionDetailState> emit,
-      ) async {
+  Future<void> _onLoad(
+    LoadAuctionDetail event,
+    Emitter<AuctionDetailState> emit,
+  ) async {
     emit(AuctionDetailLoading());
-    final result = await getAuctionDetail(GetAuctionDetailParams(id: event.auctionId));
+    final result =
+        await getAuctionDetail(GetAuctionDetailParams(id: event.auctionId));
+
     result.fold(
-          (failure) => emit(AuctionDetailError(failure.message)),
-          (auction) {
+      (failure) => emit(AuctionDetailError(failure.message)),
+      (auction) {
         emit(AuctionDetailLoaded(auction: auction));
-        add(SubscribeToAuction(auctionId: event.auctionId));
+        _subscribeToStream(event.auctionId);
       },
     );
   }
 
-  void _onSubscribeToAuction(
-      SubscribeToAuction event,
-      Emitter<AuctionDetailState> emit,
-      ) {
-    _auctionSubscription?.cancel();
-    _auctionSubscription = watchAuction(event.auctionId).listen(
-          (auction) => add(AuctionUpdated(auction: auction)),
+  Future<void> _onRefresh(
+    RefreshAuctionDetail event,
+    Emitter<AuctionDetailState> emit,
+  ) async {
+    if (state is AuctionDetailLoaded) {
+      emit((state as AuctionDetailLoaded).copyWith(isRefreshing: true));
+    }
+    final result =
+        await getAuctionDetail(GetAuctionDetailParams(id: event.auctionId));
+    result.fold(
+      (failure) => emit(AuctionDetailError(failure.message)),
+      (auction) {
+        final prev = state is AuctionDetailLoaded
+            ? state as AuctionDetailLoaded
+            : null;
+        emit(AuctionDetailLoaded(
+          auction:       auction,
+          alarmSet:      prev?.alarmSet      ?? false,
+          isWatchlisted: prev?.isWatchlisted ?? false,
+        ));
+      },
     );
   }
 
-  void _onAuctionUpdated(
-      AuctionUpdated event,
-      Emitter<AuctionDetailState> emit,
-      ) {
-    emit(AuctionDetailLoaded(auction: event.auction));
+  void _onStreamUpdate(
+    AuctionDetailStreamUpdated event,
+    Emitter<AuctionDetailState> emit,
+  ) {
+    if (state is AuctionDetailLoaded) {
+      emit((state as AuctionDetailLoaded).copyWith(auction: event.auction));
+    }
   }
 
-  Future<void> _onPlaceBidRequested(
-      PlaceBidRequested event,
-      Emitter<AuctionDetailState> emit,
-      ) async {
-    if (state is AuctionDetailLoaded) {
-      final current = (state as AuctionDetailLoaded);
-      emit(BidPlacing(auction: current.auction));
+  Future<void> _onToggleAlarm(
+    ToggleAuctionAlarm event,
+    Emitter<AuctionDetailState> emit,
+  ) async {
+    if (state is! AuctionDetailLoaded) return;
+    final current = state as AuctionDetailLoaded;
+    final nowSet  = !current.alarmSet;
 
-      final result = await placeBid(PlaceBidParams(
-        auctionId: event.auctionId,
-        bidAmount: event.bidAmount,
-      ));
+    emit(current.copyWith(alarmSet: nowSet));
 
-      result.fold(
-            (failure) => emit(BidFailed(
-          auction: current.auction,
-          error: failure.message,
-        )),
-            (_) => emit(BidSuccess(auction: current.auction)),
-      );
-    }
+    final result = nowSet
+        ? await repository.setAuctionAlarm(event.auctionId)
+        : await repository.removeAuctionAlarm(event.auctionId);
+
+    result.fold((_) => emit(current), (_) {});
+  }
+
+  Future<void> _onToggleWatchlist(
+    ToggleAuctionWatchlist event,
+    Emitter<AuctionDetailState> emit,
+  ) async {
+    if (state is! AuctionDetailLoaded) return;
+    final current = state as AuctionDetailLoaded;
+
+    emit(current.copyWith(isWatchlisted: !current.isWatchlisted));
+
+    final result = await repository.watchlistAuction(event.auctionId);
+    result.fold((_) => emit(current), (_) {});
+  }
+
+  void _subscribeToStream(String auctionId) {
+    _streamSub?.cancel();
+    _streamSub = watchAuction(auctionId)
+        .listen((auction) => add(AuctionDetailStreamUpdated(auction)));
   }
 
   @override
   Future<void> close() {
-    _auctionSubscription?.cancel();
+    _streamSub?.cancel();
     return super.close();
   }
 }

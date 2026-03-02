@@ -86,6 +86,7 @@ dependencies:
   url_launcher: ^6.2.2
   share_plus: ^7.2.1
   package_info_plus: ^5.0.1
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:
