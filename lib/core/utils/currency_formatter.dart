@@ -9,7 +9,6 @@ class CurrencyFormatter {
   static final _euro      = NumberFormat.currency(locale: 'nl_NL', symbol: '€', decimalDigits: 2);
   static final _euroWhole = NumberFormat.currency(locale: 'nl_NL', symbol: '€', decimalDigits: 0);
   static final _compact   = NumberFormat.compact(locale: 'nl_NL');
-  static final _percent   = NumberFormat.percentPattern('nl_NL');
   static final _decimal   = NumberFormat('#,##0.00',  'nl_NL');
   static final _integer   = NumberFormat('#,##0',     'nl_NL');
 
@@ -74,6 +73,8 @@ class CurrencyFormatter {
 
   /// Formatted with 2 decimal places: 1234.5 → "1.234,50"
   static String decimal(double value) => _decimal.format(value);
+
+
 
   // ── Parsing ───────────────────────────────────────────────────────────────
 
