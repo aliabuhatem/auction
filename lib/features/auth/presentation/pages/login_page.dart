@@ -57,21 +57,21 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Icon(Icons.gavel, color: Colors.white, size: 28),
                     ),
                     const SizedBox(width: 12),
-                    const Text(AppStrings.appName,
-                        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 22, color: AppColors.textPrimary)),
+                    Text(AppStrings.appName(context),
+                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, color: AppColors.textPrimary)),
                   ]),
                   const SizedBox(height: 40),
-                  Text(AppStrings.welcomeBack,
+                  Text(AppStrings.welcomeBack(context),
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w900)),
                   const SizedBox(height: 6),
-                  const Text(AppStrings.loginSubtitle, style: TextStyle(color: AppColors.textSecondary)),
+                  Text(AppStrings.loginSubtitle(context), style: const TextStyle(color: AppColors.textSecondary)),
                   const SizedBox(height: 32),
                   // Email
                   TextFormField(
                     controller: _email,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(labelText: AppStrings.email, prefixIcon: Icon(Icons.email_outlined)),
-                    validator: (v) => v!.contains('@') ? null : AppStrings.emailInvalid,
+                    decoration: InputDecoration(labelText: AppStrings.email(context), prefixIcon: const Icon(Icons.email_outlined)),
+                    validator: (v) => v!.contains('@') ? null : AppStrings.emailInvalid(context),
                   ),
                   const SizedBox(height: 16),
                   // Password
@@ -79,18 +79,18 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _password,
                     obscureText: _obscure,
                     decoration: InputDecoration(
-                      labelText: AppStrings.password,
+                      labelText: AppStrings.password(context),
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
                         onPressed: () => setState(() => _obscure = !_obscure),
                       ),
                     ),
-                    validator: (v) => v!.length >= 6 ? null : AppStrings.passwordTooShort,
+                    validator: (v) => v!.length >= 6 ? null : AppStrings.passwordTooShort(context),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(onPressed: () {}, child: const Text(AppStrings.forgotPassword)),
+                    child: TextButton(onPressed: () {}, child: Text(AppStrings.forgotPassword(context))),
                   ),
                   const SizedBox(height: 8),
                   // Login button
@@ -102,30 +102,30 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: state is AuthLoading ? null : _submit,
                         child: state is AuthLoading
                             ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
-                            : const Text(AppStrings.login, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            : Text(AppStrings.login(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
                   // Divider
-                  const Row(children: [
-                    Expanded(child: Divider()),
-                    Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text(AppStrings.continueWith, style: TextStyle(color: Colors.grey))),
-                    Expanded(child: Divider()),
+                  Row(children: [
+                    const Expanded(child: Divider()),
+                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(AppStrings.continueWith(context), style: const TextStyle(color: Colors.grey))),
+                    const Expanded(child: Divider()),
                   ]),
                   const SizedBox(height: 16),
                   // Google
                   OutlinedButton.icon(
                     onPressed: () => context.read<AuthBloc>().add(GoogleLoginRequested()),
                     icon: const Icon(Icons.g_mobiledata, size: 24, color: Colors.red),
-                    label: const Text(AppStrings.google),
+                    label: Text(AppStrings.google(context)),
                     style: OutlinedButton.styleFrom(minimumSize: const Size(double.infinity, AppDimensions.buttonHeight)),
                   ),
                   const SizedBox(height: 32),
                   Center(
                     child: TextButton(
                       onPressed: () => context.push('/auth/register'),
-                      child: const Text(AppStrings.noAccount),
+                      child: Text(AppStrings.noAccount(context)),
                     ),
                   ),
                 ],

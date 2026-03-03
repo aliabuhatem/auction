@@ -18,19 +18,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _scrollController = ScrollController();
 
-  static final _cats = [
-    (null, '🏷️', AppStrings.all),
-    (AuctionCategory.vacation, '🏖️', AppStrings.catVacation),
-    (AuctionCategory.beauty, '💅', AppStrings.catBeauty),
-    (AuctionCategory.sauna, '🧖', AppStrings.catSauna),
-    (AuctionCategory.food, '🍽️', AppStrings.catFood),
-    (AuctionCategory.experiences, '🎭', AppStrings.catExperiences),
-    (AuctionCategory.products, '📦', AppStrings.catProducts),
-    (AuctionCategory.sports, '⚽', AppStrings.catSports),
-    (AuctionCategory.wellness, '🧘', AppStrings.catWellness),
-    (AuctionCategory.dayTrips, '🚂', AppStrings.catDayTrips),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -53,6 +40,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final cats = [
+      (null, '🏷️', AppStrings.all(context)),
+      (AuctionCategory.vacation, '🏖️', AppStrings.catVacation(context)),
+      (AuctionCategory.beauty, '💅', AppStrings.catBeauty(context)),
+      (AuctionCategory.sauna, '🧖', AppStrings.catSauna(context)),
+      (AuctionCategory.food, '🍽️', AppStrings.catFood(context)),
+      (AuctionCategory.experiences, '🎭', AppStrings.catExperiences(context)),
+      (AuctionCategory.products, '📦', AppStrings.catProducts(context)),
+      (AuctionCategory.sports, '⚽', AppStrings.catSports(context)),
+      (AuctionCategory.wellness, '🧘', AppStrings.catWellness(context)),
+      (AuctionCategory.dayTrips, '🚂', AppStrings.catDayTrips(context)),
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       body: NestedScrollView(
@@ -61,12 +61,12 @@ class _HomePageState extends State<HomePage> {
           SliverAppBar(
             pinned: true,
             backgroundColor: Colors.white,
-            title: const Row(
+            title: Row(
               children: [
-                Icon(Icons.gavel, color: AppColors.primaryRed, size: 28),
-                SizedBox(width: 8),
-                Text(AppStrings.appName,
-                    style: TextStyle(fontWeight: FontWeight.w900, color: AppColors.textPrimary, fontSize: 20)),
+                const Icon(Icons.gavel, color: AppColors.primaryRed, size: 28),
+                const SizedBox(width: 8),
+                Text(AppStrings.appName(context),
+                    style: const TextStyle(fontWeight: FontWeight.w900, color: AppColors.textPrimary, fontSize: 20)),
               ],
             ),
             actions: [
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
           ),
           SliverPersistentHeader(
             pinned: true,
-            delegate: _CategoryBarDelegate(cats: _cats),
+            delegate: _CategoryBarDelegate(cats: cats),
           ),
         ],
         body: BlocBuilder<AuctionListBloc, AuctionListState>(
@@ -104,10 +104,10 @@ class _HomePageState extends State<HomePage> {
       child: CustomScrollView(
         slivers: [
           if (state.endingSoonAuctions.isNotEmpty) ...[
-            _sectionHeader(AppStrings.endingSoon),
+            _sectionHeader(AppStrings.endingSoon(context)),
             SliverToBoxAdapter(child: AuctionHorizontalList(auctions: state.endingSoonAuctions)),
           ],
-          _sectionHeader(AppStrings.allAuctions),
+          _sectionHeader(AppStrings.allAuctions(context)),
           AuctionGrid(auctions: state.auctions, hasMore: state.hasMore, isLoadingMore: state.isLoadingMore),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
         ],
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => context.read<AuctionListBloc>().add(LoadAuctions()),
-            child: const Text(AppStrings.tryAgain),
+            child: Text(AppStrings.tryAgain(context)),
           ),
         ],
       ),
@@ -177,5 +177,5 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_CategoryBarDelegate old) => false;
+  bool shouldRebuild(_CategoryBarDelegate old) => true;
 }

@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../auth/presentation/bloc/auth_event.dart';
 import '../../auth/presentation/bloc/auth_state.dart';
+import 'bloc/locale_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -19,7 +20,13 @@ class ProfilePage extends StatelessWidget {
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                decoration: const BoxDecoration(gradient: LinearGradient(colors: [AppColors.primaryRed, Color(0xFFc1121f)], begin: Alignment.topLeft, end: Alignment.bottomRight)),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.primaryRed, Color(0xFFc1121f)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
                 child: BlocBuilder<AuthBloc, AuthState>(
                   builder: (ctx, state) {
                     final user = state is AuthAuthenticated ? state.user : null;
@@ -51,20 +58,20 @@ class ProfilePage extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 _section('Account', [
-                  _tile(Icons.edit, AppStrings.editProfile, () {}),
-                  _tile(Icons.notifications_outlined, AppStrings.notifications, () {}),
-                  _tile(Icons.dark_mode_outlined, AppStrings.darkMode, () {}),
-                  _tile(Icons.language, AppStrings.language, () {}),
+                  _tile(Icons.edit, AppStrings.editProfile(context), () {}),
+                  _tile(Icons.notifications_outlined, AppStrings.notifications(context), () {}),
+                  _tile(Icons.dark_mode_outlined, AppStrings.darkMode(context), () {}),
+                  _tile(Icons.language, AppStrings.language(context), () => _showLanguageDialog(context)),
                 ]),
                 _section('Meer', [
-                  _tile(Icons.help_outline, AppStrings.help, () {}),
-                  _tile(Icons.info_outline, AppStrings.about, () {}),
+                  _tile(Icons.help_outline, AppStrings.help(context), () {}),
+                  _tile(Icons.info_outline, AppStrings.about(context), () {}),
                 ]),
                 _section('Account beheer', [
-                  _tile(Icons.logout, AppStrings.logout, () {
+                  _tile(Icons.logout, AppStrings.logout(context), () {
                     context.read<AuthBloc>().add(LogoutRequested());
                   }, color: Colors.red),
-                  _tile(Icons.delete_outline, AppStrings.deleteAccount, () {}, color: Colors.red),
+                  _tile(Icons.delete_outline, AppStrings.deleteAccount(context), () {}, color: Colors.red),
                 ]),
                 const SizedBox(height: 32),
                 const Text('Vakantieveilingen v1.0.0', style: TextStyle(color: Colors.grey, fontSize: 12)),
@@ -74,6 +81,37 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void _showLanguageDialog(BuildContext pageContext) {
+    showDialog(
+      context: pageContext,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(AppStrings.language(pageContext)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _languageOption(pageContext, dialogContext, 'Nederlands', const Locale('nl', 'NL')),
+            _languageOption(pageContext, dialogContext, 'English', const Locale('en', 'US')),
+            _languageOption(pageContext, dialogContext, 'العربية', const Locale('ar', 'SA')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _languageOption(BuildContext pageContext, BuildContext dialogContext, String name, Locale locale) {
+    final currentLocale = pageContext.read<LocaleBloc>().state.locale;
+    final isSelected = currentLocale.languageCode == locale.languageCode;
+
+    return ListTile(
+      title: Text(name, style: TextStyle(fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+      trailing: isSelected ? const Icon(Icons.check, color: AppColors.primaryRed) : null,
+      onTap: () {
+        pageContext.read<LocaleBloc>().add(ChangeLocale(locale));
+        Navigator.pop(dialogContext); // FIX: Use dialogContext to close only the dialog
+      },
     );
   }
 

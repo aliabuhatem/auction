@@ -10,7 +10,7 @@ class TicketsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Mijn vouchers', style: TextStyle(fontWeight: FontWeight.bold))),
+      appBar: AppBar(title: Text('Mijn vouchers', style: const TextStyle(fontWeight: FontWeight.bold))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -37,7 +37,7 @@ class VoucherDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4F8),
       appBar: AppBar(
-        title: const Text(AppStrings.myVoucher, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppStrings.myVoucher(context), style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [IconButton(icon: const Icon(Icons.download), onPressed: () {})],
       ),
       body: Padding(
@@ -105,7 +105,7 @@ class _VoucherCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
             child: Column(children: [
-              const Text(AppStrings.voucherCode, style: TextStyle(color: Colors.grey, fontSize: 12)),
+              Text(AppStrings.voucherCode(context), style: const TextStyle(color: Colors.grey, fontSize: 12)),
               const SizedBox(height: 4),
               Text(voucher.code, style: const TextStyle(fontFamily: 'monospace', fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 3)),
               const SizedBox(height: 16),
@@ -115,7 +115,7 @@ class _VoucherCard extends StatelessWidget {
                 decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey, style: BorderStyle.solid))),
               ),
               const SizedBox(height: 16),
-              const Text(AppStrings.showQr, textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 13)),
+              Text(AppStrings.showQr(context), textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey, fontSize: 13)),
             ]),
           ),
         ],

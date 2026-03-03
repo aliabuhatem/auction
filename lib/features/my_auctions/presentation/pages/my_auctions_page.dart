@@ -9,7 +9,7 @@ class MyAuctionsPage extends StatefulWidget {
   State<MyAuctionsPage> createState() => _MyAuctionsPageState();
 }
 
-class _MyAuctionsPageState extends State<MyAuctionsPage> with SingleTickerProviderStateMixin {
+class _MyAuctionsPageState extends State<MyAuctionsPage> with TickerProviderStateMixin {
   late TabController _tabController;
   @override
   void initState() {
@@ -26,28 +26,28 @@ class _MyAuctionsPageState extends State<MyAuctionsPage> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.myAuctions, style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppStrings.myAuctions(context), style: const TextStyle(fontWeight: FontWeight.bold)),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
           indicatorColor: AppColors.primaryRed,
           labelColor: AppColors.primaryRed,
           unselectedLabelColor: Colors.grey,
-          tabs: const [
-            Tab(text: AppStrings.active),
-            Tab(text: AppStrings.won),
-            Tab(text: AppStrings.payNow),
-            Tab(text: AppStrings.saved),
+          tabs: [
+            Tab(text: AppStrings.active(context)),
+            Tab(text: AppStrings.won(context)),
+            Tab(text: AppStrings.payNow(context)),
+            Tab(text: AppStrings.saved(context)),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          const _EmptyTab(icon: Icons.gavel, message: AppStrings.noActive),
-          const _EmptyTab(icon: Icons.emoji_events, message: AppStrings.noWon),
-          _PendingPaymentTab(),
-          const _EmptyTab(icon: Icons.bookmark_border, message: AppStrings.noSaved),
+          _EmptyTab(icon: Icons.gavel, message: AppStrings.noActive(context)),
+          _EmptyTab(icon: Icons.emoji_events, message: AppStrings.noWon(context)),
+          const _PendingPaymentTab(),
+          _EmptyTab(icon: Icons.bookmark_border, message: AppStrings.noSaved(context)),
         ],
       ),
     );
@@ -57,7 +57,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage> with SingleTickerProvid
 class _EmptyTab extends StatelessWidget {
   final IconData icon;
   final String message;
-  const _EmptyTab({required this.icon, required this.message});
+  const _EmptyTab({super.key, required this.icon, required this.message});
   @override
   Widget build(BuildContext context) => Center(
     child: Column(
@@ -72,6 +72,7 @@ class _EmptyTab extends StatelessWidget {
 }
 
 class _PendingPaymentTab extends StatelessWidget {
+  const _PendingPaymentTab({super.key});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -80,17 +81,17 @@ class _PendingPaymentTab extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           color: const Color(0xFFFFF3CD),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(Icons.warning_amber, color: Color(0xFFFF9800)),
-              SizedBox(width: 8),
+              const Icon(Icons.warning_amber, color: Color(0xFFFF9800)),
+              const SizedBox(width: 8),
               Expanded(
-                child: Text(AppStrings.pendingPaymentWarning, style: TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(AppStrings.pendingPaymentWarning(context), style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
             ],
           ),
         ),
-        const Expanded(child: Center(child: Text(AppStrings.noPending, style: TextStyle(color: Colors.grey)))),
+        Expanded(child: Center(child: Text(AppStrings.noPending(context), style: const TextStyle(color: Colors.grey)))),
       ],
     );
   }

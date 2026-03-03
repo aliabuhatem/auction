@@ -5,9 +5,11 @@ import 'app_router.dart';
 import 'app_theme.dart';
 import '../injection_container.dart' as di;
 
-// FIX: import auth_bloc from the correct path so AuthBloc resolves as a type
+// Imports for Blocs
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_event.dart';
+import '../features/auctions/presentation/bloc/auction_list_bloc.dart';
+import '../features/profile/presentation/bloc/locale_bloc.dart';
 
 class AuctionApp extends StatelessWidget {
   const AuctionApp({super.key});
@@ -16,9 +18,14 @@ class AuctionApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // FIX: AuthBloc is now properly imported, so it resolves as a type
         BlocProvider<AuthBloc>(
           create: (_) => di.sl<AuthBloc>()..add(AppStarted()),
+        ),
+        BlocProvider<AuctionListBloc>(
+          create: (_) => di.sl<AuctionListBloc>(),
+        ),
+        BlocProvider<LocaleBloc>(
+          create: (_) => di.sl<LocaleBloc>(),
         ),
       ],
       child: const _AppView(),
@@ -45,32 +52,42 @@ class _AppViewState extends State<_AppView> {
     return ThemeModeNotifier(
       themeMode:   _themeMode,
       toggleTheme: _toggleTheme,
-      child: MaterialApp.router(
-        title:                      'Vakantieveilingen',
-        debugShowCheckedModeBanner: false,
-        routerConfig:               appRouter,
-        theme:                      AppTheme.lightTheme,
-        darkTheme:                  AppTheme.darkTheme,
-        themeMode:                  _themeMode,
-        locale: const Locale('nl', 'NL'),
-        supportedLocales: const [
-          Locale('nl', 'NL'),
-          Locale('en', 'US'),
-        ],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        scrollBehavior: const _NoGlowScrollBehaviour(),
-        builder: (context, child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaler: TextScaler.linear(
-                MediaQuery.of(context).textScaler.scale(1.0).clamp(0.85, 1.15),
-              ),
-            ),
-            child: child!,
+      child: BlocBuilder<LocaleBloc, LocaleState>(
+        builder: (context, localeState) {
+          return MaterialApp.router(
+            title:                      'Vakantieveilingen',
+            debugShowCheckedModeBanner: false,
+            routerConfig:               appRouter,
+            theme:                      AppTheme.lightTheme,
+            darkTheme:                  AppTheme.darkTheme,
+            themeMode:                  _themeMode,
+            locale:                     localeState.locale,
+            supportedLocales: const [
+              Locale('nl', 'NL'),
+              Locale('en', 'US'),
+              Locale('ar', 'SA'),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            scrollBehavior: const _NoGlowScrollBehaviour(),
+            builder: (context, child) {
+              return Directionality(
+                textDirection: localeState.locale.languageCode == 'ar' 
+                    ? TextDirection.rtl 
+                    : TextDirection.ltr,
+                child: MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    textScaler: TextScaler.linear(
+                      MediaQuery.of(context).textScaler.scale(1.0).clamp(0.85, 1.15),
+                    ),
+                  ),
+                  child: child!,
+                ),
+              );
+            },
           );
         },
       ),

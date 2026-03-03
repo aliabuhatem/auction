@@ -15,7 +15,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
   final _confettiController = ConfettiController(duration: const Duration(seconds: 4));
   final _scratchKey = GlobalKey<ScratcherState>();
   bool _revealed = false;
-  String _prize = '€5 tegoed';
+  late String _prize; // Use late as it's initialized in initState
   final int _streakDays = 3;
   final bool _canScratch = true;
 
@@ -24,8 +24,10 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
   @override
   void initState() {
     super.initState();
-    _prizes.shuffle();
-    _prize = _prizes.first;
+    // FIX: Create a modifiable copy of the const list before shuffling
+    final modifiablePrizes = List<String>.from(_prizes);
+    modifiablePrizes.shuffle();
+    _prize = modifiablePrizes.first;
   }
 
   @override
@@ -40,7 +42,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
       backgroundColor: const Color(0xFF1A1A2E),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text(AppStrings.scratchCard, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        elevation: 0,
+        title: Text(AppStrings.scratchCard(context), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
@@ -57,20 +60,33 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
               Center(child: _buildScratchCard()),
               const SizedBox(height: 32),
               if (!_revealed) ...[
-                const Text(AppStrings.scratchToReveal, style: TextStyle(color: Colors.white70, fontSize: 15)),
+                Text(AppStrings.scratchToReveal(context), style: const TextStyle(color: Colors.white70, fontSize: 15)),
                 const SizedBox(height: 24),
                 OutlinedButton.icon(
                   onPressed: () => Share.share('Probeer Vakantieveilingen! Download de app en win geweldige prijzen.'),
-                  icon: const Icon(Icons.share, color: Colors.white),
-                  label: const Text(AppStrings.shareForExtra, style: TextStyle(color: Colors.white)),
-                  style: OutlinedButton.styleFrom(side: const BorderSide(color: Colors.white30), padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12)),
+                  icon: const Icon(Icons.share, color: Colors.white, size: 20),
+                  label: Text(AppStrings.shareForExtra(context), style: const TextStyle(color: Colors.white)),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.white30),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
                 ),
               ] else ...[
-                const Text(AppStrings.congratulations, style: TextStyle(color: AppColors.accentGold, fontSize: 22, fontWeight: FontWeight.bold)),
+                Text(AppStrings.congratulations(context), style: const TextStyle(color: AppColors.accentGold, fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text('Je hebt $_prize gewonnen!', style: const TextStyle(color: Colors.white, fontSize: 16)),
                 const SizedBox(height: 24),
-                ElevatedButton(onPressed: () {}, child: const Text('Prijs claimen')),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryRed,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: Text(AppStrings.claimPrize(context)),
+                ),
               ],
             ],
           ),
@@ -120,6 +136,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
 
   Widget _buildPrizeContent() {
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       color: Colors.white,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,12 +153,12 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
   Widget _buildCantScratch() {
     return Container(
       color: Colors.grey[800],
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.schedule, color: Colors.white54, size: 48),
-          SizedBox(height: 12),
-          Text(AppStrings.comeBackTomorrow, textAlign: TextAlign.center, style: TextStyle(color: Colors.white70)),
+          const Icon(Icons.schedule, color: Colors.white54, size: 48),
+          const SizedBox(height: 12),
+          Text(AppStrings.comeBackTomorrow(context), textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
         ],
       ),
     );
@@ -149,8 +167,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
   Widget _buildStreakCounter() {
     return Column(
       children: [
-        const Text(AppStrings.streakTitle, style: TextStyle(color: Colors.white60, fontSize: 12)),
-        const SizedBox(height: 8),
+        Text(AppStrings.streakTitle(context), style: const TextStyle(color: Colors.white60, fontSize: 12)),
+        const SizedBox(height: 12),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(7, (i) {

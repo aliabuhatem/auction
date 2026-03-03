@@ -23,13 +23,14 @@ import 'features/auth/domain/usecases/logout_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/notifications/notification_service.dart';
+import 'features/profile/presentation/bloc/locale_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // External
   final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
   sl.registerLazySingleton(() => FirebaseAuth.instance);
 
@@ -66,6 +67,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => WatchAuctionUseCase(sl()));
 
   // BLoCs
+  sl.registerFactory(() => LocaleBloc(sl<SharedPreferences>()));
+
   sl.registerFactory(() => AuthBloc(
         loginUseCase: sl(),
         registerUseCase: sl(),
