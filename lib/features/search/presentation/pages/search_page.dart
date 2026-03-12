@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auctions/presentation/bloc/auction_list_bloc.dart';
 import '../../../auctions/presentation/widgets/auction_grid.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
-import '../../../../core/constants/app_colors.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});

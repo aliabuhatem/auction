@@ -16,9 +16,9 @@ class AdminAuctionsPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => AdminAuctionListBloc(
         context.read<AdminAuctionDatasource>())..add(LoadAdminAuctions()),
-      child: AdminShell(
+      child: const AdminShell(
         selectedIndex: 1,
-        child: const _AuctionListBody(),
+        child: _AuctionListBody(),
       ),
     );
   }

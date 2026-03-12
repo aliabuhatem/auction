@@ -292,7 +292,7 @@ class _State extends State<AdminProductFormPage> {
       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Color(0xFFE8EAF0))),
       focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: AppColors.primaryRed, width: 1.5)),
+          borderSide: const BorderSide(color: AppColors.primaryRed, width: 1.5)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     ),
   );

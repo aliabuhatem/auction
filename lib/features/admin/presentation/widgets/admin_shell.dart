@@ -161,7 +161,7 @@ class _Sidebar extends StatelessWidget {
                       radius: 16,
                       backgroundColor: AppColors.primaryRed.withOpacity(0.12),
                       child: Text(user?.initials ?? '?',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color:      AppColors.primaryRed,
                           fontWeight: FontWeight.w800,
                           fontSize:   12,
@@ -182,7 +182,7 @@ class _Sidebar extends StatelessWidget {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(user?.role.label ?? '',
-                            style: TextStyle(color: AppColors.primaryRed, fontSize: 9,
+                            style: const TextStyle(color: AppColors.primaryRed, fontSize: 9,
                               fontWeight: FontWeight.w700)),
                         ),
                       ],

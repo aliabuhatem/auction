@@ -31,7 +31,7 @@ class AdminChart extends StatelessWidget {
                 color: AppColors.primaryRed.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: Text('7 dagen', style: TextStyle(
+              child: const Text('7 dagen', style: TextStyle(
                 fontSize: 10, fontWeight: FontWeight.w700,
                 color: AppColors.primaryRed)),
             ),
@@ -64,7 +64,7 @@ class _BarChartPainter extends CustomPainter {
     final maxVal    = points.map((p) => p.value).reduce((a, b) => a > b ? a : b);
     final barWidth  = (size.width / points.length) * 0.5;
     final spacing   = size.width / points.length;
-    final textStyle = const TextStyle(color: Color(0xFF8B9CB6), fontSize: 10);
+    const textStyle = TextStyle(color: Color(0xFF8B9CB6), fontSize: 10);
 
     final barPaint = Paint()
       ..color    = color

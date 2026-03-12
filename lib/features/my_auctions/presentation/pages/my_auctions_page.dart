@@ -57,7 +57,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage> with TickerProviderStat
 class _EmptyTab extends StatelessWidget {
   final IconData icon;
   final String message;
-  const _EmptyTab({super.key, required this.icon, required this.message});
+  const _EmptyTab({required this.icon, required this.message});
   @override
   Widget build(BuildContext context) => Center(
     child: Column(
@@ -72,7 +72,7 @@ class _EmptyTab extends StatelessWidget {
 }
 
 class _PendingPaymentTab extends StatelessWidget {
-  const _PendingPaymentTab({super.key});
+  const _PendingPaymentTab();
   @override
   Widget build(BuildContext context) {
     return Column(

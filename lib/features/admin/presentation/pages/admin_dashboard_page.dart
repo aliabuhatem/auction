@@ -17,9 +17,9 @@ class AdminDashboardPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => AdminDashboardBloc(
         context.read<AdminRemoteDatasource>())..add(LoadDashboardStats()),
-      child: AdminShell(
+      child: const AdminShell(
         selectedIndex: 0,
-        child: const _DashboardBody(),
+        child: _DashboardBody(),
       ),
     );
   }
@@ -132,8 +132,8 @@ class _DashboardContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient:     LinearGradient(
-                colors: [AppColors.primaryRed, const Color(0xFFC1121F)],
+              gradient:     const LinearGradient(
+                colors: [AppColors.primaryRed, Color(0xFFC1121F)],
                 begin:  Alignment.topLeft,
                 end:    Alignment.bottomRight,
               ),
@@ -217,7 +217,7 @@ class _EndingSoonCard extends StatelessWidget {
                 const Spacer(),
                 TextButton(
                   onPressed: () => Navigator.of(context).pushNamed('/admin/auctions'),
-                  child: Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
+                  child: const Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
                 ),
               ],
             ),
@@ -311,7 +311,7 @@ class _RecentBidsCard extends StatelessWidget {
               const Spacer(),
               TextButton(
                 onPressed: () => Navigator.of(context).pushNamed('/admin/bids'),
-                child: Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
+                child: const Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
               ),
             ]),
           ),

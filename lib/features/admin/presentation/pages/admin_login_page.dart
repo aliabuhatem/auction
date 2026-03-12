@@ -217,7 +217,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:   BorderSide(color: AppColors.primaryRed, width: 1.5),
+            borderSide:   const BorderSide(color: AppColors.primaryRed, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

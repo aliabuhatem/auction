@@ -35,7 +35,6 @@ import '../features/notifications/presentation/notifications_page.dart';
 import '../features/admin/admin_routes.dart';
 import '../features/admin/presentation/pages/admin_login_page.dart';
 import '../features/admin/presentation/pages/admin_dashboard_page.dart';
-import '../features/admin/presentation/bloc/admin_auth_bloc.dart';
 
 // ── Shell wrapper (bottom nav) ────────────────────────────────────────────────
 import 'shell_scaffold.dart';
