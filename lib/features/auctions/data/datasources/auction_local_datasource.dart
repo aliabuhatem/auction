@@ -33,8 +33,6 @@ class AuctionLocalDatasourceImpl implements AuctionLocalDatasource {
   Future<List<AuctionModel>> getCachedAuctions() async {
     final raw = prefs.getString(_auctionsKey);
     if (raw == null) return [];
-    final list = jsonDecode(raw) as List<dynamic>;
-    // Note: fromJson would need Timestamp handling — simplified here
     return [];
   }
 

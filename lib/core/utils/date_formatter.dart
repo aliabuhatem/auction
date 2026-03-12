@@ -14,7 +14,6 @@ class DateFormatter {
   static final _dayOfWeek  = DateFormat('EEEE',                    'nl_NL');
   static final _fullDate   = DateFormat('EEEE d MMMM yyyy',        'nl_NL');
   static final _compact    = DateFormat('d MMM yyyy',              'nl_NL');
-  static final _shortTime  = DateFormat('HH:mm',                   'nl_NL');
   static final _isoDate    = DateFormat('yyyy-MM-dd');
 
   // ── Basic formatters ──────────────────────────────────────────────────────
