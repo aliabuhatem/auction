@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auctions/domain/entities/auction_entity.dart';
+import '../../../auctions/domain/repositories/auction_repository.dart';
 import '../../domain/my_auctions_repository.dart';
 
 part 'my_auctions_event.dart';
@@ -8,8 +9,12 @@ part 'my_auctions_state.dart';
 
 class MyAuctionsBloc extends Bloc<MyAuctionsEvent, MyAuctionsState> {
   final MyAuctionsRepository repository;
+  final AuctionRepository auctionRepository;
 
-  MyAuctionsBloc({required this.repository}) : super(MyAuctionsInitial()) {
+  MyAuctionsBloc({
+    required this.repository,
+    required this.auctionRepository,
+  }) : super(MyAuctionsInitial()) {
     on<LoadMyAuctions>(_onLoad);
     on<RefreshMyAuctions>(_onRefresh);
   }
@@ -28,12 +33,15 @@ class MyAuctionsBloc extends Bloc<MyAuctionsEvent, MyAuctionsState> {
       repository.getActiveBids(userId),
       repository.getWonAuctions(userId),
       repository.getPendingPayments(userId),
+      auctionRepository.getMyAuctions(),
     ]);
 
-    final activeBidsResult = results[0];
-    final wonResult = results[1];
-    final pendingResult = results[2];
+    final activeBidsResult    = results[0];
+    final wonResult           = results[1];
+    final pendingResult       = results[2];
+    final watchlistResult     = results[3];
 
+    // If any core fetch fails, show error
     if (activeBidsResult.isLeft() || wonResult.isLeft() || pendingResult.isLeft()) {
       final msg = activeBidsResult.fold((f) => f.message, (_) => null) ??
           wonResult.fold((f) => f.message, (_) => null) ??
@@ -44,9 +52,10 @@ class MyAuctionsBloc extends Bloc<MyAuctionsEvent, MyAuctionsState> {
     }
 
     emit(MyAuctionsLoaded(
-      activeBids: activeBidsResult.fold((_) => [], (r) => r),
-      wonAuctions: wonResult.fold((_) => [], (r) => r),
+      activeBids:      activeBidsResult.fold((_) => [], (r) => r),
+      wonAuctions:     wonResult.fold((_) => [], (r) => r),
       pendingPayments: pendingResult.fold((_) => [], (r) => r),
+      watchedAuctions: watchlistResult.fold((_) => [], (r) => r),
     ));
   }
 }

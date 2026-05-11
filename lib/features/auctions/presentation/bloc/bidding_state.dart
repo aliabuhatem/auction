@@ -9,8 +9,9 @@ class BiddingLoaded extends BiddingState {
   final AuctionEntity auction;
   final bool wasOutbid;
   final bool isMine;
-  const BiddingLoaded({required this.auction, this.wasOutbid = false, this.isMine = false});
-  @override List<Object?> get props => [auction, wasOutbid];
+  final bool isAlarmed;
+  const BiddingLoaded({required this.auction, this.wasOutbid = false, this.isMine = false, this.isAlarmed = false});
+  @override List<Object?> get props => [auction, wasOutbid, isMine, isAlarmed];
 }
 class BiddingPlacing extends BiddingState {
   final AuctionEntity auction;

@@ -100,9 +100,10 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
                 emptyMessage: AppStrings.noWon(context),
               ),
               _PendingPaymentTab(auctions: loaded?.pendingPayments ?? []),
-              _EmptyTab(
-                icon: Icons.bookmark_border,
-                message: AppStrings.noSaved(context),
+              _AuctionTab(
+                auctions: loaded?.watchedAuctions ?? [],
+                emptyIcon: Icons.bookmark_border,
+                emptyMessage: AppStrings.noSaved(context),
               ),
             ],
           );

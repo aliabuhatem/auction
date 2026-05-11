@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -90,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: TextButton(onPressed: () {}, child: Text(AppStrings.forgotPassword(context))),
+                    child: TextButton(onPressed: _forgotPassword, child: Text(AppStrings.forgotPassword(context))),
                   ),
                   const SizedBox(height: 8),
                   // Login button
@@ -140,6 +141,42 @@ class _LoginPageState extends State<LoginPage> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.read<AuthBloc>().add(LoginRequested(email: _email.text.trim(), password: _password.text));
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final emailCtrl = TextEditingController(text: _email.text.trim());
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Wachtwoord vergeten'),
+        content: TextField(
+          controller: emailCtrl,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(labelText: 'E-mailadres', prefixIcon: Icon(Icons.email_outlined)),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuleren')),
+          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Versturen')),
+        ],
+      ),
+    );
+
+    if (confirmed != true || emailCtrl.text.trim().isEmpty) return;
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailCtrl.text.trim());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Reset-link verstuurd. Check je e-mail.'), backgroundColor: Colors.green),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Fout bij versturen'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 }

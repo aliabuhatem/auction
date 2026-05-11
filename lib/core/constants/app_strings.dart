@@ -78,6 +78,7 @@ class AppStrings {
   static String deleteAccount(BuildContext context) => get(context, 'deleteAccount');
 
   // Vouchers
+  static String noTickets(BuildContext context) => get(context, 'noTickets');
   static String myVoucher(BuildContext context) => get(context, 'myVoucher');
   static String voucherCode(BuildContext context) => get(context, 'voucherCode');
   static String showQr(BuildContext context) => get(context, 'showQr');
@@ -146,6 +147,7 @@ class AppStrings {
     'help': 'Help & Support',
     'about': 'Over ons',
     'deleteAccount': 'Account verwijderen',
+    'noTickets': 'Geen vouchers',
     'myVoucher': 'Mijn voucher',
     'voucherCode': 'Vouchercode',
     'showQr': 'Toon deze QR-code bij het inchecken',
@@ -213,6 +215,7 @@ class AppStrings {
     'help': 'Help & Support',
     'about': 'About Us',
     'deleteAccount': 'Delete Account',
+    'noTickets': 'No vouchers',
     'myVoucher': 'My Voucher',
     'voucherCode': 'Voucher Code',
     'showQr': 'Show this QR code at check-in',
@@ -280,6 +283,7 @@ class AppStrings {
     'help': 'المساعدة والدعم',
     'about': 'من نحن',
     'deleteAccount': 'حذف الحساب',
+    'noTickets': 'لا توجد قسائم',
     'myVoucher': 'قسيمتي',
     'voucherCode': 'رمز القسيمة',
     'showQr': 'أظهر رمز QR هذا عند تسجيل الوصول',

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:async';
 import '../../domain/entities/auction_entity.dart';
+import '../../domain/repositories/auction_repository.dart';
 import '../../domain/usecases/get_auction_detail_usecase.dart';
 import '../../domain/usecases/place_bid_usecase.dart';
 import '../../domain/usecases/watch_auction_usecase.dart';
@@ -13,12 +14,14 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
   final GetAuctionDetailUseCase getAuctionDetail;
   final PlaceBidUseCase placeBid;
   final WatchAuctionUseCase watchAuction;
+  final AuctionRepository repository;
   StreamSubscription<AuctionEntity>? _sub;
 
   BiddingBloc({
     required this.getAuctionDetail,
     required this.placeBid,
     required this.watchAuction,
+    required this.repository,
   }) : super(BiddingInitial()) {
     on<LoadAuctionForBidding>(_onLoad);
     on<AuctionStreamUpdate>(_onUpdate);
@@ -44,7 +47,7 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     if (state is BiddingLoaded) {
       final s = state as BiddingLoaded;
       final outbid = s.auction.currentBid < e.auction.currentBid;
-      emit(BiddingLoaded(auction: e.auction, wasOutbid: outbid && s.isMine));
+      emit(BiddingLoaded(auction: e.auction, wasOutbid: outbid && s.isMine, isMine: s.isMine));
     }
   }
 
@@ -59,8 +62,75 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     );
   }
 
-  void _onWatchlist(ToggleWatchlist e, Emitter<BiddingState> emit) {}
-  void _onAlarm(SetAlarm e, Emitter<BiddingState> emit) {}
+  Future<void> _onWatchlist(ToggleWatchlist e, Emitter<BiddingState> emit) async {
+    if (state is! BiddingLoaded) return;
+    final s = state as BiddingLoaded;
+    final wasWatchlisted = s.auction.isWatchlisted;
+
+    // Optimistic update
+    emit(BiddingLoaded(
+      auction: _copyAuctionWithWatchlist(s.auction, !wasWatchlisted),
+      isMine: s.isMine,
+    ));
+
+    final result = await repository.watchlistAuction(e.auctionId);
+    result.fold(
+      (f) {
+        // Revert on failure
+        emit(BiddingLoaded(
+          auction: _copyAuctionWithWatchlist(s.auction, wasWatchlisted),
+          isMine: s.isMine,
+        ));
+      },
+      (_) {}, // optimistic update stays
+    );
+  }
+
+  Future<void> _onAlarm(SetAlarm e, Emitter<BiddingState> emit) async {
+    if (state is! BiddingLoaded) return;
+    final s = state as BiddingLoaded;
+    final isAlarmed = s.isAlarmed;
+
+    // Optimistic update
+    emit(BiddingLoaded(
+      auction: s.auction,
+      isMine: s.isMine,
+      isAlarmed: !isAlarmed,
+    ));
+
+    final result = isAlarmed
+        ? await repository.removeAuctionAlarm(e.auctionId)
+        : await repository.setAuctionAlarm(e.auctionId);
+
+    result.fold(
+      (f) {
+        // Revert on failure
+        emit(BiddingLoaded(auction: s.auction, isMine: s.isMine, isAlarmed: isAlarmed));
+      },
+      (_) {},
+    );
+  }
+
+  // AuctionEntity is immutable — copy by creating an AuctionModel copy via its fields
+  AuctionEntity _copyAuctionWithWatchlist(AuctionEntity a, bool watchlisted) {
+    return AuctionEntity(
+      id: a.id,
+      title: a.title,
+      description: a.description,
+      imageUrl: a.imageUrl,
+      imageUrls: a.imageUrls,
+      currentBid: a.currentBid,
+      startingBid: a.startingBid,
+      bidCount: a.bidCount,
+      endsAt: a.endsAt,
+      status: a.status,
+      category: a.category,
+      location: a.location,
+      retailValue: a.retailValue,
+      isWatchlisted: watchlisted,
+      winnerId: a.winnerId,
+    );
+  }
 
   @override
   Future<void> close() {

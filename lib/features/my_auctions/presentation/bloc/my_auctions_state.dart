@@ -14,15 +14,17 @@ class MyAuctionsLoaded extends MyAuctionsState {
   final List<AuctionEntity> activeBids;
   final List<AuctionEntity> wonAuctions;
   final List<AuctionEntity> pendingPayments;
+  final List<AuctionEntity> watchedAuctions;
 
   const MyAuctionsLoaded({
     required this.activeBids,
     required this.wonAuctions,
     required this.pendingPayments,
+    this.watchedAuctions = const [],
   });
 
   @override
-  List<Object?> get props => [activeBids, wonAuctions, pendingPayments];
+  List<Object?> get props => [activeBids, wonAuctions, pendingPayments, watchedAuctions];
 }
 
 class MyAuctionsError extends MyAuctionsState {

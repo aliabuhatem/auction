@@ -100,9 +100,11 @@ Future<void> init() async {
         getAuctionDetail: sl(),
         placeBid: sl(),
         watchAuction: sl(),
+        repository: sl(),
       ));
 
   sl.registerFactory(() => MyAuctionsBloc(
         repository: sl(),
+        auctionRepository: sl(),
       ));
 }
