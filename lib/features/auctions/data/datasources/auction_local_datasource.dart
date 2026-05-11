@@ -33,7 +33,8 @@ class AuctionLocalDatasourceImpl implements AuctionLocalDatasource {
   Future<List<AuctionModel>> getCachedAuctions() async {
     final raw = prefs.getString(_auctionsKey);
     if (raw == null) return [];
-    return [];
+    final list = jsonDecode(raw) as List<dynamic>;
+    return list.map((e) => AuctionModel.fromJson(e as Map<String, dynamic>)).toList();
   }
 
   @override
@@ -45,7 +46,7 @@ class AuctionLocalDatasourceImpl implements AuctionLocalDatasource {
   Future<AuctionModel?> getCachedAuction(String id) async {
     final raw = prefs.getString('$_auctionPrefix$id');
     if (raw == null) return null;
-    return null; // Deserialize as needed
+    return AuctionModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
   }
 
   @override

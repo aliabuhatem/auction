@@ -22,6 +22,10 @@ import 'features/auth/domain/usecases/login_usecase.dart';
 import 'features/auth/domain/usecases/logout_usecase.dart';
 import 'features/auth/domain/usecases/register_usecase.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/my_auctions/data/my_auctions_remote_datasource.dart';
+import 'features/my_auctions/data/my_auctions_repository_impl.dart';
+import 'features/my_auctions/domain/my_auctions_repository.dart';
+import 'features/my_auctions/presentation/bloc/my_auctions_bloc.dart';
 import 'features/notifications/notification_service.dart';
 import 'features/profile/presentation/bloc/locale_bloc.dart';
 
@@ -48,6 +52,9 @@ Future<void> init() async {
   sl.registerLazySingleton<AuctionLocalDatasource>(
     () => AuctionLocalDatasourceImpl(prefs: sl()),
   );
+  sl.registerLazySingleton<MyAuctionsRemoteDatasource>(
+    () => MyAuctionsRemoteDatasourceImpl(firestore: sl()),
+  );
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -55,6 +62,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<AuctionRepository>(
     () => AuctionRepositoryImpl(remote: sl(), local: sl()),
+  );
+  sl.registerLazySingleton<MyAuctionsRepository>(
+    () => MyAuctionsRepositoryImpl(remote: sl()),
   );
 
   // Use Cases
@@ -90,5 +100,9 @@ Future<void> init() async {
         getAuctionDetail: sl(),
         placeBid: sl(),
         watchAuction: sl(),
+      ));
+
+  sl.registerFactory(() => MyAuctionsBloc(
+        repository: sl(),
       ));
 }

@@ -65,7 +65,29 @@ class AuctionModel extends AuctionEntity {
     }
   }
 
+  factory AuctionModel.fromJson(Map<String, dynamic> d) {
+    final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ?? [];
+    return AuctionModel(
+      id: d['id'] as String? ?? '',
+      title: d['title'] ?? '',
+      description: d['description'] ?? '',
+      imageUrl: d['imageUrl'] ?? (urls.isNotEmpty ? urls.first : ''),
+      imageUrls: urls,
+      currentBid: (d['currentBid'] as num?)?.toDouble() ?? 1.0,
+      startingBid: (d['startingBid'] as num?)?.toDouble() ?? 1.0,
+      bidCount: (d['bidCount'] as int?) ?? 0,
+      endsAt: DateTime.fromMillisecondsSinceEpoch(d['endsAt'] as int),
+      status: _parseStatus(d['status']),
+      category: _parseCategory(d['category']),
+      location: d['location'] ?? '',
+      retailValue: (d['retailValue'] as num?)?.toDouble() ?? 0.0,
+      isWatchlisted: d['isWatchlisted'] ?? false,
+      winnerId: d['winnerId'],
+    );
+  }
+
   Map<String, dynamic> toJson() => {
+    'id': id,
     'title': title,
     'description': description,
     'imageUrl': imageUrl,
@@ -73,7 +95,7 @@ class AuctionModel extends AuctionEntity {
     'currentBid': currentBid,
     'startingBid': startingBid,
     'bidCount': bidCount,
-    'endsAt': Timestamp.fromDate(endsAt),
+    'endsAt': endsAt.millisecondsSinceEpoch,
     'status': status.name,
     'category': category.name,
     'location': location,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/auction_model.dart';
 import '../models/bid_model.dart';
-import '../../domain/entities/auction_entity.dart';
 
 abstract class AuctionRemoteDatasource {
   Future<List<AuctionModel>> getAuctions({String? category, String? query, int page = 1});
@@ -14,152 +13,170 @@ abstract class AuctionRemoteDatasource {
   Future<bool> setAlarm(String auctionId, String userId, bool set);
 }
 
+/// NOTE: Requires Firestore composite indexes:
+///   auctions: (status ASC, endsAt ASC)
+///   auctions: (status ASC, category ASC, endsAt ASC)
 class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
   final FirebaseFirestore firestore;
+
+  // Cursor map for pagination — keyed by "category_query"
+  final Map<String, DocumentSnapshot?> _cursors = {};
+  static const int _pageSize = 20;
+
   AuctionRemoteDatasourceImpl({required this.firestore});
 
-  // CollectionReference get _auctions => firestore.collection('auctions');
-
-  final List<AuctionModel> _dummyAuctions = [
-    AuctionModel(
-      id: '1',
-      title: 'Smart Watch Pro',
-      description: 'Luxe smartwatch met alle functies die je nodig hebt.',
-      imageUrl: 'assets/images/watch.png',
-      imageUrls: const ['assets/images/watch.png'],
-      currentBid: 45.0,
-      startingBid: 1.0,
-      bidCount: 12,
-      endsAt: DateTime.now().add(const Duration(hours: 2)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Amsterdam, Nederland',
-      retailValue: 150.0,
-    ),
-    AuctionModel(
-      id: '2',
-      title: 'High-End Monitor',
-      description: 'Prachtig scherm voor werk en entertainment.',
-      imageUrl: 'assets/images/screen.png',
-      imageUrls:const ['assets/images/screen.png'],
-      currentBid: 15.0,
-      startingBid: 1.0,
-      bidCount: 5,
-      endsAt: DateTime.now().add(const Duration(minutes: 45)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Utrecht, Nederland',
-      retailValue: 300.0,
-    ),
-    AuctionModel(
-      id: '3',
-      title: 'High-End Monitor',
-      description: 'Prachtig scherm voor werk en entertainment.',
-      imageUrl: 'assets/images/screen.png',
-      imageUrls:const ['assets/images/screen.png'],
-      currentBid: 15.0,
-      startingBid: 1.0,
-      bidCount: 5,
-      endsAt: DateTime.now().add(const Duration(minutes: 45)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Utrecht, Nederland',
-      retailValue: 300.0,
-    ),
-    AuctionModel(
-      id: '4',
-      title: 'High-End Monitor',
-      description: 'Prachtig scherm voor werk en entertainment.',
-      imageUrl: 'assets/images/screen.png',
-      imageUrls:const ['assets/images/screen.png'],
-      currentBid: 15.0,
-      startingBid: 1.0,
-      bidCount: 5,
-      endsAt: DateTime.now().add(const Duration(minutes: 45)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Utrecht, Nederland',
-      retailValue: 300.0,
-    ),
-    AuctionModel(
-      id: '5',
-      title: 'High-End Monitor',
-      description: 'Prachtig scherm voor werk en entertainment.',
-      imageUrl: 'assets/images/screen.png',
-      imageUrls:const ['assets/images/screen.png'],
-      currentBid: 15.0,
-      startingBid: 1.0,
-      bidCount: 5,
-      endsAt: DateTime.now().add(const Duration(minutes: 45)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Utrecht, Nederland',
-      retailValue: 300.0,
-    ),
-    AuctionModel(
-      id: '6',
-      title: 'High-End Monitor',
-      description: 'Prachtig scherm voor werk en entertainment.',
-      imageUrl: 'assets/images/screen.png',
-      imageUrls: const ['assets/images/screen.png'],
-      currentBid: 15.0,
-      startingBid: 1.0,
-      bidCount: 5,
-      endsAt: DateTime.now().add(const Duration(minutes: 45)),
-      status: AuctionStatus.live,
-      category: AuctionCategory.products,
-      location: 'Utrecht, Nederland',
-      retailValue: 300.0,
-    ),
-  ];
+  CollectionReference get _auctions => firestore.collection('auctions');
 
   @override
-  Future<List<AuctionModel>> getAuctions({String? category, String? query, int page = 1}) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    var results = _dummyAuctions;
+  Future<List<AuctionModel>> getAuctions({
+    String? category,
+    String? query,
+    int page = 1,
+  }) async {
+    final key = '${category ?? "all"}_${query ?? ""}';
+    if (page == 1) _cursors.remove(key);
+
+    Query q;
     if (category != null && category != 'all') {
-      results = results.where((a) => a.category.name == category).toList();
+      q = _auctions
+          .where('status', whereIn: ['live', 'upcoming'])
+          .where('category', isEqualTo: category)
+          .orderBy('endsAt')
+          .limit(_pageSize);
+    } else {
+      q = _auctions
+          .where('status', whereIn: ['live', 'upcoming'])
+          .orderBy('endsAt')
+          .limit(_pageSize);
     }
+
+    if (page > 1 && _cursors[key] != null) {
+      q = q.startAfterDocument(_cursors[key]!);
+    }
+
+    final snap = await q.get();
+    if (snap.docs.isNotEmpty) _cursors[key] = snap.docs.last;
+
+    var results = snap.docs.map((d) => AuctionModel.fromFirestore(d)).toList();
+
+    // Client-side text filter (Firestore doesn't support full-text search)
     if (query != null && query.isNotEmpty) {
-      final q = query.toLowerCase();
-      results = results.where((a) => a.title.toLowerCase().contains(q)).toList();
+      final lq = query.toLowerCase();
+      results = results
+          .where((a) =>
+              a.title.toLowerCase().contains(lq) ||
+              a.description.toLowerCase().contains(lq))
+          .toList();
     }
+
     return results;
   }
 
   @override
   Future<AuctionModel> getAuctionById(String id) async {
-    return _dummyAuctions.firstWhere((a) => a.id == id);
+    final doc = await _auctions.doc(id).get();
+    if (!doc.exists) throw Exception('Veiling niet gevonden');
+    return AuctionModel.fromFirestore(doc);
   }
 
   @override
-  Stream<AuctionModel> watchAuction(String id) {
-    return Stream.value(_dummyAuctions.firstWhere((a) => a.id == id));
-  }
+  Stream<AuctionModel> watchAuction(String id) => _auctions
+      .doc(id)
+      .snapshots()
+      .where((doc) => doc.exists)
+      .map((doc) => AuctionModel.fromFirestore(doc));
 
   @override
-  Future<bool> placeBid(String auctionId, double amount, String userId, String? userName) async {
-    return true;
+  Future<bool> placeBid(
+      String auctionId, double amount, String userId, String? userName) {
+    return firestore.runTransaction<bool>((tx) async {
+      final ref = _auctions.doc(auctionId);
+      final doc = await tx.get(ref);
+      if (!doc.exists) throw Exception('Veiling niet gevonden');
+
+      final d = doc.data()! as Map<String, dynamic>;
+      final cur = (d['currentBid'] as num).toDouble();
+      final end = (d['endsAt'] as Timestamp).toDate();
+
+      if (amount <= cur) {
+        throw Exception('Bod moet hoger zijn dan €${cur.toStringAsFixed(2)}');
+      }
+      if (DateTime.now().isAfter(end)) {
+        throw Exception('De veiling is al afgelopen');
+      }
+
+      tx.update(ref, {
+        'currentBid': amount,
+        'bidCount': FieldValue.increment(1),
+        'lastBidderId': userId,
+      });
+
+      tx.set(ref.collection('bids').doc(), {
+        'auctionId': auctionId,
+        'userId': userId,
+        'userName': userName ?? 'Anoniem',
+        'amount': amount,
+        'placedAt': FieldValue.serverTimestamp(),
+      });
+
+      return true;
+    });
   }
 
   @override
   Future<List<BidModel>> getBidHistory(String auctionId) async {
-    return [];
+    final snap = await _auctions
+        .doc(auctionId)
+        .collection('bids')
+        .orderBy('placedAt', descending: true)
+        .limit(50)
+        .get();
+    return snap.docs.map((d) => BidModel.fromFirestore(d)).toList();
   }
 
   @override
   Future<List<AuctionModel>> getAuctionsByIds(List<String> ids) async {
-    return _dummyAuctions.where((a) => ids.contains(a.id)).toList();
+    if (ids.isEmpty) return [];
+    // Firestore whereIn supports max 30 items per query
+    final chunks = <List<String>>[];
+    for (var i = 0; i < ids.length; i += 30) {
+      chunks.add(ids.sublist(i, i + 30 > ids.length ? ids.length : i + 30));
+    }
+    final results = <AuctionModel>[];
+    for (final chunk in chunks) {
+      final snap = await _auctions.where(FieldPath.documentId, whereIn: chunk).get();
+      results.addAll(snap.docs.map((d) => AuctionModel.fromFirestore(d)));
+    }
+    return results;
   }
 
   @override
   Future<bool> setWatchlist(String auctionId, String userId, bool add) async {
+    final userRef = firestore.collection('users').doc(userId);
+    if (add) {
+      await userRef.update({
+        'watchlist': FieldValue.arrayUnion([auctionId]),
+      });
+    } else {
+      await userRef.update({
+        'watchlist': FieldValue.arrayRemove([auctionId]),
+      });
+    }
     return true;
   }
 
   @override
   Future<bool> setAlarm(String auctionId, String userId, bool set) async {
+    final userRef = firestore.collection('users').doc(userId);
+    if (set) {
+      await userRef.update({
+        'alarms': FieldValue.arrayUnion([auctionId]),
+      });
+    } else {
+      await userRef.update({
+        'alarms': FieldValue.arrayRemove([auctionId]),
+      });
+    }
     return true;
   }
 }

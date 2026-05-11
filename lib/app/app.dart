@@ -9,6 +9,7 @@ import '../injection_container.dart' as di;
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_event.dart';
 import '../features/auctions/presentation/bloc/auction_list_bloc.dart';
+import '../features/my_auctions/presentation/bloc/my_auctions_bloc.dart';
 import '../features/profile/presentation/bloc/locale_bloc.dart';
 
 class AuctionApp extends StatelessWidget {
@@ -23,6 +24,9 @@ class AuctionApp extends StatelessWidget {
         ),
         BlocProvider<AuctionListBloc>(
           create: (_) => di.sl<AuctionListBloc>(),
+        ),
+        BlocProvider<MyAuctionsBloc>(
+          create: (_) => di.sl<MyAuctionsBloc>(),
         ),
         BlocProvider<LocaleBloc>(
           create: (_) => di.sl<LocaleBloc>(),
