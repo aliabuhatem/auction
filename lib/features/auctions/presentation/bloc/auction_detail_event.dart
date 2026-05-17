@@ -41,3 +41,10 @@ class ToggleAuctionWatchlist extends AuctionDetailEvent {
   @override
   List<Object> get props => [auctionId];
 }
+
+class AuctionDetailStreamFailed extends AuctionDetailEvent {
+  final String error;
+  const AuctionDetailStreamFailed(this.error);
+  @override
+  List<Object> get props => [error];
+}

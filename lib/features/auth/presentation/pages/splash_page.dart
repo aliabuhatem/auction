@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/auth_bloc.dart';
+import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../bloc/auth_state.dart';
@@ -35,9 +37,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if (state is AuthAuthenticated) context.go('/home');
-        if (state is AuthUnauthenticated) context.go('/auth/login');
+      listener: (context, state) async {
+        if (state is AuthAuthenticated) {
+          final prefs = await SharedPreferences.getInstance();
+          final done  = prefs.getBool('onboarding_done') ?? false;
+          if (!context.mounted) return;
+          context.go(done ? AppRoutes.home : AppRoutes.onboarding);
+        }
+        if (state is AuthUnauthenticated) context.go(AppRoutes.login);
       },
       child: Scaffold(
         backgroundColor: AppColors.primaryRed,

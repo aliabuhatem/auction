@@ -15,24 +15,26 @@ class BidModel extends BidEntity {
     final d = doc.data() as Map<String, dynamic>;
     return BidModel(
       id: doc.id,
-      auctionId: d['auctionId'] ?? '',
-      userId: d['userId'] ?? '',
-      userName: d['userName'],
-      amount: (d['amount'] as num).toDouble(),
-      placedAt: (d['placedAt'] as Timestamp).toDate(),
+      auctionId: d['auctionId'] as String? ?? '',
+      userId: d['userId'] as String? ?? '',
+      userName: d['userName'] as String?,
+      amount: ((d['amount'] as num?) ?? 0).toDouble(),
+      placedAt: (d['placedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
   factory BidModel.fromJson(Map<String, dynamic> d, {String id = ''}) {
     return BidModel(
       id: id,
-      auctionId: d['auctionId'] ?? '',
-      userId: d['userId'] ?? '',
-      userName: d['userName'],
-      amount: (d['amount'] as num).toDouble(),
+      auctionId: d['auctionId'] as String? ?? '',
+      userId: d['userId'] as String? ?? '',
+      userName: d['userName'] as String?,
+      amount: ((d['amount'] as num?) ?? 0).toDouble(),
       placedAt: d['placedAt'] is Timestamp
           ? (d['placedAt'] as Timestamp).toDate()
-          : DateTime.parse(d['placedAt']),
+          : d['placedAt'] is String
+              ? DateTime.tryParse(d['placedAt'] as String) ?? DateTime.now()
+              : DateTime.now(),
     );
   }
 

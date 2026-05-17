@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/auth_bloc.dart';
+import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/constants/app_dimensions.dart';
@@ -33,8 +35,13 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthAuthenticated) context.go('/home');
+        listener: (context, state) async {
+          if (state is AuthAuthenticated) {
+            final prefs = await SharedPreferences.getInstance();
+            final done  = prefs.getBool('onboarding_done') ?? false;
+            if (!context.mounted) return;
+            context.go(done ? AppRoutes.home : AppRoutes.onboarding);
+          }
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message), backgroundColor: Colors.red),
@@ -87,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => setState(() => _obscure = !_obscure),
                       ),
                     ),
-                    validator: (v) => v!.length >= 6 ? null : AppStrings.passwordTooShort(context),
+                    validator: (v) => v!.length >= 8 ? null : AppStrings.passwordTooShort(context),
                   ),
                   Align(
                     alignment: Alignment.centerRight,

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(gradlew.bat signingReport)",
+      "Bash(Get-ChildItem *)",
+      "Bash(New-Item -ItemType File -Force \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\\\\admin\\\\presentation\\\\pages\\\\admin_users_page.dart\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType File -Force \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\\\\admin\\\\presentation\\\\pages\\\\admin_bids_page.dart\")",
+      "Bash(New-Item -ItemType File -Force \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\\\\admin\\\\presentation\\\\pages\\\\admin_notifications_page.dart\")",
+      "Bash(Write-Output \"done\")",
+      "PowerShell(flutter analyze *)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\" -Recurse -Directory | Where-Object { $_.Name -eq \"bloc\" -or $_.Name -eq \"cubit\" } | ForEach-Object { $_.FullName })",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\" -Recurse -Directory | Where-Object { $_.Name -eq \"domain\" -or $_.Name -eq \"data\" } | Select-Object -ExpandProperty FullName | Sort-Object)",
+      "Bash(flutter analyze *)",
+      "Bash(findstr -i \"signingconfig\\\\|minifyEnabled\\\\|shrinkResources\")"
+    ]
+  }
+}

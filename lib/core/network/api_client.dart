@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
@@ -52,13 +53,13 @@ class ApiClient {
       ),
     );
 
-    // Logging (debug only — disable in production)
+    // Never log bodies in production — they may contain tokens or PII.
     _dio.interceptors.add(
       LogInterceptor(
         requestHeader:  false,
-        requestBody:    true,
+        requestBody:    kDebugMode,
         responseHeader: false,
-        responseBody:   true,
+        responseBody:   kDebugMode,
         error:          true,
         logPrint: (obj) => _logger.d(obj),
       ),
@@ -70,8 +71,8 @@ class ApiClient {
     RequestInterceptorHandler handler,
   ) async {
     // Check connectivity before every request
-    final result = await _connectivity.checkConnectivity();
-    if (result == ConnectivityResult.none) {
+    final results = await _connectivity.checkConnectivity();
+    if (results.every((r) => r == ConnectivityResult.none)) {
       handler.reject(
         DioException(
           requestOptions: options,

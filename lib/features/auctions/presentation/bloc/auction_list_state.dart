@@ -1,7 +1,7 @@
 part of 'auction_list_bloc.dart';
 
 abstract class AuctionListState extends Equatable {
-  const AuctionListState(); // ← add this
+  const AuctionListState();
   @override List<Object?> get props => [];
 }
 

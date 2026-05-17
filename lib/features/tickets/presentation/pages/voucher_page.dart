@@ -1,32 +1,61 @@
 // lib/features/tickets/presentation/pages/voucher_page.dart
-
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../data/tickets_remote_datasource.dart';
 import '../../domain/voucher_entity.dart';
 
 class VoucherPage extends StatelessWidget {
   final String? voucherId;
   final VoucherEntity? voucher;
-  
+
   const VoucherPage({super.key, this.voucherId, this.voucher});
 
   @override
   Widget build(BuildContext context) {
-    if (voucher == null && voucherId == null) {
-       return const Scaffold(body: Center(child: Text('Geen voucher gevonden')));
+    if (voucher != null) return _VoucherDetail(voucher: voucher!);
+
+    if (voucherId == null) {
+      return const Scaffold(body: Center(child: Text('Geen voucher gevonden')));
     }
 
-    final displayVoucher = voucher ?? VoucherEntity(
-      id: voucherId ?? '',
-      code: '...',
-      auctionId: '', // Added missing required parameter
-      auctionTitle: 'Laden...',
-      expiresAt: DateTime.now(),
-      isUsed: false,
+    return Scaffold(
+      backgroundColor: const Color(0xFFF0F4F8),
+      appBar: AppBar(title: const Text('Mijn voucher')),
+      body: FutureBuilder<VoucherEntity>(
+        future: TicketsRemoteDatasourceImpl().getTicketById(voucherId!),
+        builder: (context, snap) {
+          if (snap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snap.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 48, color: Colors.grey),
+                  const SizedBox(height: 12),
+                  Text('Fout: ${snap.error}',
+                      style: const TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center),
+                ],
+              ),
+            );
+          }
+          return _VoucherDetail(voucher: snap.data!);
+        },
+      ),
     );
+  }
+}
 
+class _VoucherDetail extends StatelessWidget {
+  final VoucherEntity voucher;
+  const _VoucherDetail({required this.voucher});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4F8),
       appBar: AppBar(
@@ -70,27 +99,48 @@ class VoucherPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(displayVoucher.auctionTitle,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  )),
-                              Text('Geldig t/m ${displayVoucher.expiresAtFormatted}',
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 12,
-                                  )),
+                              Text(
+                                voucher.auctionTitle,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                'Geldig t/m ${voucher.expiresAtFormatted}',
+                                style: const TextStyle(color: Colors.white70, fontSize: 12),
+                              ),
                             ],
                           ),
                         ),
+                        if (voucher.isUsed)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white24,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text('Gebruikt',
+                                style: TextStyle(color: Colors.white, fontSize: 11)),
+                          ),
+                        if (voucher.isExpired && !voucher.isUsed)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black26,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text('Verlopen',
+                                style: TextStyle(color: Colors.white, fontSize: 11)),
+                          ),
                       ],
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: QrImageView(
-                      data: displayVoucher.code,
+                      data: voucher.code,
                       version: QrVersions.auto,
                       size: 200,
                       backgroundColor: Colors.white,
@@ -104,7 +154,7 @@ class VoucherPage extends StatelessWidget {
                             style: TextStyle(color: Colors.grey[600], fontSize: 12)),
                         const SizedBox(height: 4),
                         Text(
-                          displayVoucher.code,
+                          voucher.code,
                           style: const TextStyle(
                             fontFamily: 'monospace',
                             fontSize: 20,
@@ -112,11 +162,6 @@ class VoucherPage extends StatelessWidget {
                             letterSpacing: 4,
                           ),
                         ),
-                        if (displayVoucher.isUsed)
-                          const Chip(
-                            label: Text('Gebruikt'),
-                            backgroundColor: Colors.grey,
-                          ),
                       ],
                     ),
                   ),
@@ -151,9 +196,7 @@ class VoucherPage extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
-          child: CustomPaint(painter: DashedLinePainter()),
-        ),
+        Expanded(child: CustomPaint(painter: DashedLinePainter())),
         const SizedBox(
           width: 24,
           height: 24,

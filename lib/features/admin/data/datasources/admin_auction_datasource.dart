@@ -69,7 +69,6 @@ class AdminAuctionDatasource {
     List<String>             imageUrls = const [],
   }) async {
     final uid = _auth.currentUser?.uid ?? '';
-    final now = DateTime.now().toIso8601String();
 
     final data = {
       'title':        title,
@@ -82,16 +81,17 @@ class AdminAuctionDatasource {
       'status':       status.firestoreValue,
       'images':       imageUrls,
       'location':     location,
-      'startAt':      startAt.toIso8601String(),
-      'endsAt':       endsAt.toIso8601String(),
+      'startAt':      Timestamp.fromDate(startAt),
+      'endsAt':       Timestamp.fromDate(endsAt),
       'winnerId':     null,
       'winnerName':   null,
-      'createdAt':    now,
+      'createdAt':    FieldValue.serverTimestamp(),
       'createdBy':    uid,
     };
 
-    final ref = await _db.collection('auctions').add(data);
-    return _map(ref.id, data);
+    final ref  = await _db.collection('auctions').add(data);
+    final snap = await ref.get();
+    return _map(ref.id, snap.data()!);
   }
 
   // ── Update ───────────────────────────────────────────────────────────────
@@ -147,8 +147,10 @@ class AdminAuctionDatasource {
   // ── Stats for a single auction ────────────────────────────────────────────
 
   Future<Map<String, dynamic>> getAuctionStats(String auctionId) async {
-    final bidsSnap = await _db.collection('bids')
-        .where('auctionId', isEqualTo: auctionId)
+    final bidsSnap = await _db
+        .collection('auctions')
+        .doc(auctionId)
+        .collection('bids')
         .orderBy('amount', descending: true)
         .limit(20)
         .get();
@@ -175,12 +177,18 @@ class AdminAuctionDatasource {
       status:      AuctionStatusX.fromString(d['status']  as String?),
       images:      List<String>.from(d['images'] ?? []),
       location:    d['location']    as String?,
-      startAt:     DateTime.tryParse(d['startAt'] ?? '') ?? DateTime.now(),
-      endsAt:      DateTime.tryParse(d['endsAt']  ?? '') ?? DateTime.now(),
+      startAt:     _ts(d['startAt']),
+      endsAt:      _ts(d['endsAt']),
       winnerId:    d['winnerId']    as String?,
       winnerName:  d['winnerName']  as String?,
       createdAt:   d['createdAt']   ?? '',
       createdBy:   d['createdBy']   ?? '',
     );
+  }
+
+  static DateTime _ts(dynamic v, [DateTime? fallback]) {
+    if (v is Timestamp) return v.toDate();
+    if (v is String)    return DateTime.tryParse(v) ?? (fallback ?? DateTime.now());
+    return fallback ?? DateTime.now();
   }
 }

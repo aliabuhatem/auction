@@ -34,8 +34,10 @@ class SubmitAuctionForm extends AdminAuctionFormEvent {
     this.isEdit    = false,
     this.auctionId,
   });
-  @override List<Object?> get props =>
-      [title, category, status, startAt, endsAt, isEdit, auctionId];
+  @override List<Object?> get props => [
+        title, description, category, retailValue, startingBid,
+        status, startAt, endsAt, images, location, isEdit, auctionId,
+      ];
 }
 
 class UploadAuctionImage extends AdminAuctionFormEvent {

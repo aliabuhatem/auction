@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -12,6 +13,7 @@ abstract class NotificationsRemoteDatasource {
 class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Future<void> initialize() async {
@@ -54,6 +56,6 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
 
   @override
   Future<void> saveTokenToFirestore(String userId, String token) async {
-    // Save FCM token to Firestore user document
+    await _firestore.collection('users').doc(userId).update({'fcmToken': token});
   }
 }

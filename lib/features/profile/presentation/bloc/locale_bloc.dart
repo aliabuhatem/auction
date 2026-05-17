@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Events
-abstract class LocaleEvent {}
+abstract class LocaleEvent extends Equatable {
+  const LocaleEvent();
+  @override List<Object?> get props => [];
+}
 class ChangeLocale extends LocaleEvent {
   final Locale locale;
-  ChangeLocale(this.locale);
+  const ChangeLocale(this.locale);
+  @override List<Object?> get props => [locale];
 }
 
 // State
-class LocaleState {
+class LocaleState extends Equatable {
   final Locale locale;
-  LocaleState(this.locale);
+  const LocaleState(this.locale);
+  @override List<Object?> get props => [locale];
 }
 
 // Bloc

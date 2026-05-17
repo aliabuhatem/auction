@@ -26,13 +26,13 @@ class AdminStatCard extends StatelessWidget {
         color:        Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: alert ? Colors.orange.withOpacity(0.4) : const Color(0xFFF0F0F5),
+          color: alert ? Colors.orange.withValues(alpha:0.4) : const Color(0xFFF0F0F5),
         ),
         boxShadow: [
           BoxShadow(
             color:      alert
-                ? Colors.orange.withOpacity(0.08)
-                : Colors.black.withOpacity(0.03),
+                ? Colors.orange.withValues(alpha:0.08)
+                : Colors.black.withValues(alpha:0.03),
             blurRadius: 12,
             offset:     const Offset(0, 4),
           ),
@@ -45,7 +45,7 @@ class AdminStatCard extends StatelessWidget {
             Container(
               width: 38, height: 38,
               decoration: BoxDecoration(
-                color:        color.withOpacity(0.1),
+                color:        color.withValues(alpha:0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(icon, color: color, size: 20),

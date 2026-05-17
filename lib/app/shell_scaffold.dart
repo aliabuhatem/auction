@@ -9,11 +9,11 @@ class ShellScaffold extends StatelessWidget {
   const ShellScaffold({super.key, required this.child});
 
   static const _tabs = [
-    _TabItem(icon: Icons.home_outlined,        activeIcon: Icons.home,           label: 'Home',          path: AppRoutes.home),
-    _TabItem(icon: Icons.gavel_outlined,       activeIcon: Icons.gavel,          label: 'Mijn veilingen',path: AppRoutes.myAuctions),
-    _TabItem(icon: Icons.style_outlined,       activeIcon: Icons.style,          label: 'Kraskaart',     path: AppRoutes.scratchCard),
-    _TabItem(icon: Icons.local_activity_outlined, activeIcon: Icons.local_activity, label: 'Vouchers',   path: AppRoutes.tickets),
-    _TabItem(icon: Icons.person_outlined,      activeIcon: Icons.person,         label: 'Profiel',       path: AppRoutes.profile),
+    _TabItem(icon: Icons.home_outlined,           activeIcon: Icons.home,           label: 'Home',          path: AppRoutes.home),
+    _TabItem(icon: Icons.gavel_outlined,          activeIcon: Icons.gavel,          label: 'Mijn veilingen',path: AppRoutes.myAuctions),
+    _TabItem(icon: Icons.style_outlined,          activeIcon: Icons.style,          label: 'Kraskaart',     path: AppRoutes.scratchCard),
+    _TabItem(icon: Icons.local_activity_outlined, activeIcon: Icons.local_activity, label: 'Vouchers',      path: AppRoutes.tickets),
+    _TabItem(icon: Icons.person_outlined,         activeIcon: Icons.person,         label: 'Profiel',       path: AppRoutes.profile),
   ];
 
   int _currentIndex(BuildContext context) {
@@ -26,12 +26,15 @@ class ShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme        = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
     final currentIndex = _currentIndex(context);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color:     surfaceColor,
           boxShadow: [
             BoxShadow(
               color:      Colors.black.withOpacity(0.06),
@@ -41,13 +44,13 @@ class ShellScaffold extends StatelessWidget {
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          elevation:    0,
-          backgroundColor: Colors.white,
+          currentIndex:        currentIndex,
+          elevation:           0,
+          backgroundColor:     surfaceColor,
           selectedItemColor:   AppColors.primaryRed,
           unselectedItemColor: AppColors.navUnselected,
-          type: BottomNavigationBarType.fixed,
-          onTap: (index) => context.go(_tabs[index].path),
+          type:                BottomNavigationBarType.fixed,
+          onTap:               (index) => context.go(_tabs[index].path),
           items: _tabs
               .asMap()
               .entries

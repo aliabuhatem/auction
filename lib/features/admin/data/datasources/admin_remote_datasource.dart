@@ -66,38 +66,55 @@ class AdminRemoteDatasource {
   Future<DashboardStatsEntity> getDashboardStats() async {
     final now        = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
+    final days       = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
 
-    // Run queries in parallel
-    final results = await Future.wait([
-      _db.collection('auctions').count().get(),
-      _db.collection('auctions').where('status', isEqualTo: 'live').count().get(),
-      _db.collection('users').count().get(),
-      _db.collection('bids')
-          .where('createdAt', isGreaterThanOrEqualTo: todayStart.toIso8601String())
-          .count().get(),
-      _db.collection('orders').where('status', isEqualTo: 'pending').count().get(),
-    ]);
-
-    final totalAuctions   = results[0].count ?? 0;
-    final liveAuctions    = results[1].count ?? 0;
-    final totalUsers      = results[2].count ?? 0;
-    final todayBids       = results[3].count ?? 0;
-    final pendingPayments = results[4].count ?? 0;
-
-    // Revenue — sum of paid orders
-    double totalRevenue = 0;
-    final paidOrders = await _db.collection('orders')
-        .where('status', isEqualTo: 'paid')
-        .get();
-    for (final doc in paidOrders.docs) {
-      totalRevenue += (doc.data()['amount'] as num?)?.toDouble() ?? 0;
+    Future<int> safeCount(Query<Map<String, dynamic>> q) async {
+      try { return (await q.count().get()).count ?? 0; } catch (_) { return 0; }
+    }
+    Future<QuerySnapshot<Map<String, dynamic>>> safeGet(
+        Query<Map<String, dynamic>> q) async {
+      try { return await q.get(); } catch (_) {
+        return await _db.collection('_nonexistent_').limit(0).get();
+      }
     }
 
-    // Recent bids
-    final recentSnap = await _db.collection('bids')
-        .orderBy('createdAt', descending: true)
-        .limit(8)
-        .get();
+    // All queries run in parallel — single network round trip
+    final chartDays  = List.generate(7, (i) => now.subtract(Duration(days: 6 - i)));
+    final todayTs    = Timestamp.fromDate(todayStart);
+    final results    = await Future.wait<dynamic>([
+      safeCount(_db.collection('auctions')),                                           // 0
+      safeCount(_db.collection('auctions').where('status', isEqualTo: 'live')),       // 1
+      safeCount(_db.collection('users')),                                               // 2
+      safeCount(_db.collection('bids').where('createdAt',
+          isGreaterThanOrEqualTo: todayTs)),                                            // 3
+      safeCount(_db.collection('orders').where('status', isEqualTo: 'pending')),       // 4
+      safeGet(_db.collection('orders').where('status', isEqualTo: 'paid')),            // 5
+      safeGet(_db.collection('bids').orderBy('createdAt', descending: true).limit(8)), // 6
+      safeGet(_db.collection('auctions')
+          .where('status', isEqualTo: 'live').orderBy('endsAt').limit(5)),              // 7
+      Future.wait(chartDays.map((day) {
+        final s = Timestamp.fromDate(DateTime(day.year, day.month, day.day));
+        final e = Timestamp.fromDate(DateTime(day.year, day.month, day.day, 23, 59, 59));
+        return safeCount(_db.collection('bids')
+            .where('createdAt', isGreaterThanOrEqualTo: s)
+            .where('createdAt', isLessThanOrEqualTo: e));
+      })),                                                                               // 8
+    ]);
+
+    final totalAuctions   = results[0] as int;
+    final liveAuctions    = results[1] as int;
+    final totalUsers      = results[2] as int;
+    final todayBids       = results[3] as int;
+    final pendingPayments = results[4] as int;
+    final paidSnap        = results[5] as QuerySnapshot<Map<String, dynamic>>;
+    final recentSnap      = results[6] as QuerySnapshot<Map<String, dynamic>>;
+    final endSnap         = results[7] as QuerySnapshot<Map<String, dynamic>>;
+    final chartCounts     = (results[8] as List).cast<int>();
+
+    double totalRevenue = 0;
+    for (final doc in paidSnap.docs) {
+      totalRevenue += (doc.data()['amount'] as num?)?.toDouble() ?? 0;
+    }
 
     final recentBids = recentSnap.docs.map((d) {
       final data = d.data();
@@ -107,41 +124,23 @@ class AdminRemoteDatasource {
         auctionId:    data['auctionId']    ?? '',
         auctionTitle: data['auctionTitle'] ?? '',
         amount:       (data['amount'] as num?)?.toDouble() ?? 0,
-        createdAt:    DateTime.tryParse(data['createdAt'] ?? '') ?? DateTime.now(),
+        createdAt:    _ts(data['createdAt']),
       );
     }).toList();
-
-    // Ending soon
-    final endSnap = await _db.collection('auctions')
-        .where('status', isEqualTo: 'live')
-        .orderBy('endsAt')
-        .limit(5)
-        .get();
 
     final endingSoon = endSnap.docs.map((d) {
       final data = d.data();
       return EndingSoonItem(
         id:         d.id,
-        title:      data['title']      ?? '',
-        bidCount:   (data['bidCount']  as num?)?.toInt() ?? 0,
+        title:      data['title']       ?? '',
+        bidCount:   (data['bidCount']   as num?)?.toInt()    ?? 0,
         currentBid: (data['currentBid'] as num?)?.toDouble() ?? 0,
-        endsAt:     DateTime.tryParse(data['endsAt'] ?? '') ?? DateTime.now(),
+        endsAt:     _ts(data['endsAt']),
       );
     }).toList();
 
-    // 7-day bid chart — last 7 days
-    final bidChart = <ChartPoint>[];
-    final days     = ['Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za', 'Zo'];
-    for (int i = 6; i >= 0; i--) {
-      final day   = now.subtract(Duration(days: i));
-      final start = DateTime(day.year, day.month, day.day).toIso8601String();
-      final end   = DateTime(day.year, day.month, day.day, 23, 59).toIso8601String();
-      final snap  = await _db.collection('bids')
-          .where('createdAt', isGreaterThanOrEqualTo: start)
-          .where('createdAt', isLessThanOrEqualTo: end)
-          .count().get();
-      bidChart.add(ChartPoint(days[day.weekday - 1], (snap.count ?? 0).toDouble()));
-    }
+    final bidChart = List.generate(7, (i) =>
+        ChartPoint(days[chartDays[i].weekday - 1], chartCounts[i].toDouble()));
 
     return DashboardStatsEntity(
       totalAuctions:   totalAuctions,
@@ -158,6 +157,12 @@ class AdminRemoteDatasource {
   }
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
+
+  static DateTime _ts(dynamic v, [DateTime? fallback]) {
+    if (v is Timestamp) return v.toDate();
+    if (v is String)    return DateTime.tryParse(v) ?? (fallback ?? DateTime.now());
+    return fallback ?? DateTime.now();
+  }
 
   AdminUserEntity _mapAdmin(String uid, Map<String, dynamic> data) {
     return AdminUserEntity(

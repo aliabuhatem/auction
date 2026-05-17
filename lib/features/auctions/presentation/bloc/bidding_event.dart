@@ -22,8 +22,16 @@ class SubmitBid extends BiddingEvent {
 class ToggleWatchlist extends BiddingEvent {
   final String auctionId;
   const ToggleWatchlist(this.auctionId);
+  @override List<Object> get props => [auctionId];
 }
 class SetAlarm extends BiddingEvent {
   final String auctionId;
   const SetAlarm(this.auctionId);
+  @override List<Object> get props => [auctionId];
+}
+
+class AuctionStreamFailed extends BiddingEvent {
+  final String error;
+  const AuctionStreamFailed(this.error);
+  @override List<Object> get props => [error];
 }

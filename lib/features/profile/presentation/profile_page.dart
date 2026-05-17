@@ -72,7 +72,12 @@ class ProfilePage extends StatelessWidget {
               children: [
                 const SizedBox(height: 8),
                 _section('Account', [
-                  _tile(Icons.edit, AppStrings.editProfile(context), () => _editProfile(context)),
+                  _tile(Icons.manage_accounts_outlined, AppStrings.editProfile(context),
+                      () => context.push(AppRoutes.profileSettings)),
+                  _tile(Icons.account_balance_wallet_outlined, 'Wallet & tegoed',
+                      () => context.push(AppRoutes.wallet)),
+                  _tile(Icons.person_add_outlined, 'Vrienden uitnodigen',
+                      () => context.push(AppRoutes.referral)),
                   _tile(Icons.notifications_outlined, AppStrings.notifications(context),
                       () => context.push(AppRoutes.notifications)),
                   _tile(Icons.dark_mode_outlined, AppStrings.darkMode(context),
@@ -101,45 +106,6 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Future<void> _editProfile(BuildContext context) async {
-    final auth = context.read<AuthBloc>().state;
-    if (auth is! AuthAuthenticated) return;
-
-    final nameCtrl = TextEditingController(text: auth.user.displayName);
-    final saved = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Profiel bewerken'),
-        content: TextField(
-          controller: nameCtrl,
-          decoration: const InputDecoration(labelText: 'Naam', prefixIcon: Icon(Icons.person_outline)),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuleren')),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Opslaan')),
-        ],
-      ),
-    );
-
-    if (saved != true || nameCtrl.text.trim().isEmpty) return;
-    try {
-      await FirebaseAuth.instance.currentUser?.updateDisplayName(nameCtrl.text.trim());
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profiel bijgewerkt'), backgroundColor: Colors.green),
-        );
-        // Refresh auth state
-        context.read<AuthBloc>().add(AppStarted());
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fout: $e'), backgroundColor: Colors.red),
-        );
-      }
-    }
   }
 
   void _showHelp(BuildContext context) {

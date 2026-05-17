@@ -16,24 +16,24 @@ class AdminAuctionListBloc
     on<ChangeAuctionStatus>(_onChangeStatus);
   }
 
-  AuctionStatus?   _statusFilter;
+  AuctionStatus? _statusFilter;
   AuctionCategory? _categoryFilter;
-  String?          _search;
+  String? _search;
 
   Future<void> _onLoad(
       LoadAdminAuctions event, Emitter<AdminAuctionListState> emit) async {
     emit(AdminAuctionListLoading());
     try {
       final list = await _ds.getAuctions(
-        status:      _statusFilter,
-        category:    _categoryFilter,
+        status: _statusFilter,
+        category: _categoryFilter,
         searchQuery: _search,
       );
       emit(AdminAuctionListLoaded(
-        auctions:       list,
-        statusFilter:   _statusFilter,
+        auctions: list,
+        statusFilter: _statusFilter,
         categoryFilter: _categoryFilter,
-        search:         _search ?? '',
+        search: _search ?? '',
       ));
     } catch (e) {
       emit(AdminAuctionListError(e.toString()));
@@ -42,9 +42,9 @@ class AdminAuctionListBloc
 
   Future<void> _onFilter(
       FilterAdminAuctions event, Emitter<AdminAuctionListState> emit) async {
-    _statusFilter   = event.status;
+    _statusFilter = event.status;
     _categoryFilter = event.category;
-    _search         = event.search;
+    _search = event.search;
     add(LoadAdminAuctions());
   }
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../bloc/admin_dashboard_bloc.dart';
+import '../../../../app/app_routes.dart';
 import '../widgets/admin_shell.dart';
 import '../widgets/admin_stat_card.dart';
 import '../widgets/admin_chart.dart';
@@ -36,19 +38,43 @@ class _DashboardBody extends StatelessWidget {
           return const Center(child: CircularProgressIndicator(color: AppColors.primaryRed));
         }
         if (state is AdminDashboardError) {
-          return Center(child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 48),
-              const SizedBox(height: 12),
-              Text(state.message, style: const TextStyle(color: Colors.grey)),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => context.read<AdminDashboardBloc>().add(LoadDashboardStats()),
-                child: const Text('Opnieuw proberen'),
+          return Center(
+            child: Container(
+              margin: const EdgeInsets.all(32),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.red.shade200),
               ),
-            ],
-          ));
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red.shade600, size: 48),
+                  const SizedBox(height: 12),
+                  Text('Fout bij laden dashboard',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16,
+                      color: Colors.red.shade700)),
+                  const SizedBox(height: 8),
+                  Text(state.message,
+                    style: TextStyle(color: Colors.red.shade600, fontSize: 13),
+                    textAlign: TextAlign.center),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => context.read<AdminDashboardBloc>().add(LoadDashboardStats()),
+                    icon: const Icon(Icons.refresh_rounded, size: 16),
+                    label: const Text('Opnieuw proberen'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade600,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
         if (state is AdminDashboardLoaded) {
           return _DashboardContent(stats: state.stats);
@@ -216,7 +242,7 @@ class _EndingSoonCard extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFF1A1D27))),
                 const Spacer(),
                 TextButton(
-                  onPressed: () => Navigator.of(context).pushNamed('/admin/auctions'),
+                  onPressed: () => context.go(AppRoutes.adminAuctions),
                   child: const Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
                 ),
               ],
@@ -310,7 +336,7 @@ class _RecentBidsCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFF1A1D27))),
               const Spacer(),
               TextButton(
-                onPressed: () => Navigator.of(context).pushNamed('/admin/bids'),
+                onPressed: () => context.go(AppRoutes.adminBids),
                 child: const Text('Alles', style: TextStyle(color: AppColors.primaryRed, fontSize: 12)),
               ),
             ]),

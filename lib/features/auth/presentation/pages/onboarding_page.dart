@@ -1,0 +1,244 @@
+// lib/features/auth/presentation/pages/onboarding_page.dart
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../../../../app/app_router.dart';
+
+class OnboardingPage extends StatefulWidget {
+  const OnboardingPage({super.key});
+
+  @override
+  State<OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<OnboardingPage> {
+  final _controller = PageController();
+  int _page = 0;
+
+  static const _slides = [
+    _Slide(
+      icon: Icons.gavel_rounded,
+      title: 'Bied op droomvakanties',
+      body:
+          'Vind unieke vakanties, uitjes en ervaringen. Bied mee en win voor een fractie van de prijs.',
+      gradient: [Color(0xFFE63946), Color(0xFFc1121f)],
+    ),
+    _Slide(
+      icon: Icons.timer_rounded,
+      title: 'Realtime veilingen',
+      body:
+          'Volg iedere bieding live. Stel een alarm in zodat je nooit een eindsprint mist.',
+      gradient: [Color(0xFF0F3460), Color(0xFF16213E)],
+    ),
+    _Slide(
+      icon: Icons.emoji_events_rounded,
+      title: 'Win en betaal veilig',
+      body:
+          'Gewonnen? Betaal eenvoudig en ontvang je voucher direct in de app. Veilig, snel en betrouwbaar.',
+      gradient: [Color(0xFF2ECC71), Color(0xFF27AE60)],
+    ),
+  ];
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _finish() async {
+    // Request FCM permission on page 3 completion.
+    await FirebaseMessaging.instance.requestPermission(
+      alert:       true,
+      badge:       true,
+      sound:       true,
+      provisional: false,
+    );
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_done', true);
+
+    if (mounted) context.go(AppRoutes.login);
+  }
+
+  void _next() {
+    if (_page < _slides.length - 1) {
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 350),
+        curve:    Curves.easeInOut,
+      );
+    } else {
+      _finish();
+    }
+  }
+
+  void _skip() => _finish();
+
+  @override
+  Widget build(BuildContext context) {
+    final isLast = _page == _slides.length - 1;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          // Slides
+          PageView.builder(
+            controller:     _controller,
+            itemCount:      _slides.length,
+            onPageChanged:  (i) => setState(() => _page = i),
+            itemBuilder:    (_, i) => _SlideView(slide: _slides[i]),
+          ),
+
+          // Skip button (hidden on last slide)
+          if (!isLast)
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextButton(
+                    onPressed: _skip,
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white24,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                    child: const Text('Overslaan',
+                        style: TextStyle(fontSize: 13)),
+                  ),
+                ),
+              ),
+            ),
+
+          // Bottom controls
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Page indicator
+                    AnimatedSmoothIndicator(
+                      activeIndex: _page,
+                      count:       _slides.length,
+                      effect: const WormEffect(
+                        dotWidth:       8,
+                        dotHeight:      8,
+                        activeDotColor: Colors.white,
+                        dotColor:       Colors.white38,
+                        spacing:        8,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // CTA button
+                    SizedBox(
+                      width:  double.infinity,
+                      height: 54,
+                      child: ElevatedButton(
+                        onPressed: _next,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: _slides[_page].gradient.first,
+                          elevation:       0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                          textStyle: const TextStyle(
+                              fontWeight: FontWeight.w800, fontSize: 16),
+                        ),
+                        child: Text(isLast ? 'Aan de slag' : 'Volgende'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _Slide {
+  final IconData      icon;
+  final String        title;
+  final String        body;
+  final List<Color>   gradient;
+  const _Slide({
+    required this.icon,
+    required this.title,
+    required this.body,
+    required this.gradient,
+  });
+}
+
+class _SlideView extends StatelessWidget {
+  final _Slide slide;
+  const _SlideView({required this.slide});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: slide.gradient,
+          begin:  Alignment.topLeft,
+          end:    Alignment.bottomRight,
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 40),
+              // Icon container
+              Container(
+                width:  120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color:  Colors.white.withOpacity(0.2),
+                  shape:  BoxShape.circle,
+                ),
+                child: Icon(slide.icon, size: 60, color: Colors.white),
+              ),
+              const SizedBox(height: 48),
+              Text(
+                slide.title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color:       Colors.white,
+                  fontSize:    28,
+                  fontWeight:  FontWeight.w900,
+                  height:      1.2,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                slide.body,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color:      Colors.white70,
+                  fontSize:   16,
+                  height:     1.6,
+                ),
+              ),
+              // Space for bottom controls
+              const SizedBox(height: 160),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -12,10 +12,11 @@ class AdminAuthBloc extends Bloc<AdminAuthEvent, AdminAuthState> {
   StreamSubscription<AdminUserEntity?>? _authSub;
 
   AdminAuthBloc(this._datasource) : super(AdminAuthInitial()) {
-    on<AdminAuthStarted>  (_onStarted);
-    on<AdminLoginRequested>(_onLogin);
-    on<AdminLogoutRequested>(_onLogout);
-    on<_AdminUserChanged>  (_onUserChanged);
+    on<AdminAuthStarted>       (_onStarted);
+    on<AdminLoginRequested>    (_onLogin);
+    on<AdminLogoutRequested>   (_onLogout);
+    on<_AdminUserChanged>      (_onUserChanged);
+    on<_AdminAuthStreamFailed> ((e, emit) => emit(AdminAuthError(e.error)));
   }
 
   Future<void> _onStarted(AdminAuthStarted event, Emitter<AdminAuthState> emit) async {
@@ -23,6 +24,7 @@ class AdminAuthBloc extends Bloc<AdminAuthEvent, AdminAuthState> {
     _authSub?.cancel();
     _authSub = _datasource.watchCurrentAdmin().listen(
       (user) => add(_AdminUserChanged(user)),
+      onError: (e) => add(_AdminAuthStreamFailed(e.toString())),
     );
   }
 

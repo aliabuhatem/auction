@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         headerSliverBuilder: (_, __) => [
           SliverAppBar(
             pinned: true,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             title: Row(
               children: [
                 const Icon(Icons.gavel, color: AppColors.primaryRed, size: 28),
@@ -161,7 +161,7 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).colorScheme.surface,
       child: BlocBuilder<AuctionListBloc, AuctionListState>(
         builder: (context, state) {
           final sel = state is AuctionListLoaded ? state.selectedCategory : null;
@@ -183,5 +183,5 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(_CategoryBarDelegate old) => true;
+  bool shouldRebuild(_CategoryBarDelegate old) => old.cats != cats;
 }

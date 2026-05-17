@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../bloc/auth_bloc.dart';
+import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../bloc/auth_event.dart';
@@ -33,8 +35,14 @@ class _RegisterPageState extends State<RegisterPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(backgroundColor: Colors.white, elevation: 0, leading: const BackButton(color: AppColors.textPrimary)),
       body: BlocListener<AuthBloc, AuthState>(
-        listener: (ctx, state) {
-          if (state is AuthAuthenticated) ctx.go('/home');
+        listener: (ctx, state) async {
+          if (state is AuthAuthenticated) {
+            // New users have never completed onboarding.
+            final prefs = await SharedPreferences.getInstance();
+            final done  = prefs.getBool('onboarding_done') ?? false;
+            if (!ctx.mounted) return;
+            ctx.go(done ? AppRoutes.home : AppRoutes.onboarding);
+          }
           if (state is AuthError) {
             ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
           }
@@ -75,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
-                  validator: (v) => v!.length >= 6 ? null : AppStrings.passwordTooShort(context),
+                  validator: (v) => v!.length >= 8 ? null : AppStrings.passwordTooShort(context),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(

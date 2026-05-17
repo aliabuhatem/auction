@@ -28,7 +28,7 @@ class AdminChart extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.primaryRed.withOpacity(0.08),
+                color: AppColors.primaryRed.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: const Text('7 dagen', style: TextStyle(
@@ -41,9 +41,11 @@ class AdminChart extends StatelessWidget {
             height: 160,
             child: points.isEmpty
                 ? const Center(child: Text('Geen data', style: TextStyle(color: Colors.grey)))
-                : CustomPaint(
-                    size: Size.infinite,
-                    painter: _BarChartPainter(points: points, color: AppColors.primaryRed),
+                : RepaintBoundary(
+                    child: CustomPaint(
+                      size: Size.infinite,
+                      painter: _BarChartPainter(points: points, color: AppColors.primaryRed),
+                    ),
                   ),
           ),
         ],
@@ -53,51 +55,57 @@ class AdminChart extends StatelessWidget {
 }
 
 class _BarChartPainter extends CustomPainter {
-  final List<ChartPoint> points;
-  final Color            color;
-  const _BarChartPainter({required this.points, required this.color});
+  final List<ChartPoint>  points;
+  final Color             color;
+  final List<TextPainter> _labels;
+
+  _BarChartPainter({required this.points, required this.color})
+      : _labels = points
+            .map((p) => TextPainter(
+                  text: TextSpan(
+                      text:  p.label,
+                      style: const TextStyle(
+                          color: Color(0xFF8B9CB6), fontSize: 10)),
+                  textDirection: TextDirection.ltr,
+                )..layout())
+            .toList();
 
   @override
   void paint(Canvas canvas, Size size) {
     if (points.isEmpty) return;
 
-    final maxVal    = points.map((p) => p.value).reduce((a, b) => a > b ? a : b);
-    final barWidth  = (size.width / points.length) * 0.5;
-    final spacing   = size.width / points.length;
-    const textStyle = TextStyle(color: Color(0xFF8B9CB6), fontSize: 10);
+    final maxVal   = points.map((p) => p.value).reduce((a, b) => a > b ? a : b);
+    final barWidth = (size.width / points.length) * 0.5;
+    final spacing  = size.width / points.length;
 
     final barPaint = Paint()
-      ..color    = color
-      ..style    = PaintingStyle.fill;
+      ..color = color
+      ..style = PaintingStyle.fill;
 
     final bgPaint = Paint()
-      ..color    = color.withOpacity(0.07)
-      ..style    = PaintingStyle.fill;
+      ..color = color.withValues(alpha: 0.07)
+      ..style = PaintingStyle.fill;
 
     for (int i = 0; i < points.length; i++) {
       final x          = spacing * i + spacing / 2;
       final normalised = maxVal > 0 ? points[i].value / maxVal : 0.0;
       final barHeight  = normalised * (size.height - 24);
 
-      // Background bar
-      final bgRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(x - barWidth / 2, 0, barWidth, size.height - 24),
-        const Radius.circular(6),
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(x - barWidth / 2, 0, barWidth, size.height - 24),
+            const Radius.circular(6)),
+        bgPaint,
       );
-      canvas.drawRRect(bgRect, bgPaint);
-
-      // Filled bar
-      final barRect = RRect.fromRectAndRadius(
-        Rect.fromLTWH(x - barWidth / 2, size.height - 24 - barHeight, barWidth, barHeight),
-        const Radius.circular(6),
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+            Rect.fromLTWH(
+                x - barWidth / 2, size.height - 24 - barHeight, barWidth, barHeight),
+            const Radius.circular(6)),
+        barPaint,
       );
-      canvas.drawRRect(barRect, barPaint);
 
-      // Label
-      final tp = TextPainter(
-        text: TextSpan(text: points[i].label, style: textStyle),
-        textDirection: TextDirection.ltr,
-      )..layout();
+      final tp = _labels[i];
       tp.paint(canvas, Offset(x - tp.width / 2, size.height - 18));
     }
   }

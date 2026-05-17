@@ -32,7 +32,7 @@ class AuctionModel extends AuctionEntity {
       currentBid: (d['currentBid'] as num?)?.toDouble() ?? 1.0,
       startingBid: (d['startingBid'] as num?)?.toDouble() ?? 1.0,
       bidCount: (d['bidCount'] as int?) ?? 0,
-      endsAt: (d['endsAt'] as Timestamp).toDate(),
+      endsAt: (d['endsAt'] as Timestamp?)?.toDate() ?? DateTime.now().add(const Duration(days: 1)),
       status: _parseStatus(d['status']),
       category: _parseCategory(d['category']),
       location: d['location'] ?? '',
@@ -100,6 +100,7 @@ class AuctionModel extends AuctionEntity {
     'category': category.name,
     'location': location,
     'retailValue': retailValue,
+    'isWatchlisted': isWatchlisted,
     'winnerId': winnerId,
   };
 }

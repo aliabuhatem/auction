@@ -23,11 +23,12 @@ class AuctionDetailBloc
     required this.watchAuction,
     required this.repository,
   }) : super(AuctionDetailInitial()) {
-    on<LoadAuctionDetail>     (_onLoad);
-    on<RefreshAuctionDetail>  (_onRefresh);
+    on<LoadAuctionDetail>         (_onLoad);
+    on<RefreshAuctionDetail>      (_onRefresh);
     on<AuctionDetailStreamUpdated>(_onStreamUpdate);
-    on<ToggleAuctionAlarm>    (_onToggleAlarm);
-    on<ToggleAuctionWatchlist>(_onToggleWatchlist);
+    on<AuctionDetailStreamFailed> (_onStreamFailed);
+    on<ToggleAuctionAlarm>        (_onToggleAlarm);
+    on<ToggleAuctionWatchlist>    (_onToggleWatchlist);
   }
 
   Future<void> _onLoad(
@@ -94,7 +95,10 @@ class AuctionDetailBloc
         ? await repository.setAuctionAlarm(event.auctionId)
         : await repository.removeAuctionAlarm(event.auctionId);
 
-    result.fold((_) => emit(current), (_) {});
+    result.fold(
+      (f) { emit(current); emit(AuctionDetailError(f.message)); },
+      (_) {},
+    );
   }
 
   Future<void> _onToggleWatchlist(
@@ -107,13 +111,23 @@ class AuctionDetailBloc
     emit(current.copyWith(isWatchlisted: !current.isWatchlisted));
 
     final result = await repository.watchlistAuction(event.auctionId);
-    result.fold((_) => emit(current), (_) {});
+    result.fold(
+      (f) { emit(current); emit(AuctionDetailError(f.message)); },
+      (_) {},
+    );
   }
+
+  void _onStreamFailed(
+    AuctionDetailStreamFailed event,
+    Emitter<AuctionDetailState> emit,
+  ) => emit(AuctionDetailError(event.error));
 
   void _subscribeToStream(String auctionId) {
     _streamSub?.cancel();
-    _streamSub = watchAuction(auctionId)
-        .listen((auction) => add(AuctionDetailStreamUpdated(auction)));
+    _streamSub = watchAuction(auctionId).listen(
+      (auction) => add(AuctionDetailStreamUpdated(auction)),
+      onError: (e) => add(AuctionDetailStreamFailed(e.toString())),
+    );
   }
 
   @override

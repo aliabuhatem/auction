@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/dashboard_stats_entity.dart';
 import '../../data/datasources/admin_remote_datasource.dart';
 part 'admin_dashboard_event.dart';
+part 'admin_dashboard_state.dart';
 
 class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> {
   final AdminRemoteDatasource _datasource;

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/auction_card.dart';
@@ -41,6 +43,9 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthBloc>().state;
+    final userId = auth is AuthAuthenticated ? auth.user.id : '';
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppStrings.myAuctions(context),
@@ -99,7 +104,10 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
                 emptyIcon: Icons.emoji_events,
                 emptyMessage: AppStrings.noWon(context),
               ),
-              _PendingPaymentTab(auctions: loaded?.pendingPayments ?? []),
+              _PendingPaymentTab(
+                auctions: loaded?.pendingPayments ?? [],
+                userId: userId,
+              ),
               _AuctionTab(
                 auctions: loaded?.watchedAuctions ?? [],
                 emptyIcon: Icons.bookmark_border,
@@ -164,7 +172,19 @@ class _EmptyTab extends StatelessWidget {
 
 class _PendingPaymentTab extends StatelessWidget {
   final List<AuctionEntity> auctions;
-  const _PendingPaymentTab({required this.auctions});
+  final String userId;
+  const _PendingPaymentTab({required this.auctions, required this.userId});
+
+  Future<String?> _findOrderId(String auctionId) async {
+    final snap = await FirebaseFirestore.instance
+        .collection('orders')
+        .where('auctionId', isEqualTo: auctionId)
+        .where('userId', isEqualTo: userId)
+        .where('status', isEqualTo: 'pending')
+        .limit(1)
+        .get();
+    return snap.docs.isEmpty ? null : snap.docs.first.id;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,16 +224,26 @@ class _PendingPaymentTab extends StatelessWidget {
                 final a = auctions[i];
                 return Card(
                   child: ListTile(
-                    leading: const Icon(Icons.payment, color: AppColors.primaryRed),
+                    leading:
+                        const Icon(Icons.payment, color: AppColors.primaryRed),
                     title: Text(a.title,
                         style: const TextStyle(fontWeight: FontWeight.w600)),
                     subtitle: Text('€${a.currentBid.toStringAsFixed(2)}'),
-                    trailing: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryRed),
-                      onPressed: () => context.push('/auction/${a.id}'),
-                      child: const Text('Betalen',
-                          style: TextStyle(color: Colors.white)),
+                    trailing: _PayButton(
+                      onPressed: () async {
+                        final orderId = await _findOrderId(a.id);
+                        if (!context.mounted) return;
+                        if (orderId == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Geen openstaande bestelling gevonden'),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                          return;
+                        }
+                        context.push(AppRoutes.paymentPath(orderId));
+                      },
                     ),
                   ),
                 );
@@ -221,6 +251,40 @@ class _PendingPaymentTab extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+class _PayButton extends StatefulWidget {
+  final Future<void> Function() onPressed;
+  const _PayButton({required this.onPressed});
+
+  @override
+  State<_PayButton> createState() => _PayButtonState();
+}
+
+class _PayButtonState extends State<_PayButton> {
+  bool _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryRed),
+      onPressed: _loading
+          ? null
+          : () async {
+              setState(() => _loading = true);
+              await widget.onPressed();
+              if (mounted) setState(() => _loading = false);
+            },
+      child: _loading
+          ? const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                  color: Colors.white, strokeWidth: 2),
+            )
+          : const Text('Betalen', style: TextStyle(color: Colors.white)),
     );
   }
 }

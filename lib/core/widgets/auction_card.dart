@@ -1,7 +1,5 @@
-// Auction card widget
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auctions/domain/entities/auction_entity.dart';
@@ -22,7 +20,7 @@ class AuctionCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -31,42 +29,32 @@ class AuctionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Section
             Stack(
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: Image.asset(
-                    auction.imageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: auction.imageUrl,
                     height: 150,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 150,
-                        color: Colors.grey[200],
-                        child: const Center(child: Icon(Icons.image_not_supported)),
-                      );
-                    },
+                    placeholder: (_, __) => Container(
+                      height: 150,
+                      color: Colors.grey[200],
+                      child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                    ),
+                    errorWidget: (_, __, ___) => Container(
+                      height: 150,
+                      color: Colors.grey[200],
+                      child: const Center(child: Icon(Icons.image_not_supported)),
+                    ),
                   ),
-                  // CachedNetworkImage(
-                  //   imageUrl: auction.imageUrl,
-                  //   height: 150,
-                  //   width: double.infinity,
-                  //   fit: BoxFit.cover,
-                  //   placeholder: (_, __) => Container(
-                  //     color: Colors.grey[200],
-                  //     child: const Center(child: CircularProgressIndicator()),
-                  //   ),
-                  // ),
                 ),
-                // Countdown badge (red when < 10 min)
                 Positioned(
                   bottom: 8,
                   left: 8,
                   child: CountdownBadge(endsAt: auction.endsAt),
                 ),
-                // Savings badge
                 Positioned(
                   top: 8,
                   right: 8,
@@ -88,7 +76,6 @@ class AuctionCard extends StatelessWidget {
                 ),
               ],
             ),
-            // Info Section
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -98,10 +85,7 @@ class AuctionCard extends StatelessWidget {
                     auction.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -141,10 +125,7 @@ class AuctionCard extends StatelessWidget {
                       ),
                       Text(
                         '${auction.bidCount} biedingen',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[500],
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.grey[500]),
                       ),
                     ],
                   ),

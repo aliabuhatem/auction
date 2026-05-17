@@ -22,6 +22,11 @@ class BidHistoryList extends StatelessWidget {
         if (snap.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+        if (snap.hasError) {
+          return const Center(
+            child: Text('Fout bij laden biedingen', style: TextStyle(color: Colors.grey)),
+          );
+        }
         if (!snap.hasData || snap.data!.docs.isEmpty) {
           return const Center(
             child: Column(

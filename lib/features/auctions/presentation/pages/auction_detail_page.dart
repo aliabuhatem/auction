@@ -167,17 +167,29 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> with SingleTicker
         PageView.builder(
           itemCount: urls.length,
           onPageChanged: (i) => setState(() => _imageIndex = i),
-          itemBuilder: (_, i) => Image.asset(
+          itemBuilder: (_, i) => Image.network(
             urls[i],
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
+            errorBuilder: (_, __, ___) => Container(
+              color: Colors.grey[300],
+              child: const Center(child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey)),
+            ),
+            loadingBuilder: (_, child, progress) {
+              if (progress == null) return child;
               return Container(
-                color: Colors.grey[300],
-                child: const Center(child: Icon(Icons.image_not_supported, size: 50)),
+                color: Colors.grey[200],
+                child: Center(
+                  child: CircularProgressIndicator(
+                    value: progress.expectedTotalBytes != null
+                        ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
+                        : null,
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
               );
             },
           ),
-          // CachedNetworkImage(imageUrl: urls[i], fit: BoxFit.cover),
         ),
         if (urls.length > 1)
           Positioned(

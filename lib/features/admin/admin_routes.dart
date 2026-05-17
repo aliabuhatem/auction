@@ -2,8 +2,13 @@ import 'package:auction/features/admin/presentation/bloc/admin_auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'data/datasources/admin_auction_datasource.dart';
+import 'data/datasources/admin_order_datasource.dart';
 import 'data/datasources/admin_product_datasource.dart';
+import 'data/datasources/admin_voucher_datasource.dart';
 import 'data/datasources/admin_remote_datasource.dart';
+import 'data/datasources/admin_users_datasource.dart';
+import 'data/datasources/admin_bids_datasource.dart';
+import 'data/datasources/admin_notifications_datasource.dart';
 
 class AdminProviders extends StatelessWidget {
   final Widget child;
@@ -16,6 +21,11 @@ class AdminProviders extends StatelessWidget {
         RepositoryProvider(create: (_) => AdminRemoteDatasource()),
         RepositoryProvider(create: (_) => AdminAuctionDatasource()),
         RepositoryProvider(create: (_) => AdminProductDatasource()),
+        RepositoryProvider(create: (_) => AdminOrderDatasource()),
+        RepositoryProvider(create: (_) => AdminVoucherDatasource()),
+        RepositoryProvider(create: (_) => AdminUsersDatasource()),
+        RepositoryProvider(create: (_) => AdminBidsDatasource()),
+        RepositoryProvider(create: (_) => AdminNotificationsDatasource()),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -49,7 +49,7 @@ class ScratchCardRemoteDatasourceImpl implements ScratchCardRemoteDatasource {
       'lastScratchCardDate': FieldValue.serverTimestamp(),
       'streakDays': streak,
       'scratchCardsUsed': FieldValue.increment(1),
-      'prizes': FieldValue.arrayUnion([{'prize': prize, 'date': DateTime.now().toIso8601String()}]),
+      'prizes': FieldValue.arrayUnion([{'prize': prize, 'revealedAt': DateTime.now().millisecondsSinceEpoch}]),
     });
   }
 }

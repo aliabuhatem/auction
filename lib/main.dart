@@ -1,37 +1,57 @@
+// lib/main.dart
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app/app.dart';
 import 'injection_container.dart' as di;
 import 'firebase_options.dart';
+import 'features/notifications/notification_service.dart';
 
 Future<void> main() async {
-  // Ensure Flutter engine is ready before doing anything async
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock the app to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  // ── Image cache ───────────────────────────────────────────────────────────
+  PaintingBinding.instance.imageCache.maximumSize      = 80;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024;
 
-  // Make the status bar transparent so our app bar colours show through
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor:            Colors.transparent,
-      statusBarIconBrightness:   Brightness.dark,
-      systemNavigationBarColor:  Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ),
-  );
+  // ── Portrait lock (mobile only) ───────────────────────────────────────────
+  if (!kIsWeb) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor:                    Colors.transparent,
+        statusBarIconBrightness:           Brightness.dark,
+        systemNavigationBarColor:          Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
+  }
 
-  // Initialize Firebase with platform-specific options
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // ── Firebase ──────────────────────────────────────────────────────────────
+  // Wrap in try/catch — if Firebase fails to init (no network on first cold
+  // start before local cache is seeded) we show the app anyway; the router
+  // will keep the user on the splash/login screen until retry succeeds.
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Firebase init failed: $e');
+    // App continues — FirebaseApp will be unavailable, error surfaces per-feature.
+  }
 
-  // Set up all dependency injections (GetIt)
+  // ── Dependency injection ──────────────────────────────────────────────────
   await di.init();
+
+  // ── Notification service ──────────────────────────────────────────────────
+  // Initialize FCM + local notifications after DI so the service is
+  // already registered before we start listening to messages.
+  // On web the service registers the service worker for background push.
+  await di.sl<NotificationService>().initialize();
 
   runApp(const AuctionApp());
 }

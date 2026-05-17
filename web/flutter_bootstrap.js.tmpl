@@ -1,0 +1,35 @@
+{{flutter_js}}
+{{flutter_build_config}}
+
+// Admin dashboard bootstrap — HTML renderer.
+//
+// WHY HTML renderer instead of CanvasKit:
+//   CanvasKit downloads a ~8 MB WASM binary before the first pixel
+//   renders. On a typical office connection (20 Mbps) that is ~3 seconds
+//   of blank white screen. HTML renderer uses the browser's own 2-D
+//   canvas and text APIs — zero extra download, first paint in <1 s.
+//
+//   The admin dashboard's charts are simple bar charts drawn with
+//   Canvas2D calls that are identical in both renderers. CanvasKit
+//   buys nothing here and costs 8 MB + 3 s of startup time.
+//
+// To override (e.g. for testing CanvasKit quality):
+//   flutter run -d chrome --web-renderer canvaskit
+//   The build flag takes precedence over this template.
+
+_flutter.loader.load({
+  onEntrypointLoaded: async function (engineInitializer) {
+    let appRunner = await engineInitializer.initializeEngine({
+      // Force HTML renderer — eliminates the CanvasKit WASM download.
+      renderer: "html",
+
+      // Disable service worker. Admin dashboards need fresh data on
+      // every load; a service worker that serves stale JS/assets causes
+      // "why is my change not showing up?" bugs in development and
+      // potentially stale UI in production.
+      serviceWorker: { serviceWorkerVersion: null },
+    });
+
+    await appRunner.runApp();
+  },
+});

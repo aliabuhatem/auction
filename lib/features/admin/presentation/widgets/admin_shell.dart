@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/admin_auth_bloc.dart';
 import '../../domain/entities/admin_user_entity.dart';
+import '../../../../app/app_routes.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class AdminShell extends StatefulWidget {
@@ -14,21 +16,23 @@ class AdminShell extends StatefulWidget {
 class _AdminShellState extends State<AdminShell> {
 
   static const _navItems = [
-    _NavItem(label: 'Dashboard',    icon: Icons.dashboard_outlined,        activeIcon: Icons.dashboard,         route: '/admin/dashboard'),
-    _NavItem(label: 'Veilingen',    icon: Icons.gavel_outlined,            activeIcon: Icons.gavel,             route: '/admin/auctions'),
-    _NavItem(label: 'Producten',    icon: Icons.inventory_2_outlined,      activeIcon: Icons.inventory_2,       route: '/admin/products'),
-    _NavItem(label: 'Gebruikers',   icon: Icons.people_outline,            activeIcon: Icons.people,            route: '/admin/users',         permission: 'users'),
-    _NavItem(label: 'Biedingen',    icon: Icons.trending_up_outlined,      activeIcon: Icons.trending_up,       route: '/admin/bids'),
-    _NavItem(label: 'Betalingen',   icon: Icons.credit_card_outlined,      activeIcon: Icons.credit_card,       route: '/admin/orders'),
-    _NavItem(label: 'Vouchers',     icon: Icons.local_activity_outlined,   activeIcon: Icons.local_activity,    route: '/admin/vouchers'),
-    _NavItem(label: 'Meldingen',    icon: Icons.notifications_outlined,    activeIcon: Icons.notifications,     route: '/admin/notifications'),
-    _NavItem(label: 'Instellingen', icon: Icons.settings_outlined,         activeIcon: Icons.settings,          route: '/admin/settings',      permission: 'settings'),
+    _NavItem(label: 'Dashboard',    icon: Icons.dashboard_outlined,        activeIcon: Icons.dashboard,         route: AppRoutes.adminDashboard),
+    _NavItem(label: 'Veilingen',    icon: Icons.gavel_outlined,            activeIcon: Icons.gavel,             route: AppRoutes.adminAuctions),
+    _NavItem(label: 'Producten',    icon: Icons.inventory_2_outlined,      activeIcon: Icons.inventory_2,       route: AppRoutes.adminProducts),
+    _NavItem(label: 'Gebruikers',   icon: Icons.people_outline,            activeIcon: Icons.people,            route: AppRoutes.adminUsers,    permission: 'users'),
+    _NavItem(label: 'Biedingen',    icon: Icons.trending_up_outlined,      activeIcon: Icons.trending_up,       route: AppRoutes.adminBids),
+    _NavItem(label: 'Betalingen',   icon: Icons.credit_card_outlined,      activeIcon: Icons.credit_card,       route: AppRoutes.adminOrders),
+    _NavItem(label: 'Vouchers',     icon: Icons.local_activity_outlined,   activeIcon: Icons.local_activity,    route: AppRoutes.adminVouchers),
+    _NavItem(label: 'Meldingen',    icon: Icons.notifications_outlined,    activeIcon: Icons.notifications,     route: AppRoutes.adminNotifications),
+    _NavItem(label: 'Instellingen', icon: Icons.settings_outlined,         activeIcon: Icons.settings,          route: AppRoutes.adminSettings, permission: 'settings'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AdminAuthBloc>().state;
-    final user  = state is AdminAuthenticated ? state.user : null;
+    final user = context.select<AdminAuthBloc, AdminUserEntity?>((bloc) {
+      final s = bloc.state;
+      return s is AdminAuthenticated ? s.user : null;
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FC),
@@ -39,10 +43,10 @@ class _AdminShellState extends State<AdminShell> {
             user:          user,
             items:         _navItems,
             selectedIndex: widget.selectedIndex,
-            onSelect: (route) => Navigator.of(context).pushReplacementNamed(route),
+            onSelect: (route) => context.go(route),
             onLogout: () {
               context.read<AdminAuthBloc>().add(AdminLogoutRequested());
-              Navigator.of(context).pushReplacementNamed('/admin/login');
+              context.go(AppRoutes.adminLogin);
             },
           ),
           // ── Main content ───────────────────────────────────────────────────
@@ -78,9 +82,8 @@ class _Sidebar extends StatelessWidget {
   });
 
   bool _canSee(_NavItem item) {
-    if (user == null) return false;
-    if (item.permission == 'users'    && !user!.canManageUsers)    return false;
-    if (item.permission == 'settings' && !user!.canManageSettings) return false;
+    if (item.permission == 'users'    && user?.canManageUsers != true)    return false;
+    if (item.permission == 'settings' && user?.canManageSettings != true) return false;
     return true;
   }
 
@@ -159,7 +162,7 @@ class _Sidebar extends StatelessWidget {
                   child: Row(children: [
                     CircleAvatar(
                       radius: 16,
-                      backgroundColor: AppColors.primaryRed.withOpacity(0.12),
+                      backgroundColor: AppColors.primaryRed.withValues(alpha:0.12),
                       child: Text(user?.initials ?? '?',
                         style: const TextStyle(
                           color:      AppColors.primaryRed,
@@ -178,7 +181,7 @@ class _Sidebar extends StatelessWidget {
                           margin: const EdgeInsets.only(top: 2),
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                           decoration: BoxDecoration(
-                            color:        AppColors.primaryRed.withOpacity(0.08),
+                            color:        AppColors.primaryRed.withValues(alpha:0.08),
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Text(user?.role.label ?? '',
@@ -224,7 +227,7 @@ class _SidebarTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 2),
       child: Material(
-        color:        active ? AppColors.primaryRed.withOpacity(0.08) : Colors.transparent,
+        color:        active ? AppColors.primaryRed.withValues(alpha:0.08) : Colors.transparent,
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap:        onTap,
@@ -290,9 +293,9 @@ class _TopBar extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color:        Colors.green.withOpacity(0.1),
+              color:        Colors.green.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border:       Border.all(color: Colors.green.withOpacity(0.3)),
+              border:       Border.all(color: Colors.green.withValues(alpha: 0.3)),
             ),
             child: Row(children: [
               Container(width: 6, height: 6,
@@ -305,7 +308,7 @@ class _TopBar extends StatelessWidget {
           const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.notifications_outlined, size: 20, color: Color(0xFF5A6478)),
-            onPressed: () => Navigator.of(context).pushNamed('/admin/notifications'),
+            onPressed: () => context.go(AppRoutes.adminNotifications),
           ),
         ],
       ),

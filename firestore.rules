@@ -1,0 +1,215 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuth() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.isActive == true;
+    }
+
+    function isSuperAdmin() {
+      return isAdmin() &&
+        get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'super_admin';
+    }
+
+    function isValidEmail(email) {
+      return email.matches('.*@.*\\..*');
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    // Own read/write; admin full access.
+    // Users may NOT modify protected fields (role, createdAt) on their own doc.
+    match /users/{userId} {
+      allow read:   if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if (isOwner(userId) &&
+                        !request.resource.data.diff(resource.data)
+                          .affectedKeys().hasAny(['role', 'createdAt'])) ||
+                       isAdmin();
+      allow delete: if isOwner(userId) || isSuperAdmin();
+
+      // Subcollection: per-user notifications
+      match /notifications/{notifId} {
+        allow read, write: if isOwner(userId);
+        allow write:       if isAdmin();
+      }
+    }
+
+    // ── Auctions ──────────────────────────────────────────────────────────────
+    // Public read; admin write.
+    match /auctions/{auctionId} {
+      allow read:   if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+
+      // Subcollection: bids inside each auction
+      match /bids/{bidId} {
+        allow read:   if isAuth();
+        allow create: if isAuth() &&
+                         request.auth.uid == request.resource.data.userId &&
+                         request.resource.data.amount is number &&
+                         request.resource.data.amount >
+                           get(/databases/$(database)/documents/auctions/$(auctionId)).data.currentBid;
+        allow update: if isAdmin();
+        allow delete: if isAdmin();
+      }
+    }
+
+    // ── Bids (top-level collection for collection-group queries) ──────────────
+    match /bids/{bidId} {
+      allow read:   if isAuth();
+      allow create: if isAuth() &&
+                       request.auth.uid == request.resource.data.userId;
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── Orders ────────────────────────────────────────────────────────────────
+    // Own read; admin write. Users may not directly create orders (Cloud Functions do).
+    match /orders/{orderId} {
+      allow read:   if isAuth() && (
+                       request.auth.uid == resource.data.userId ||
+                       isAdmin()
+                     );
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Vouchers ──────────────────────────────────────────────────────────────
+    // Own read; admin write.
+    match /vouchers/{voucherId} {
+      allow read:   if isAuth() && (
+                       request.auth.uid == resource.data.userId ||
+                       isAdmin()
+                     );
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Watchlist ─────────────────────────────────────────────────────────────
+    // Own read/write.
+    match /watchlist/{entryId} {
+      allow read, write: if isAuth() &&
+                            request.auth.uid == resource.data.userId;
+      allow create:      if isAuth() &&
+                            request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── Alarms ────────────────────────────────────────────────────────────────
+    // Own read/write.
+    match /alarms/{alarmId} {
+      allow read, write: if isAuth() &&
+                            request.auth.uid == resource.data.userId;
+      allow create:      if isAuth() &&
+                            request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── Scratch Cards ─────────────────────────────────────────────────────────
+    // Own read/write (one per day — enforced by app logic; Cloud Functions ideal).
+    match /scratch_cards/{cardId} {
+      allow read, write: if isAuth() &&
+                            request.auth.uid == resource.data.userId;
+      allow create:      if isAuth() &&
+                            request.auth.uid == request.resource.data.userId;
+    }
+
+    // ── Wallet Transactions ───────────────────────────────────────────────────
+    // Own read; write by Cloud Functions only (admin bypass).
+    match /wallet_transactions/{txId} {
+      allow read:   if isAuth() && request.auth.uid == resource.data.userId;
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Categories ────────────────────────────────────────────────────────────
+    // Public read; admin write.
+    match /categories/{catId} {
+      allow read:   if true;
+      allow write:  if isAdmin();
+    }
+
+    // ── Products ─────────────────────────────────────────────────────────────
+    // Public read; admin write.
+    match /products/{productId} {
+      allow read:   if true;
+      allow write:  if isAdmin();
+    }
+
+    // ── Banners ───────────────────────────────────────────────────────────────
+    // Public read; admin write.
+    match /banners/{bannerId} {
+      allow read:   if true;
+      allow write:  if isAdmin();
+    }
+
+    // ── Config ────────────────────────────────────────────────────────────────
+    // Public read; super_admin write.
+    match /config/{docId} {
+      allow read:   if true;
+      allow write:  if isSuperAdmin();
+    }
+
+    // ── Admins ────────────────────────────────────────────────────────────────
+    // Self read (to verify role); super_admin write.
+    match /admins/{adminId} {
+      allow read:   if isAuth() && request.auth.uid == adminId;
+      allow create: if isSuperAdmin();
+      allow update: if isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Audit Log ─────────────────────────────────────────────────────────────
+    // Admin read; Cloud Functions write only (admin bypass for seed data).
+    match /audit_log/{logId} {
+      allow read:   if isAdmin();
+      allow create: if isAdmin();
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    // ── Referrals ─────────────────────────────────────────────────────────────
+    // Own read; auth create (referral code used on signup).
+    match /referrals/{refId} {
+      allow read:   if isAuth() && (
+                       request.auth.uid == resource.data.referrerId ||
+                       request.auth.uid == resource.data.referredId
+                     );
+      allow create: if isAuth() &&
+                       request.auth.uid == request.resource.data.referredId;
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Notifications (admin-sent push schedules) ─────────────────────────────
+    // Admin read/write; no user access to this collection.
+    match /notifications/{notifId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ── Trending / Search ─────────────────────────────────────────────────────
+    match /trending/{docId} {
+      allow read:  if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Deny everything else ──────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

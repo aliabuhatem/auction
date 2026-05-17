@@ -90,6 +90,8 @@ class AppStrings {
   static String noPending(BuildContext context) => get(context, 'noPending');
   static String pendingPaymentWarning(BuildContext context) => get(context, 'pendingPaymentWarning');
   static String tryAgain(BuildContext context) => get(context, 'tryAgain');
+  static String pageNotFound(BuildContext context) => get(context, 'pageNotFound');
+  static String backToHome(BuildContext context) => get(context, 'backToHome');
 
   static const Map<String, String> _nl = {
     'appName': 'Vakantieveilingen',
@@ -157,6 +159,8 @@ class AppStrings {
     'noPending': 'Geen openstaande betalingen',
     'pendingPaymentWarning': 'Je hebt gewonnen veilingen die nog betaald moeten worden!',
     'tryAgain': 'Probeer opnieuw',
+    'pageNotFound': 'Pagina niet gevonden',
+    'backToHome': 'Terug naar home',
   };
 
   static const Map<String, String> _en = {
@@ -225,6 +229,8 @@ class AppStrings {
     'noPending': 'No pending payments',
     'pendingPaymentWarning': 'You have won auctions that still need to be paid!',
     'tryAgain': 'Try again',
+    'pageNotFound': 'Page not found',
+    'backToHome': 'Back to home',
   };
 
   static const Map<String, String> _ar = {
@@ -293,5 +299,7 @@ class AppStrings {
     'noPending': 'لا توجد مدفوعات معلقة',
     'pendingPaymentWarning': 'لديك مزادات فزت بها ويجب دفعها!',
     'tryAgain': 'حاول مرة أخرى',
+    'pageNotFound': 'الصفحة غير موجودة',
+    'backToHome': 'العودة إلى الرئيسية',
   };
 }

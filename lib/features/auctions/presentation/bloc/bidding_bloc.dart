@@ -24,10 +24,11 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     required this.repository,
   }) : super(BiddingInitial()) {
     on<LoadAuctionForBidding>(_onLoad);
-    on<AuctionStreamUpdate>(_onUpdate);
-    on<SubmitBid>(_onSubmitBid);
-    on<ToggleWatchlist>(_onWatchlist);
-    on<SetAlarm>(_onAlarm);
+    on<AuctionStreamUpdate>  (_onUpdate);
+    on<AuctionStreamFailed>  ((e, emit) => emit(BiddingError(e.error)));
+    on<SubmitBid>            (_onSubmitBid);
+    on<ToggleWatchlist>      (_onWatchlist);
+    on<SetAlarm>             (_onAlarm);
   }
 
   Future<void> _onLoad(LoadAuctionForBidding e, Emitter<BiddingState> emit) async {
@@ -38,7 +39,10 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
       (auction) {
         emit(BiddingLoaded(auction: auction));
         _sub?.cancel();
-        _sub = watchAuction(e.auctionId).listen((a) => add(AuctionStreamUpdate(a)));
+        _sub = watchAuction(e.auctionId).listen(
+          (a) => add(AuctionStreamUpdate(a)),
+          onError: (err) => add(AuctionStreamFailed(err.toString())),
+        );
       },
     );
   }

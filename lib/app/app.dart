@@ -1,3 +1,6 @@
+// lib/app/app.dart
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -5,7 +8,6 @@ import 'app_router.dart';
 import 'app_theme.dart';
 import '../injection_container.dart' as di;
 
-// Imports for Blocs
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_event.dart';
 import '../features/auctions/presentation/bloc/auction_list_bloc.dart';
@@ -57,6 +59,8 @@ class _AppViewState extends State<_AppView> {
       themeMode:   _themeMode,
       toggleTheme: _toggleTheme,
       child: BlocBuilder<LocaleBloc, LocaleState>(
+        // Only rebuild when locale actually changes, not on every state.
+        buildWhen: (prev, next) => prev.locale != next.locale,
         builder: (context, localeState) {
           return MaterialApp.router(
             title:                      'Vakantieveilingen',
@@ -76,16 +80,24 @@ class _AppViewState extends State<_AppView> {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            scrollBehavior: const _NoGlowScrollBehaviour(),
+            // Use the correct scroll behaviour for each platform.
+            // On web: enable mouse-drag scrolling + thin styled scrollbar.
+            // On mobile: remove the overscroll glow (original behaviour).
+            scrollBehavior: kIsWeb
+                ? const _WebScrollBehavior()
+                : const _MobileScrollBehavior(),
             builder: (context, child) {
               return Directionality(
-                textDirection: localeState.locale.languageCode == 'ar' 
-                    ? TextDirection.rtl 
+                textDirection: localeState.locale.languageCode == 'ar'
+                    ? TextDirection.rtl
                     : TextDirection.ltr,
                 child: MediaQuery(
                   data: MediaQuery.of(context).copyWith(
                     textScaler: TextScaler.linear(
-                      MediaQuery.of(context).textScaler.scale(1.0).clamp(0.85, 1.15),
+                      MediaQuery.of(context)
+                          .textScaler
+                          .scale(1.0)
+                          .clamp(0.85, 1.15),
                     ),
                   ),
                   child: child!,
@@ -98,6 +110,51 @@ class _AppViewState extends State<_AppView> {
     );
   }
 }
+
+// ── Scroll behaviours ─────────────────────────────────────────────────────────
+
+/// Desktop web: enable mouse-drag scrolling, styled thin scrollbar.
+class _WebScrollBehavior extends MaterialScrollBehavior {
+  const _WebScrollBehavior();
+
+  // Without this override, mouse drag does not scroll on web.
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
+
+  @override
+  Widget buildScrollbar(
+      BuildContext context, Widget child, ScrollableDetails details) {
+    return Scrollbar(
+      controller:      details.controller,
+      thumbVisibility: false, // only visible while scrolling
+      thickness:       5,
+      radius:          const Radius.circular(3),
+      child:           child,
+    );
+  }
+
+  @override
+  Widget buildOverscrollIndicator(
+          BuildContext context, Widget child, ScrollableDetails details) =>
+      child;
+}
+
+/// Mobile: just remove the glow indicator.
+class _MobileScrollBehavior extends ScrollBehavior {
+  const _MobileScrollBehavior();
+
+  @override
+  Widget buildOverscrollIndicator(
+          BuildContext context, Widget child, ScrollableDetails details) =>
+      child;
+}
+
+// ── Theme mode notifier ───────────────────────────────────────────────────────
 
 class ThemeModeNotifier extends InheritedWidget {
   final ThemeMode    themeMode;
@@ -116,15 +173,4 @@ class ThemeModeNotifier extends InheritedWidget {
   @override
   bool updateShouldNotify(ThemeModeNotifier old) =>
       old.themeMode != themeMode;
-}
-
-class _NoGlowScrollBehaviour extends ScrollBehavior {
-  const _NoGlowScrollBehaviour();
-  @override
-  Widget buildOverscrollIndicator(
-    BuildContext context,
-    Widget child,
-    ScrollableDetails details,
-  ) =>
-      child;
 }

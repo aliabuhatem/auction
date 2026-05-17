@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auctions/presentation/bloc/auction_list_bloc.dart';
@@ -13,9 +14,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final _searchController = TextEditingController();
+  Timer? _debounce;
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -38,7 +41,10 @@ class _SearchPageState extends State<SearchPage> {
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             onChanged: (value) {
-              context.read<AuctionListBloc>().add(SearchAuctions(value));
+              _debounce?.cancel();
+              _debounce = Timer(const Duration(milliseconds: 400), () {
+                context.read<AuctionListBloc>().add(SearchAuctions(value));
+              });
             },
           ),
         ),

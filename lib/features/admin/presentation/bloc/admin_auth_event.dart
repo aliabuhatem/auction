@@ -20,3 +20,9 @@ class _AdminUserChanged extends AdminAuthEvent {
   const _AdminUserChanged(this.user);
   @override List<Object?> get props => [user];
 }
+
+class _AdminAuthStreamFailed extends AdminAuthEvent {
+  final String error;
+  const _AdminAuthStreamFailed(this.error);
+  @override List<Object> get props => [error];
+}

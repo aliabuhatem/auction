@@ -36,7 +36,9 @@ class SaveAdminProduct extends AdminProductEvent {
     required this.images,
     this.location,
   });
-  @override List<Object?> get props => [id, title, category];
+  @override List<Object?> get props => [
+        id, title, description, category, retailValue, isActive, images, location,
+      ];
 }
 
 class DeleteAdminProduct extends AdminProductEvent {
@@ -85,7 +87,7 @@ class SaveAdminCategory extends AdminProductEvent {
     required this.sortOrder,
     this.bannerUrl,
   });
-  @override List<Object?> get props => [id, name, emoji];
+  @override List<Object?> get props => [id, name, emoji, isActive, sortOrder, bannerUrl];
 }
 
 class ToggleCategoryActive extends AdminProductEvent {
