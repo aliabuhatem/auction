@@ -10,6 +10,7 @@ import '../../../../core/widgets/bid_button.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/countdown_widget.dart';
 
 class AuctionDetailPage extends StatefulWidget {
@@ -44,10 +45,11 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
         if (state is BiddingSuccess) {
           HapticFeedback.mediumImpact();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Row(children: [
-              Icon(Icons.check_circle_rounded, color: Colors.white),
-              SizedBox(width: 10),
-              Text('Bod geplaatst!', style: TextStyle(fontWeight: FontWeight.w700)),
+            content: Row(children: [
+              const Icon(Icons.check_circle_rounded, color: Colors.white),
+              const SizedBox(width: 10),
+              Text(AppStrings.bidPlaced(context),
+                  style: const TextStyle(fontWeight: FontWeight.w700)),
             ]),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
@@ -55,7 +57,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
           ));
         } else if (state is BiddingFailed) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.error),
+            content: Text(state.error), // error comes from server, not i18n
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -63,7 +65,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
         } else if (state is BiddingLoaded && state.wasOutbid) {
           HapticFeedback.heavyImpact();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text('Je bent overboden! Bied opnieuw.'),
+            content: Text(AppStrings.outbid(context)),
             backgroundColor: AppColors.warning,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -371,7 +373,7 @@ class _BidPanel extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Huidig bod',
+                      Text(AppStrings.currentBid(context),
                           style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                       const SizedBox(height: 2),
                       Text(
@@ -382,7 +384,7 @@ class _BidPanel extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text('${auction.bidCount} biedingen',
+                      Text('${auction.bidCount} ${AppStrings.tabBids(context).toLowerCase()}',
                           style: const TextStyle(color: AppColors.textSecondary,
                               fontSize: 12, fontWeight: FontWeight.w500)),
                     ],
@@ -391,7 +393,7 @@ class _BidPanel extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Text('Eindigt over',
+                    Text(AppStrings.endsIn(context),
                         style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                     const SizedBox(height: 4),
                     _TimerChip(endsAt: auction.endsAt),
@@ -462,15 +464,15 @@ class _StatsRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          _StatCard(label: 'Winkelwaarde',
+          _StatCard(label: AppStrings.retailValue(context),
               value: CurrencyFormatter.format(auction.retailValue),
               color: AppColors.textSecondary, isDark: isDark),
           const SizedBox(width: 10),
-          _StatCard(label: 'Jij bespaart',
+          _StatCard(label: AppStrings.yourSaving(context),
               value: '-${auction.savingsPercent.toStringAsFixed(0)}%',
               color: AppColors.success, isDark: isDark),
           const SizedBox(width: 10),
-          _StatCard(label: 'Biedingen',
+          _StatCard(label: AppStrings.tabBids(context),
               value: '${auction.bidCount}',
               color: AppColors.primaryRed, isDark: isDark),
         ],
@@ -554,7 +556,7 @@ class _TabSection extends StatelessWidget {
               labelColor:          Colors.white,
               unselectedLabelColor: AppColors.textSecondary,
               labelStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, fontSize: 13),
-              tabs: const [Tab(text: 'Beschrijving'), Tab(text: 'Biedingen')],
+              tabs: [Tab(text: AppStrings.tabDescription(context)), Tab(text: AppStrings.tabBids(context))],
             ),
           ),
           const SizedBox(height: 16),

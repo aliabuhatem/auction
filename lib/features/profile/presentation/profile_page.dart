@@ -57,7 +57,7 @@ class ProfilePage extends StatelessWidget {
                               : null,
                         ),
                         const SizedBox(height: 12),
-                        Text(user?.displayName ?? 'Gebruiker',
+                        Text(user?.displayName ?? AppStrings.defaultUser(ctx),
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                         Text(user?.email ?? '', style: const TextStyle(color: Colors.white70, fontSize: 13)),
                       ],
@@ -71,12 +71,12 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                _section('Account', [
+                _section(AppStrings.sectionAccount(context), [
                   _tile(Icons.manage_accounts_outlined, AppStrings.editProfile(context),
                       () => context.push(AppRoutes.profileSettings)),
-                  _tile(Icons.account_balance_wallet_outlined, 'Wallet & tegoed',
+                  _tile(Icons.account_balance_wallet_outlined, AppStrings.walletAndCredit(context),
                       () => context.push(AppRoutes.wallet)),
-                  _tile(Icons.person_add_outlined, 'Vrienden uitnodigen',
+                  _tile(Icons.person_add_outlined, AppStrings.inviteFriends(context),
                       () => context.push(AppRoutes.referral)),
                   _tile(Icons.notifications_outlined, AppStrings.notifications(context),
                       () => context.push(AppRoutes.notifications)),
@@ -84,11 +84,11 @@ class ProfilePage extends StatelessWidget {
                       () => ThemeModeNotifier.of(context)?.toggleTheme()),
                   _tile(Icons.language, AppStrings.language(context), () => _showLanguageDialog(context)),
                 ]),
-                _section('Meer', [
+                _section(AppStrings.sectionMore(context), [
                   _tile(Icons.help_outline, AppStrings.help(context), () => _showHelp(context)),
                   _tile(Icons.info_outline, AppStrings.about(context), () => _showAbout(context)),
                 ]),
-                _section('Account beheer', [
+                _section(AppStrings.sectionAccountManage(context), [
                   _tile(Icons.logout, AppStrings.logout(context), () {
                     context.read<AuthBloc>().add(LogoutRequested());
                   }, color: Colors.red),
@@ -97,8 +97,8 @@ class ProfilePage extends StatelessWidget {
                       color: Colors.red),
                 ]),
                 const SizedBox(height: 32),
-                const Text('Vakantieveilingen v1.0.0',
-                    style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text('${AppStrings.appName(context)} v1.0.0',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
                 const SizedBox(height: 32),
               ],
             ),
@@ -112,28 +112,31 @@ class ProfilePage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Help & Support'),
-        content: const Column(
+        title: Text(AppStrings.help(context)),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Heb je een vraag of probleem?', style: TextStyle(fontWeight: FontWeight.w600)),
-            SizedBox(height: 12),
-            Row(children: [
+            Text(AppStrings.helpQuestion(context),
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 12),
+            const Row(children: [
               Icon(Icons.email_outlined, size: 18, color: AppColors.primaryRed),
               SizedBox(width: 8),
               Text('support@vakantieveilingen.nl'),
             ]),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Row(children: [
-              Icon(Icons.schedule_outlined, size: 18, color: AppColors.primaryRed),
-              SizedBox(width: 8),
-              Text('Ma–Vr 09:00–17:00'),
+              const Icon(Icons.schedule_outlined, size: 18, color: AppColors.primaryRed),
+              const SizedBox(width: 8),
+              Text(AppStrings.supportHours(context)),
             ]),
           ],
         ),
         actions: [
-          ElevatedButton(onPressed: () => Navigator.pop(ctx), child: const Text('Sluiten')),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(AppStrings.close(context))),
         ],
       ),
     );
@@ -142,15 +145,15 @@ class ProfilePage extends StatelessWidget {
   void _showAbout(BuildContext context) {
     showAboutDialog(
       context: context,
-      applicationName: 'Vakantieveilingen',
+      applicationName: AppStrings.appName(context),
       applicationVersion: 'v1.0.0',
       applicationIcon: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(color: AppColors.primaryRed, borderRadius: BorderRadius.circular(10)),
         child: const Icon(Icons.gavel, color: Colors.white, size: 28),
       ),
-      children: const [
-        Text('Bied mee op exclusieve vakanties, wellness-arrangementen en meer. Elke dag nieuwe veilingen!'),
+      children: [
+        Text(AppStrings.aboutDesc(context)),
       ],
     );
   }
@@ -159,16 +162,17 @@ class ProfilePage extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Account verwijderen'),
-        content: const Text(
-          'Weet je zeker dat je je account permanent wilt verwijderen? Al je data, biedingen en vouchers worden verwijderd. Dit kan niet ongedaan worden gemaakt.',
-        ),
+        title: Text(AppStrings.deleteAccount(context)),
+        content: Text(AppStrings.deleteAccountConfirmMsg(context)),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuleren')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(AppStrings.cancel(context))),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Verwijderen', style: TextStyle(color: Colors.white)),
+            child: Text(AppStrings.delete(context),
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -185,8 +189,8 @@ class ProfilePage extends StatelessWidget {
       if (context.mounted) {
         if (e.code == 'requires-recent-login') {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Log opnieuw in om je account te verwijderen.'),
+            SnackBar(
+              content: Text(AppStrings.reloginToDeleteMsg(context)),
               backgroundColor: Colors.orange,
             ),
           );
@@ -207,9 +211,9 @@ class ProfilePage extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _languageOption(pageContext, dialogContext, 'Nederlands', const Locale('nl', 'NL')),
-            _languageOption(pageContext, dialogContext, 'English', const Locale('en', 'US')),
-            _languageOption(pageContext, dialogContext, 'العربية', const Locale('ar', 'SA')),
+            _languageOption(pageContext, dialogContext, AppStrings.langNl(pageContext), const Locale('nl', 'NL')),
+            _languageOption(pageContext, dialogContext, AppStrings.langEn(pageContext), const Locale('en', 'US')),
+            _languageOption(pageContext, dialogContext, AppStrings.langAr(pageContext), const Locale('ar', 'SA')),
           ],
         ),
       ),

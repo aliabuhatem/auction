@@ -202,7 +202,7 @@ class _ReferralPageState extends State<ReferralPage> {
                           child: _StatCard(
                             icon: Icons.group_rounded,
                             value: '$_referred',
-                            label: 'Uitgenodigd',
+                            label: AppStrings.invited(context),
                             color: AppColors.info,
                           ),
                         ),
@@ -211,7 +211,7 @@ class _ReferralPageState extends State<ReferralPage> {
                           child: _StatCard(
                             icon: Icons.account_balance_wallet_rounded,
                             value: '€ ${_earned.toStringAsFixed(0)}',
-                            label: 'Verdiend',
+                            label: AppStrings.earned(context),
                             color: AppColors.success,
                           ),
                         ),
@@ -272,40 +272,31 @@ class _StatCard extends StatelessWidget {
 }
 
 class _HowItWorks extends StatelessWidget {
-  static const _steps = [
-    _Step(
-      number: '1',
-      title: 'Deel je code',
-      body:
-          'Deel je persoonlijke code met vrienden via WhatsApp, mail of social media.',
-    ),
-    _Step(
-      number: '2',
-      title: 'Vriend registreert',
-      body:
-          'Je vriend downloadt de app en voert jouw code in tijdens de registratie.',
-    ),
-    _Step(
-      number: '3',
-      title: 'Beiden profiteren',
-      body: 'Jullie ontvangen allebei €5 biedingstegoed. Bied mee en win!',
-    ),
-  ];
-
   const _HowItWorks();
 
   @override
   Widget build(BuildContext context) {
+    final steps = [
+      _Step(number: '1',
+          title: AppStrings.step1Title(context),
+          body: AppStrings.step1Body(context)),
+      _Step(number: '2',
+          title: AppStrings.step2Title(context),
+          body: AppStrings.step2Body(context)),
+      _Step(number: '3',
+          title: AppStrings.step3Title(context),
+          body: AppStrings.step3Body(context)),
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Hoe werkt het?',
+        Text(AppStrings.howItWorks(context),
             style: Theme.of(context)
                 .textTheme
                 .titleLarge
                 ?.copyWith(fontWeight: FontWeight.w800)),
         const SizedBox(height: 16),
-        ..._steps.map((s) => _StepTile(step: s)),
+        ...steps.map((s) => _StepTile(step: s)),
       ],
     );
   }

@@ -82,7 +82,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
 
                   Text(
                     AppStrings.paymentSuccess(context),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 28,
                       fontWeight: FontWeight.w900,
@@ -128,16 +128,16 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                       children: [
                         Text(
                           AppStrings.yourVoucher(context),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 18,
                             color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
+                        Text(
                           AppStrings.showQrAtBusiness(context),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
@@ -169,15 +169,15 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                               color: AppColors.backgroundLight,
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Column(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.qr_code_2,
+                                const Icon(Icons.qr_code_2,
                                     size: 64, color: AppColors.textHint),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                 Text(AppStrings.voucherCreating(context),
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 12)),
                               ],

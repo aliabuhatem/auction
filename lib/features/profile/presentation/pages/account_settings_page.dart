@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class AccountSettingsPage extends StatefulWidget {
   const AccountSettingsPage({super.key});
@@ -90,14 +91,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Instellingen opgeslagen!')),
+          SnackBar(content: Text(AppStrings.settingsSaved(context))),
         );
       }
     } catch (e) {
       if (mounted) {
         final msg = e.toString().contains('requires-recent-login')
-            ? 'Log opnieuw in om je naam te wijzigen.'
-            : 'Opslaan mislukt. Probeer het opnieuw.';
+            ? AppStrings.reloginToChangeName(context)
+            : AppStrings.saveFailed(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(msg), backgroundColor: AppColors.error),
         );
@@ -114,13 +115,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Resetlink verzonden naar $email')),
+          SnackBar(content: Text(AppStrings.resetLinkSentTo(context, email))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fout: ${e.toString()}'),
+          SnackBar(
+              content: Text(
+                  '${AppStrings.errorPrefix(context)}${e.toString()}'),
               backgroundColor: AppColors.error),
         );
       }
@@ -132,17 +135,16 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     final step1 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title:   const Text('Account verwijderen?'),
-        content: const Text(
-            'Weet je zeker dat je je account wil verwijderen? Dit kan niet ongedaan worden gemaakt.'),
+        title:   Text(AppStrings.confirmDeleteAccountTitle(context)),
+        content: Text(AppStrings.confirmDeleteAccountMsg(context)),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuleren')),
+              child: Text(AppStrings.cancel(context))),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Verwijderen',
-                style: TextStyle(color: AppColors.error)),
+            child: Text(AppStrings.delete(context),
+                style: const TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -154,11 +156,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     final step2 = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title:   const Text('Bevestig verwijdering'),
+        title:   Text(AppStrings.confirmDeletion(context)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Typ DELETE om te bevestigen:'),
+            Text(AppStrings.typeDeleteToConfirm(context)),
             const SizedBox(height: 12),
             TextField(
               autofocus:   true,
@@ -170,11 +172,11 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
         actions: [
           TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Annuleren')),
+              child: Text(AppStrings.cancel(context))),
           TextButton(
             onPressed: () => Navigator.of(context).pop(typed == 'DELETE'),
-            child: const Text('Definitief verwijderen',
-                style: TextStyle(color: AppColors.error)),
+            child: Text(AppStrings.deleteForever(context),
+                style: const TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -191,9 +193,8 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login' && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Log opnieuw in om je account te verwijderen.'),
+          SnackBar(
+            content: Text(AppStrings.reloginToDelete(context)),
             backgroundColor: AppColors.warning,
           ),
         );
@@ -214,7 +215,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mijn gegevens'),
+        title: Text(AppStrings.myData(context)),
         actions: [
           TextButton(
             onPressed: _saving ? null : _save,
@@ -222,7 +223,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 ? const SizedBox(
                     width: 18, height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2))
-                : const Text('Opslaan',
+                : Text(AppStrings.save(context),
                     style: TextStyle(
                         color:      AppColors.primaryRed,
                         fontWeight: FontWeight.w700)),
@@ -237,26 +238,26 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   // ── Personal info ──────────────────────────────────────────
-                  const _Section(title: 'Persoonlijke gegevens'),
+                  _Section(title: AppStrings.personalData(context)),
                   const SizedBox(height: 12),
 
                   TextFormField(
                     controller:  _nameCtrl,
-                    decoration:  const InputDecoration(
-                      labelText: 'Naam',
-                      prefixIcon: Icon(Icons.person_outline),
+                    decoration:  InputDecoration(
+                      labelText: AppStrings.name(context),
+                      prefixIcon: const Icon(Icons.person_outline),
                     ),
                     validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Naam is verplicht' : null,
+                        (v == null || v.trim().isEmpty) ? AppStrings.fieldRequired(context) : null,
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 12),
 
                   TextFormField(
                     controller:     _phoneCtrl,
-                    decoration:     const InputDecoration(
-                      labelText: 'Telefoonnummer',
-                      prefixIcon: Icon(Icons.phone_outlined),
+                    decoration:     InputDecoration(
+                      labelText: AppStrings.phone(context),
+                      prefixIcon: const Icon(Icons.phone_outlined),
                     ),
                     keyboardType:   TextInputType.phone,
                     textInputAction: TextInputAction.done,
@@ -268,7 +269,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     initialValue: _user?.email ?? '',
                     readOnly:     true,
                     decoration:   InputDecoration(
-                      labelText:  'E-mailadres',
+                      labelText:  AppStrings.email(context),
                       prefixIcon: const Icon(Icons.email_outlined),
                       fillColor:  Colors.grey.shade100,
                       filled:     true,
@@ -278,14 +279,14 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   const SizedBox(height: 24),
 
                   // ── Security ───────────────────────────────────────────────
-                  const _Section(title: 'Beveiliging'),
+                  _Section(title: AppStrings.security(context)),
                   const SizedBox(height: 12),
 
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: const Icon(Icons.lock_outline),
-                    title:   const Text('Wachtwoord wijzigen'),
-                    subtitle: const Text('Ontvang een resetlink per e-mail'),
+                    title:   Text(AppStrings.changePassword(context)),
+                    subtitle: Text(AppStrings.changePasswordSub(context)),
                     trailing: const Icon(Icons.chevron_right),
                     onTap:   _sendPasswordReset,
                   ),
@@ -294,34 +295,34 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   const SizedBox(height: 8),
 
                   // ── Notification preferences ──────────────────────────────
-                  const _Section(title: 'Meldingsvoorkeuren'),
+                  _Section(title: AppStrings.notifPrefs(context)),
                   const SizedBox(height: 12),
 
                   _NotifSwitch(
                     icon:     Icons.gavel,
-                    label:    'Overboden',
-                    subtitle: 'Ontvang een melding als je overboden wordt',
+                    label:    AppStrings.notifOutbid(context),
+                    subtitle: AppStrings.notifOutbidSub(context),
                     value:    _notifBids,
                     onChanged: (v) => setState(() => _notifBids = v),
                   ),
                   _NotifSwitch(
                     icon:     Icons.emoji_events_outlined,
-                    label:    'Gewonnen',
-                    subtitle: 'Melding als je een veiling wint',
+                    label:    AppStrings.notifWon(context),
+                    subtitle: AppStrings.notifWonSub(context),
                     value:    _notifWon,
                     onChanged: (v) => setState(() => _notifWon = v),
                   ),
                   _NotifSwitch(
                     icon:     Icons.alarm_outlined,
-                    label:    'Alarms',
-                    subtitle: 'Veilingsalarmen die je hebt ingesteld',
+                    label:    AppStrings.notifAlarms(context),
+                    subtitle: AppStrings.notifAlarmsSub(context),
                     value:    _notifAlarms,
                     onChanged: (v) => setState(() => _notifAlarms = v),
                   ),
                   _NotifSwitch(
                     icon:     Icons.local_offer_outlined,
-                    label:    'Aanbiedingen',
-                    subtitle: 'Nieuwe veilingen en promoties',
+                    label:    AppStrings.notifDeals(context),
+                    subtitle: AppStrings.notifDealsSub(context),
                     value:    _notifOffers,
                     onChanged: (v) => setState(() => _notifOffers = v),
                   ),
@@ -329,15 +330,15 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                   const SizedBox(height: 24),
 
                   // ── Danger zone ────────────────────────────────────────────
-                  const _Section(title: 'Gevaarlijk gebied'),
+                  _Section(title: AppStrings.dangerZone(context)),
                   const SizedBox(height: 12),
 
                   OutlinedButton.icon(
                     onPressed: _deleteAccount,
                     icon:  const Icon(Icons.delete_forever_rounded,
                         color: AppColors.error),
-                    label: const Text('Account verwijderen',
-                        style: TextStyle(color: AppColors.error)),
+                    label: Text(AppStrings.deleteAccount(context),
+                        style: const TextStyle(color: AppColors.error)),
                     style: OutlinedButton.styleFrom(
                       side:  const BorderSide(color: AppColors.error),
                       minimumSize: const Size(double.infinity, 48),

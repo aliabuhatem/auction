@@ -18,6 +18,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _page = 0;
 
+  static const _slideCount = 3;
+
   static const _slideGradients = [
     [Color(0xFFE63946), Color(0xFFc1121f)],
     [Color(0xFF0F3460), Color(0xFF16213E)],
@@ -73,7 +75,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _next() {
-    if (_page < _slides.length - 1) {
+    if (_page < _slideCount - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 350),
         curve: Curves.easeInOut,
