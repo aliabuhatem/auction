@@ -17,8 +17,8 @@ class TicketsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthBloc>().state;
     if (auth is! AuthAuthenticated) {
-      return const Scaffold(
-        body: Center(child: Text('Log in om je vouchers te zien')),
+      return Scaffold(
+        body: Center(child: Text(AppStrings.loginForVouchers(context))),
       );
     }
     final userId = auth.user.id;
