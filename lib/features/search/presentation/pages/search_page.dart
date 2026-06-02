@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../auctions/presentation/bloc/auction_list_bloc.dart';
 import '../../../auctions/presentation/widgets/auction_grid.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
 
 class SearchPage extends StatefulWidget {
@@ -35,8 +36,8 @@ class _SearchPageState extends State<SearchPage> {
           child: TextField(
             controller: _searchController,
             autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Zoek een veiling...',
+            decoration: InputDecoration(
+              hintText: AppStrings.searchHint(context),
               border: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
@@ -101,8 +102,8 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Icon(Icons.search, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 16),
-          const Text('Begin met typen om te zoeken', 
-            style: TextStyle(color: Colors.grey)),
+          Text(AppStrings.searchPrompt(context),
+            style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );

@@ -3,31 +3,56 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'app_router.dart';
 import '../core/constants/app_colors.dart';
+import '../core/constants/app_strings.dart';
 
 class ShellScaffold extends StatelessWidget {
   final Widget child;
   const ShellScaffold({super.key, required this.child});
 
-  static const _tabs = [
-    _TabItem(icon: Icons.home_outlined,           activeIcon: Icons.home_rounded,         label: 'Home',      path: AppRoutes.home),
-    _TabItem(icon: Icons.gavel_outlined,          activeIcon: Icons.gavel_rounded,        label: 'Veilingen', path: AppRoutes.myAuctions),
-    _TabItem(icon: Icons.style_outlined,          activeIcon: Icons.style_rounded,        label: 'Kraskaart', path: AppRoutes.scratchCard),
-    _TabItem(icon: Icons.local_activity_outlined, activeIcon: Icons.local_activity,       label: 'Vouchers',  path: AppRoutes.tickets),
-    _TabItem(icon: Icons.person_outline_rounded,  activeIcon: Icons.person_rounded,       label: 'Profiel',   path: AppRoutes.profile),
+  static const _paths = [
+    AppRoutes.home,
+    AppRoutes.myAuctions,
+    AppRoutes.scratchCard,
+    AppRoutes.tickets,
+    AppRoutes.profile,
+  ];
+
+  static const _icons = [
+    (Icons.home_outlined,           Icons.home_rounded),
+    (Icons.gavel_outlined,          Icons.gavel_rounded),
+    (Icons.style_outlined,          Icons.style_rounded),
+    (Icons.local_activity_outlined, Icons.local_activity),
+    (Icons.person_outline_rounded,  Icons.person_rounded),
   ];
 
   int _currentIndex(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    for (int i = 0; i < _tabs.length; i++) {
-      if (location.startsWith(_tabs[i].path)) return i;
+    for (int i = 0; i < _paths.length; i++) {
+      if (location.startsWith(_paths[i])) return i;
     }
     return 0;
   }
+
+  List<String> _labels(BuildContext context) => [
+    AppStrings.navHome(context),
+    AppStrings.navAuctions(context),
+    AppStrings.navScratchCard(context),
+    AppStrings.navVouchers(context),
+    AppStrings.navProfile(context),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = _currentIndex(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labels = _labels(context);
+
+    final tabs = List.generate(_paths.length, (i) => _TabItem(
+      icon:       _icons[i].$1,
+      activeIcon: _icons[i].$2,
+      label:      labels[i],
+      path:       _paths[i],
+    ));
 
     return Scaffold(
       extendBody: true,
@@ -35,8 +60,8 @@ class ShellScaffold extends StatelessWidget {
       bottomNavigationBar: _PremiumBottomNav(
         currentIndex: currentIndex,
         isDark: isDark,
-        onTap: (i) => context.go(_tabs[i].path),
-        tabs: _tabs,
+        onTap: (i) => context.go(_paths[i]),
+        tabs: tabs,
       ),
     );
   }

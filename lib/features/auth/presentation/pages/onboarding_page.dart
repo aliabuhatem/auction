@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../app/app_router.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -17,27 +18,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
   final _controller = PageController();
   int _page = 0;
 
-  static const _slides = [
+  static const _slideGradients = [
+    [Color(0xFFE63946), Color(0xFFc1121f)],
+    [Color(0xFF0F3460), Color(0xFF16213E)],
+    [Color(0xFF2ECC71), Color(0xFF27AE60)],
+  ];
+
+  static const _slideIcons = [
+    Icons.gavel_rounded,
+    Icons.timer_rounded,
+    Icons.emoji_events_rounded,
+  ];
+
+  List<_Slide> _slides(BuildContext ctx) => [
     _Slide(
-      icon: Icons.gavel_rounded,
-      title: 'Bied op droomvakanties',
-      body:
-          'Vind unieke vakanties, uitjes en ervaringen. Bied mee en win voor een fractie van de prijs.',
-      gradient: [Color(0xFFE63946), Color(0xFFc1121f)],
+      icon:     _slideIcons[0],
+      title:    AppStrings.onboard1Title(ctx),
+      body:     AppStrings.onboard1Body(ctx),
+      gradient: _slideGradients[0],
     ),
     _Slide(
-      icon: Icons.timer_rounded,
-      title: 'Realtime veilingen',
-      body:
-          'Volg iedere bieding live. Stel een alarm in zodat je nooit een eindsprint mist.',
-      gradient: [Color(0xFF0F3460), Color(0xFF16213E)],
+      icon:     _slideIcons[1],
+      title:    AppStrings.onboard2Title(ctx),
+      body:     AppStrings.onboard2Body(ctx),
+      gradient: _slideGradients[1],
     ),
     _Slide(
-      icon: Icons.emoji_events_rounded,
-      title: 'Win en betaal veilig',
-      body:
-          'Gewonnen? Betaal eenvoudig en ontvang je voucher direct in de app. Veilig, snel en betrouwbaar.',
-      gradient: [Color(0xFF2ECC71), Color(0xFF27AE60)],
+      icon:     _slideIcons[2],
+      title:    AppStrings.onboard3Title(ctx),
+      body:     AppStrings.onboard3Body(ctx),
+      gradient: _slideGradients[2],
     ),
   ];
 
@@ -77,7 +87,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLast = _page == _slides.length - 1;
+    final slides = _slides(context);
+    final isLast = _page == slides.length - 1;
 
     return Scaffold(
       body: Stack(
@@ -85,9 +96,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
           // Slides
           PageView.builder(
             controller: _controller,
-            itemCount: _slides.length,
+            itemCount: slides.length,
             onPageChanged: (i) => setState(() => _page = i),
-            itemBuilder: (_, i) => _SlideView(slide: _slides[i]),
+            itemBuilder: (_, i) => _SlideView(slide: slides[i]),
           ),
 
           // Skip button (hidden on last slide)
@@ -107,8 +118,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                     ),
-                    child:
-                        const Text('Overslaan', style: TextStyle(fontSize: 13)),
+                    child: Text(AppStrings.skip(context),
+                        style: const TextStyle(fontSize: 13)),
                   ),
                 ),
               ),
@@ -126,7 +137,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     // Page indicator
                     AnimatedSmoothIndicator(
                       activeIndex: _page,
-                      count: _slides.length,
+                      count: slides.length,
                       effect: const WormEffect(
                         dotWidth: 8,
                         dotHeight: 8,
@@ -145,14 +156,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         onPressed: _next,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          foregroundColor: _slides[_page].gradient.first,
+                          foregroundColor: slides[_page].gradient.first,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                           textStyle: const TextStyle(
                               fontWeight: FontWeight.w800, fontSize: 16),
                         ),
-                        child: Text(isLast ? 'Aan de slag' : 'Volgende'),
+                        child: Text(isLast
+                            ? AppStrings.getStarted(context)
+                            : AppStrings.next(context)),
                       ),
                     ),
                   ],

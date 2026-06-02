@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../auth/presentation/bloc/auth_bloc.dart';
 import '../../auth/presentation/bloc/auth_state.dart';
 
@@ -12,21 +13,21 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthBloc>().state;
     if (auth is! AuthAuthenticated) {
-      return const Scaffold(
-        body: Center(child: Text('Log in om meldingen te zien')),
+      return Scaffold(
+        body: Center(child: Text(AppStrings.loginForNotifications(context))),
       );
     }
     final userId = auth.user.id;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Meldingen',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppStrings.notifications(context),
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           TextButton(
             onPressed: () => _markAllRead(userId),
-            child: const Text('Alles lezen',
-                style: TextStyle(color: AppColors.primaryRed)),
+            child: Text(AppStrings.markAllRead(context),
+                style: const TextStyle(color: AppColors.primaryRed)),
           ),
         ],
       ),
@@ -43,18 +44,21 @@ class NotificationsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snap.hasError) {
-            return Center(child: Text('Fout: ${snap.error}'));
+            return Center(
+                child: Text('${AppStrings.errorPrefix(context)}${snap.error}'));
           }
           final docs = snap.data?.docs ?? [];
           if (docs.isEmpty) {
-            return const Center(
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.notifications_none, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
-                  Text('Geen meldingen',
-                      style: TextStyle(color: Colors.grey, fontSize: 16)),
+                  const Icon(Icons.notifications_none,
+                      size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(AppStrings.noNotifications(context),
+                      style:
+                          const TextStyle(color: Colors.grey, fontSize: 16)),
                 ],
               ),
             );
@@ -71,7 +75,7 @@ class NotificationsPage extends StatelessWidget {
                 color: _colorFor(type),
                 title: d['title'] as String? ?? '',
                 subtitle: d['body'] as String? ?? '',
-                time: _formatTime(d['createdAt'] as Timestamp?),
+                time: _formatTime(d['createdAt'] as Timestamp?, context),
                 isUnread: isUnread,
                 onTap: () {
                   if (isUnread) {
@@ -130,13 +134,13 @@ class NotificationsPage extends StatelessWidget {
     }
   }
 
-  String _formatTime(Timestamp? ts) {
+  String _formatTime(Timestamp? ts, BuildContext context) {
     if (ts == null) return '';
     final dt = ts.toDate();
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min geleden';
-    if (diff.inHours < 24) return '${diff.inHours} uur geleden';
-    return '${diff.inDays} dag${diff.inDays == 1 ? '' : 'en'} geleden';
+    if (diff.inMinutes < 60) return AppStrings.minAgo(context, diff.inMinutes);
+    if (diff.inHours < 24) return AppStrings.hourAgo(context, diff.inHours);
+    return AppStrings.daysAgo(context, diff.inDays);
   }
 }
 
