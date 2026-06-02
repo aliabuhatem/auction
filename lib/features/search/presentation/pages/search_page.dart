@@ -116,8 +116,8 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Icon(Icons.search_off, size: 64, color: Colors.grey[300]),
           const SizedBox(height: 16),
-          const Text('Geen veilingen gevonden', 
-            style: TextStyle(color: Colors.grey)),
+          Text(AppStrings.noResults(context),
+            style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
