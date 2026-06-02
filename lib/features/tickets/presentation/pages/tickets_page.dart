@@ -25,7 +25,8 @@ class TicketsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mijn vouchers', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppStrings.myVouchers(context),
+            style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: FutureBuilder<List<VoucherEntity>>(
         future: TicketsRemoteDatasourceImpl().getMyTickets(userId),
@@ -56,8 +57,8 @@ class TicketsPage extends StatelessWidget {
                   Text(AppStrings.noTickets(context),
                       style: const TextStyle(color: Colors.grey, fontSize: 16)),
                   const SizedBox(height: 8),
-                  const Text('Win een veiling om een voucher te ontvangen',
-                      style: TextStyle(color: Colors.grey, fontSize: 13)),
+                  Text(AppStrings.winVoucherHint(context),
+                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
                 ],
               ),
             );
@@ -130,7 +131,7 @@ class _VoucherCard extends StatelessWidget {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(voucher.auctionTitle,
                           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
-                      Text('Geldig t/m ${voucher.expiresAtFormatted}',
+                      Text('${AppStrings.validUntil(context)} ${voucher.expiresAtFormatted}',
                           style: const TextStyle(color: Colors.white70, fontSize: 12)),
                     ]),
                   ),
@@ -138,7 +139,8 @@ class _VoucherCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(8)),
-                      child: const Text('Gebruikt', style: TextStyle(color: Colors.white, fontSize: 11)),
+                      child: Text(AppStrings.usedStatus(context),
+                          style: const TextStyle(color: Colors.white, fontSize: 11)),
                     ),
                 ],
               ),

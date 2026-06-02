@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../data/tickets_remote_datasource.dart';
 import '../../domain/voucher_entity.dart';
 
@@ -17,12 +18,14 @@ class VoucherPage extends StatelessWidget {
     if (voucher != null) return _VoucherDetail(voucher: voucher!);
 
     if (voucherId == null) {
-      return const Scaffold(body: Center(child: Text('Geen voucher gevonden')));
+      return Builder(builder: (ctx) => Scaffold(
+          body: Center(child: Text(AppStrings.voucherNotFound(ctx)))));
     }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4F8),
-      appBar: AppBar(title: const Text('Mijn voucher')),
+      appBar: AppBar(title: Builder(builder: (ctx) =>
+          Text(AppStrings.myVoucher(ctx)))),
       body: FutureBuilder<VoucherEntity>(
         future: TicketsRemoteDatasourceImpl().getTicketById(voucherId!),
         builder: (context, snap) {
@@ -59,7 +62,7 @@ class _VoucherDetail extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF0F4F8),
       appBar: AppBar(
-        title: const Text('Mijn voucher'),
+        title: Text(AppStrings.myVoucher(context)),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
@@ -110,7 +113,7 @@ class _VoucherDetail extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Geldig t/m ${voucher.expiresAtFormatted}',
+                                '${AppStrings.validUntil(context)} ${voucher.expiresAtFormatted}',
                                 style: const TextStyle(
                                     color: Colors.white70, fontSize: 12),
                               ),
@@ -125,8 +128,8 @@ class _VoucherDetail extends StatelessWidget {
                               color: Colors.white24,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text('Gebruikt',
-                                style: TextStyle(
+                            child: Text(AppStrings.usedStatus(context),
+                                style: const TextStyle(
                                     color: Colors.white, fontSize: 11)),
                           ),
                         if (voucher.isExpired && !voucher.isUsed)
@@ -137,8 +140,8 @@ class _VoucherDetail extends StatelessWidget {
                               color: Colors.black26,
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text('Verlopen',
-                                style: TextStyle(
+                            child: Text(AppStrings.expiredStatus(context),
+                                style: const TextStyle(
                                     color: Colors.white, fontSize: 11)),
                           ),
                       ],
@@ -157,7 +160,7 @@ class _VoucherDetail extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 24),
                     child: Column(
                       children: [
-                        Text('Vouchercode',
+                        Text(AppStrings.voucherCode(context),
                             style: TextStyle(
                                 color: Colors.grey[600], fontSize: 12)),
                         const SizedBox(height: 4),
@@ -177,7 +180,7 @@ class _VoucherDetail extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Text(
-                      'Toon deze QR-code bij het inchecken aan de medewerker',
+                      AppStrings.showQrAtCheckin(context),
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey[600]),
                     ),

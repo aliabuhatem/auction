@@ -99,7 +99,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
         setState(() => _claiming = false);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Fout: ${f.message}'), backgroundColor: Colors.red),
+              content: Text('${AppStrings.errorPrefix(context)}${f.message}'),
+              backgroundColor: Colors.red),
         );
       },
       (_) {
@@ -110,7 +111,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('🎉 $_prize is toegevoegd aan je wallet!'),
+            content: Text(AppStrings.scratchPrizeAdded(context)
+                .replaceAll('{prize}', _prize)),
             backgroundColor: Colors.green,
             duration: const Duration(seconds: 4),
           ),
@@ -155,8 +157,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                   ),
                   const SizedBox(height: 24),
                   OutlinedButton.icon(
-                    onPressed: () => Share.share(
-                        'Probeer Vakantieveilingen! Download de app en win geweldige prijzen.'),
+                    onPressed: () =>
+                        Share.share(AppStrings.shareAppMsg(context)),
                     icon:
                         const Icon(Icons.share, color: Colors.white, size: 20),
                     label: Text(
@@ -181,14 +183,14 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Je hebt $_prize gewonnen!',
+                    AppStrings.scratchPrizeWon(context, _prize),
                     style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   const SizedBox(height: 24),
                   if (_claimed)
-                    const Chip(
-                      label: Text('Tegoed ontvangen',
-                          style: TextStyle(color: Colors.white)),
+                    Chip(
+                      label: Text(AppStrings.creditReceived(context),
+                          style: const TextStyle(color: Colors.white)),
                       backgroundColor: Colors.green,
                     )
                   else

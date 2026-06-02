@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
   final String orderId;
@@ -79,8 +80,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  const Text(
-                    'Betaling geslaagd!',
+                  Text(
+                    AppStrings.paymentSuccess(context),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -125,8 +126,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                     ),
                     child: Column(
                       children: [
-                        const Text(
-                          'Je voucher',
+                        Text(
+                          AppStrings.yourVoucher(context),
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 18,
@@ -135,7 +136,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                         ),
                         const SizedBox(height: 8),
                         const Text(
-                          'Toon deze QR-code bij het bedrijf',
+                          AppStrings.showQrAtBusiness(context),
                           style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 13,
@@ -174,7 +175,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                                 Icon(Icons.qr_code_2,
                                     size: 64, color: AppColors.textHint),
                                 SizedBox(height: 8),
-                                Text('Voucher wordt aangemaakt...',
+                                Text(AppStrings.voucherCreating(context),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: AppColors.textSecondary,
@@ -228,7 +229,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                           textStyle: const TextStyle(
                               fontWeight: FontWeight.w800, fontSize: 16),
                         ),
-                        child: const Text('Bekijk voucher'),
+                        child: Text(AppStrings.viewVoucher(context)),
                       ),
                     ),
 
@@ -236,9 +237,9 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
 
                   TextButton(
                     onPressed: () => context.go(AppRoutes.home),
-                    child: const Text(
-                      'Terug naar home',
-                      style: TextStyle(color: Colors.white70),
+                    child: Text(
+                      AppStrings.backToHome(context),
+                      style: const TextStyle(color: Colors.white70),
                     ),
                   ),
                   const SizedBox(height: 24),

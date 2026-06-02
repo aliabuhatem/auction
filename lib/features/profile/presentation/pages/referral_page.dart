@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class ReferralPage extends StatefulWidget {
   const ReferralPage({super.key});
@@ -71,7 +72,7 @@ class _ReferralPageState extends State<ReferralPage> {
     await Clipboard.setData(ClipboardData(text: _code!));
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Code gekopieerd!')),
+        SnackBar(content: Text(AppStrings.codeCopied(context))),
       );
     }
   }
@@ -79,15 +80,15 @@ class _ReferralPageState extends State<ReferralPage> {
   void _share() {
     if (_code == null) return;
     Share.share(
-      'Gebruik mijn code $_code bij Vakantieveilingen en ontvang €5 biedingstegoed! 🎉\n\nhttps://vakantieveilingen.nl',
-      subject: 'Gratis €5 biedingstegoed',
+      AppStrings.referralShareMsg(context, _code!),
+      subject: AppStrings.referralShareSubject(context),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Vrienden uitnodigen')),
+      appBar: AppBar(title: Text(AppStrings.inviteFriendsTitle(context))),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -113,15 +114,15 @@ class _ReferralPageState extends State<ReferralPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Nodig vrienden uit!',
+                      AppStrings.inviteTitle(context),
                       style: Theme.of(context)
                           .textTheme
                           .headlineMedium
                           ?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Jij én je vriend ontvangen €5 biedingstegoed\nzodra je vriend zich registreert.',
+                    Text(
+                      AppStrings.inviteSubtitle(context),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: AppColors.textSecondary, height: 1.5),
@@ -140,8 +141,8 @@ class _ReferralPageState extends State<ReferralPage> {
                       ),
                       child: Column(
                         children: [
-                          const Text(
-                            'Jouw uitnodigingscode',
+                          Text(
+                            AppStrings.yourInviteCode(context),
                             style: TextStyle(
                                 color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w600),
@@ -174,7 +175,7 @@ class _ReferralPageState extends State<ReferralPage> {
                                   onPressed: _copy,
                                   icon:
                                       const Icon(Icons.copy_rounded, size: 18),
-                                  label: const Text('Kopiëren'),
+                                  label: Text(AppStrings.copy(context)),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -183,7 +184,7 @@ class _ReferralPageState extends State<ReferralPage> {
                                   onPressed: _share,
                                   icon:
                                       const Icon(Icons.share_rounded, size: 18),
-                                  label: const Text('Delen'),
+                                  label: Text(AppStrings.share(context)),
                                 ),
                               ),
                             ],

@@ -82,7 +82,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _load,
-                    child: const Text('Opnieuw proberen'),
+                    child: Text(AppStrings.retryBtn(context)),
                   ),
                 ],
               ),
@@ -235,8 +235,8 @@ class _PendingPaymentTab extends StatelessWidget {
                         if (!context.mounted) return;
                         if (orderId == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Geen openstaande bestelling gevonden'),
+                            SnackBar(
+                              content: Text(AppStrings.orderNotFoundMsg(context)),
                               backgroundColor: Colors.orange,
                             ),
                           );

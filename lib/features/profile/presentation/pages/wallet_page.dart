@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
@@ -12,25 +13,29 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  static const _filters = ['Alles', 'Ontvangen', 'Gebruikt'];
+  List<String> _filters(BuildContext context) => [
+    AppStrings.all(context),
+    AppStrings.filterReceived(context),
+    AppStrings.filterUsed(context),
+  ];
   int _filterIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
-      return const Scaffold(
-        body: Center(child: Text('Log in om je wallet te bekijken')),
+      return Scaffold(
+        body: Center(child: Text(AppStrings.loginForWallet(context))),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Wallet')),
+      appBar: AppBar(title: Text(AppStrings.wallet(context))),
       body: StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance.collection('users').doc(uid).snapshots(),
         builder: (context, userSnap) {
           if (userSnap.hasError) {
-            return const Center(child: Text('Fout bij laden wallet. Probeer het opnieuw.'));
+            return Center(child: Text(AppStrings.walletLoadError(context)));
           }
           final userData = userSnap.hasData && userSnap.data!.exists
               ? (userSnap.data!.data() as Map<String, dynamic>? ?? {})
@@ -46,7 +51,7 @@ class _WalletPageState extends State<WalletPage> {
                 .snapshots(),
             builder: (context, txSnap) {
               if (txSnap.hasError) {
-                return const Center(child: Text('Fout bij laden transacties.'));
+                return Center(child: Text(AppStrings.txLoadError(context)));
               }
               final allTx = txSnap.data?.docs ?? [];
               final filtered = _filterIndex == 0
@@ -56,6 +61,7 @@ class _WalletPageState extends State<WalletPage> {
                       return _filterIndex == 1 ? type == 'credit' : type == 'debit';
                     }).toList();
 
+              final filters = _filters(context);
               return RefreshIndicator(
                 onRefresh: () async {},
                 child: CustomScrollView(
@@ -70,7 +76,7 @@ class _WalletPageState extends State<WalletPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                         child: Row(
-                          children: _filters.asMap().entries.map((e) {
+                          children: filters.asMap().entries.map((e) {
                             final selected = e.key == _filterIndex;
                             return Padding(
                               padding: const EdgeInsets.only(right: 8),
@@ -98,7 +104,7 @@ class _WalletPageState extends State<WalletPage> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                         child: Text(
-                          'Transactiegeschiedenis',
+                          AppStrings.txHistory(context),
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -121,7 +127,7 @@ class _WalletPageState extends State<WalletPage> {
                                   size: 64, color: Colors.grey),
                               const SizedBox(height: 16),
                               Text(
-                                'Geen transacties',
+                                AppStrings.noTransactions(context),
                                 style: TextStyle(
                                     color: Colors.grey.shade500, fontSize: 16),
                               ),
@@ -177,9 +183,9 @@ class _BalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Biedingstegoeden',
-            style: TextStyle(
+          Text(
+            AppStrings.biddingCredit(context),
+            style: const TextStyle(
               color:    Colors.white70,
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -214,7 +220,7 @@ class _BalanceCard extends StatelessWidget {
             const Icon(Icons.info_outline, color: Colors.white54, size: 14),
             const SizedBox(width: 6),
             Text(
-              'Tegoed geldig voor biedingen in de app',
+              AppStrings.creditInfo(context),
               style: TextStyle(
                 color:    Colors.white.withValues(alpha: 0.7),
                 fontSize: 12,
