@@ -19,6 +19,31 @@ extension AuctionCategoryX on AuctionCategory {
       case AuctionCategory.dayTrips:    return 'Dagtrips';
     }
   }
+
+  String get firestoreValue {
+    switch (this) {
+      case AuctionCategory.vacation:    return 'vacation';
+      case AuctionCategory.beauty:      return 'beauty';
+      case AuctionCategory.sauna:       return 'sauna';
+      case AuctionCategory.food:        return 'food';
+      case AuctionCategory.products:    return 'products';
+      case AuctionCategory.experiences: return 'experiences';
+      case AuctionCategory.sports:      return 'sports';
+      case AuctionCategory.wellness:    return 'wellness';
+      case AuctionCategory.dayTrips:    return 'daytrips';
+    }
+  }
+}
+
+extension AuctionStatusX on AuctionStatus {
+  String get firestoreValue {
+    switch (this) {
+      case AuctionStatus.upcoming: return 'scheduled';
+      case AuctionStatus.live:     return 'live';
+      case AuctionStatus.ended:    return 'ended';
+      case AuctionStatus.sold:     return 'sold';
+    }
+  }
 }
 
 class AuctionEntity extends Equatable {

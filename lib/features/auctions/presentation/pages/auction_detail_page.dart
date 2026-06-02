@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import '../bloc/bidding_bloc.dart';
+import '../../domain/entities/auction_entity.dart';
 import '../widgets/bid_history_list.dart';
 import '../../../../core/widgets/bid_button.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
@@ -284,7 +285,7 @@ class _ImageGallery extends StatelessWidget {
 // ── Header ────────────────────────────────────────────────────────────────────
 
 class _HeaderSection extends StatelessWidget {
-  final dynamic auction;
+  final AuctionEntity auction;
   final bool isDark;
   const _HeaderSection({required this.auction, required this.isDark});
 
@@ -339,7 +340,7 @@ class _HeaderSection extends StatelessWidget {
 // ── Bid panel ─────────────────────────────────────────────────────────────────
 
 class _BidPanel extends StatelessWidget {
-  final dynamic auction;
+  final AuctionEntity auction;
   final bool isPlacing;
   final bool isDark;
   const _BidPanel({required this.auction, required this.isPlacing, required this.isDark});
@@ -451,7 +452,7 @@ class _TimerChip extends StatelessWidget {
 // ── Stats row ─────────────────────────────────────────────────────────────────
 
 class _StatsRow extends StatelessWidget {
-  final dynamic auction;
+  final AuctionEntity auction;
   final bool isDark;
   const _StatsRow({required this.auction, required this.isDark});
 
@@ -519,7 +520,7 @@ class _StatCard extends StatelessWidget {
 // ── Tab section ───────────────────────────────────────────────────────────────
 
 class _TabSection extends StatelessWidget {
-  final dynamic auction;
+  final AuctionEntity auction;
   final TabController tabController;
   final bool isDark;
   const _TabSection({

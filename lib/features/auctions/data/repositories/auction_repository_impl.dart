@@ -19,7 +19,7 @@ class AuctionRepositoryImpl implements AuctionRepository {
   }) async {
     try {
       final results = await remote.getAuctions(
-        category: category?.name,
+        category: category?.firestoreValue,
         query:    searchQuery,
         page:     page,
       );
