@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../bloc/admin_auth_bloc.dart';
-import '../../domain/entities/admin_user_entity.dart';
 import '../widgets/admin_shell.dart';
+import '../../domain/entities/admin_user_entity.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class AdminSettingsPage extends StatelessWidget {
@@ -12,10 +12,7 @@ class AdminSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AdminShell(
-      selectedIndex: 8,
-      child: _SettingsBody(),
-    );
+    return const AdminShell(selectedIndex: 8, child: _SettingsBody());
   }
 }
 

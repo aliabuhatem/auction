@@ -19,10 +19,7 @@ class AdminDashboardPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => AdminDashboardBloc(
         context.read<AdminRemoteDatasource>())..add(LoadDashboardStats()),
-      child: const AdminShell(
-        selectedIndex: 0,
-        child: _DashboardBody(),
-      ),
+      child: const AdminShell(selectedIndex: 0, child: _DashboardBody()),
     );
   }
 }
@@ -166,7 +163,7 @@ class _DashboardContent extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color:      AppColors.primaryRed.withOpacity(0.3),
+                  color:      AppColors.primaryRed.withValues(alpha: 0.3),
                   blurRadius: 20, offset: const Offset(0, 8),
                 ),
               ],
@@ -290,8 +287,8 @@ class _EndingSoonTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(
             color:        isUrgent
-                ? Colors.red.withOpacity(0.1)
-                : Colors.orange.withOpacity(0.1),
+                ? Colors.red.withValues(alpha: 0.1)
+                : Colors.orange.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(6),
           ),
           child: Text(

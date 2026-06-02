@@ -21,14 +21,14 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
       ConfettiController(duration: const Duration(seconds: 4));
   final _scratchKey = GlobalKey<ScratcherState>();
 
-  bool _revealed  = false;
-  bool _claimed   = false;
-  bool _loading   = true;
-  bool _claiming  = false;
+  bool _revealed = false;
+  bool _claimed = false;
+  bool _loading = true;
+  bool _claiming = false;
 
-  String  _prize      = '';
-  int     _streakDays = 0;
-  bool    _canScratch = false;
+  String _prize = '';
+  int _streakDays = 0;
+  bool _canScratch = false;
   String? _userId;
 
   late final ScratchCardRepository _repo;
@@ -60,7 +60,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
       (data) => setState(() {
         _canScratch = data['canScratch'] as bool? ?? false;
         _streakDays = data['streakDays'] as int? ?? 0;
-        _loading    = false;
+        _loading = false;
       }),
     );
   }
@@ -75,9 +75,15 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
       (_) {
         final fallback = ['€5 tegoed', '€2 tegoed', 'Extra kraskaart'];
         fallback.shuffle();
-        setState(() { _prize = fallback.first; _revealed = true; });
+        setState(() {
+          _prize = fallback.first;
+          _revealed = true;
+        });
       },
-      (prize) => setState(() { _prize = prize; _revealed = true; }),
+      (prize) => setState(() {
+        _prize = prize;
+        _revealed = true;
+      }),
     );
     _confettiController.play();
   }
@@ -92,11 +98,16 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
       (f) {
         setState(() => _claiming = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fout: ${f.message}'), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text('Fout: ${f.message}'), backgroundColor: Colors.red),
         );
       },
       (_) {
-        setState(() { _claiming = false; _claimed = true; _streakDays++; });
+        setState(() {
+          _claiming = false;
+          _claimed = true;
+          _streakDays++;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('🎉 $_prize is toegevoegd aan je wallet!'),
@@ -117,7 +128,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
         elevation: 0,
         title: Text(
           AppStrings.scratchCard(context),
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -145,7 +157,8 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                   OutlinedButton.icon(
                     onPressed: () => Share.share(
                         'Probeer Vakantieveilingen! Download de app en win geweldige prijzen.'),
-                    icon: const Icon(Icons.share, color: Colors.white, size: 20),
+                    icon:
+                        const Icon(Icons.share, color: Colors.white, size: 20),
                     label: Text(
                       AppStrings.shareForExtra(context),
                       style: const TextStyle(color: Colors.white),
@@ -169,8 +182,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                   const SizedBox(height: 8),
                   Text(
                     'Je hebt $_prize gewonnen!',
-                    style:
-                        const TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   const SizedBox(height: 24),
                   if (_claimed)
@@ -229,7 +241,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.accentGold.withOpacity(0.5),
+            color: AppColors.accentGold.withValues(alpha: 0.5),
             blurRadius: 30,
             spreadRadius: 2,
           ),
@@ -313,7 +325,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                 boxShadow: done
                     ? [
                         BoxShadow(
-                          color: AppColors.accentGold.withOpacity(0.5),
+                          color: AppColors.accentGold.withValues(alpha: 0.5),
                           blurRadius: 8,
                         )
                       ]
@@ -340,7 +352,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
 class _StarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white.withOpacity(0.08);
+    final paint = Paint()..color = Colors.white.withValues(alpha: 0.08);
     for (int i = 0; i < 50; i++) {
       final x = (i * 73.7 + 10) % size.width;
       final y = (i * 137.3 + 20) % size.height;

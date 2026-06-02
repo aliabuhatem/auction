@@ -1,19 +1,19 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'app_router.dart';
 import '../core/constants/app_colors.dart';
 
-/// Bottom navigation shell that wraps all tab pages.
 class ShellScaffold extends StatelessWidget {
   final Widget child;
   const ShellScaffold({super.key, required this.child});
 
   static const _tabs = [
-    _TabItem(icon: Icons.home_outlined,           activeIcon: Icons.home,           label: 'Home',          path: AppRoutes.home),
-    _TabItem(icon: Icons.gavel_outlined,          activeIcon: Icons.gavel,          label: 'Mijn veilingen',path: AppRoutes.myAuctions),
-    _TabItem(icon: Icons.style_outlined,          activeIcon: Icons.style,          label: 'Kraskaart',     path: AppRoutes.scratchCard),
-    _TabItem(icon: Icons.local_activity_outlined, activeIcon: Icons.local_activity, label: 'Vouchers',      path: AppRoutes.tickets),
-    _TabItem(icon: Icons.person_outlined,         activeIcon: Icons.person,         label: 'Profiel',       path: AppRoutes.profile),
+    _TabItem(icon: Icons.home_outlined,           activeIcon: Icons.home_rounded,         label: 'Home',      path: AppRoutes.home),
+    _TabItem(icon: Icons.gavel_outlined,          activeIcon: Icons.gavel_rounded,        label: 'Veilingen', path: AppRoutes.myAuctions),
+    _TabItem(icon: Icons.style_outlined,          activeIcon: Icons.style_rounded,        label: 'Kraskaart', path: AppRoutes.scratchCard),
+    _TabItem(icon: Icons.local_activity_outlined, activeIcon: Icons.local_activity,       label: 'Vouchers',  path: AppRoutes.tickets),
+    _TabItem(icon: Icons.person_outline_rounded,  activeIcon: Icons.person_rounded,       label: 'Profiel',   path: AppRoutes.profile),
   ];
 
   int _currentIndex(BuildContext context) {
@@ -26,40 +26,164 @@ class ShellScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme        = Theme.of(context);
-    final surfaceColor = theme.colorScheme.surface;
     final currentIndex = _currentIndex(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      extendBody: true,
       body: child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color:     surfaceColor,
-          boxShadow: [
-            BoxShadow(
-              color:      Colors.black.withOpacity(0.06),
-              blurRadius: 12,
-              offset:     const Offset(0, -2),
+      bottomNavigationBar: _PremiumBottomNav(
+        currentIndex: currentIndex,
+        isDark: isDark,
+        onTap: (i) => context.go(_tabs[i].path),
+        tabs: _tabs,
+      ),
+    );
+  }
+}
+
+class _PremiumBottomNav extends StatelessWidget {
+  final int currentIndex;
+  final bool isDark;
+  final ValueChanged<int> onTap;
+  final List<_TabItem> tabs;
+
+  const _PremiumBottomNav({
+    required this.currentIndex,
+    required this.isDark,
+    required this.onTap,
+    required this.tabs,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isDark ? AppColors.darkSurface : Colors.white;
+
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: bg.withValues(alpha: isDark ? 0.85 : 0.95),
+            border: Border(
+              top: BorderSide(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.black.withValues(alpha: 0.06),
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: 62,
+              child: Row(
+                children: List.generate(tabs.length, (i) {
+                  return Expanded(
+                    child: _NavItem(
+                      tab: tabs[i],
+                      isSelected: currentIndex == i,
+                      isDark: isDark,
+                      onTap: () => onTap(i),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatefulWidget {
+  final _TabItem tab;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.tab,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _scaleAnim = Tween<double>(begin: 1.0, end: 0.88)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = widget.isSelected;
+    final iconColor = selected
+        ? AppColors.primaryRed
+        : (widget.isDark ? const Color(0xFF4A5568) : AppColors.navUnselected);
+    final labelColor = selected
+        ? AppColors.primaryRed
+        : (widget.isDark ? const Color(0xFF4A5568) : AppColors.navUnselected);
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) {
+        _controller.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _controller.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnim,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: selected
+                    ? AppColors.primaryRed.withValues(alpha: 0.12)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                selected ? widget.tab.activeIcon : widget.tab.icon,
+                color: iconColor,
+                size: 24,
+              ),
+            ),
+            const SizedBox(height: 2),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontSize:   10,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                color:      labelColor,
+              ),
+              child: Text(widget.tab.label),
             ),
           ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex:        currentIndex,
-          elevation:           0,
-          backgroundColor:     surfaceColor,
-          selectedItemColor:   AppColors.primaryRed,
-          unselectedItemColor: AppColors.navUnselected,
-          type:                BottomNavigationBarType.fixed,
-          onTap:               (index) => context.go(_tabs[index].path),
-          items: _tabs
-              .asMap()
-              .entries
-              .map((e) => BottomNavigationBarItem(
-                    icon:       Icon(e.value.icon),
-                    activeIcon: Icon(e.value.activeIcon),
-                    label:      e.value.label,
-                  ))
-              .toList(),
         ),
       ),
     );

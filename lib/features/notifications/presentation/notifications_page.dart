@@ -20,8 +20,8 @@ class NotificationsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title:
-            const Text('Meldingen', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Meldingen',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           TextButton(
             onPressed: () => _markAllRead(userId),
@@ -160,13 +160,13 @@ class _NotifTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isUnread ? color.withOpacity(0.05) : null,
+      color: isUnread ? color.withValues(alpha: 0.05) : null,
       child: ListTile(
         onTap: onTap,
         leading: Container(
           padding: const EdgeInsets.all(10),
-          decoration:
-              BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+          decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
           child: Icon(icon, color: color, size: 20),
         ),
         title: Text(
@@ -181,18 +181,17 @@ class _NotifTile extends StatelessWidget {
             const SizedBox(height: 4),
             Text(subtitle, style: const TextStyle(fontSize: 12)),
             const SizedBox(height: 4),
-            Text(time, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+            Text(time,
+                style: const TextStyle(fontSize: 11, color: Colors.grey)),
           ],
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         isThreeLine: true,
         trailing: isUnread
             ? Container(
                 width: 8,
                 height: 8,
-                decoration:
-                    BoxDecoration(color: color, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               )
             : null,
       ),

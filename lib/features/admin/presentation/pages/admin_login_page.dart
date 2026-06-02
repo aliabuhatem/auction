@@ -55,7 +55,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     decoration: BoxDecoration(
                       color:        AppColors.primaryRed,
                       borderRadius: BorderRadius.circular(18),
-                      boxShadow: [BoxShadow(color: AppColors.primaryRed.withOpacity(0.4), blurRadius: 24, offset: const Offset(0,8))],
+                      boxShadow: [BoxShadow(color: AppColors.primaryRed.withValues(alpha: 0.4), blurRadius: 24, offset: const Offset(0,8))],
                     ),
                     child: const Icon(Icons.gavel_rounded, color: Colors.white, size: 32),
                   ),
@@ -64,7 +64,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w800)),
                   const SizedBox(height: 4),
                   Text('Admin Dashboard',
-                    style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 13)),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 13)),
                   const SizedBox(height: 40),
 
                   // Card
@@ -73,7 +73,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                     decoration: BoxDecoration(
                       color:        const Color(0xFF1A1D27),
                       borderRadius: BorderRadius.circular(24),
-                      border:       Border.all(color: Colors.white.withOpacity(0.07)),
+                      border:       Border.all(color: Colors.white.withValues(alpha: 0.07)),
                     ),
                     child: Form(
                       key: _formKey,
@@ -121,9 +121,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                   margin: const EdgeInsets.only(bottom: 12),
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color:        Colors.red.withOpacity(0.1),
+                                    color:        Colors.red.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(10),
-                                    border:       Border.all(color: Colors.red.withOpacity(0.3)),
+                                    border:       Border.all(color: Colors.red.withValues(alpha: 0.3)),
                                   ),
                                   child: Row(children: [
                                     const Icon(Icons.error_outline, color: Colors.redAccent, size: 16),
@@ -169,7 +169,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                   ),
                   const SizedBox(height: 24),
                   Text('Alleen bevoegd personeel heeft toegang',
-                    style: TextStyle(color: Colors.white.withOpacity(0.2), fontSize: 11)),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.2), fontSize: 11)),
                 ],
               ),
             ),

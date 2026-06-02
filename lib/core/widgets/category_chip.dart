@@ -38,7 +38,7 @@ class CategoryChip extends StatelessWidget {
           boxShadow: isSelected && showShadow
               ? [
                   BoxShadow(
-                    color:      AppColors.primaryRed.withOpacity(0.35),
+                    color:      AppColors.primaryRed.withValues(alpha: 0.35),
                     blurRadius: 8,
                     offset:     const Offset(0, 3),
                   ),
@@ -101,7 +101,7 @@ class CategoryIconChip extends StatelessWidget {
             color: isSelected ? AppColors.primaryRed : Colors.grey.shade100,
             shape: BoxShape.circle,
             boxShadow: isSelected
-                ? [BoxShadow(color: AppColors.primaryRed.withOpacity(0.3), blurRadius: 8)]
+                ? [BoxShadow(color: AppColors.primaryRed.withValues(alpha: 0.3), blurRadius: 8)]
                 : null,
           ),
           child: Text(emoji, style: const TextStyle(fontSize: 20)),

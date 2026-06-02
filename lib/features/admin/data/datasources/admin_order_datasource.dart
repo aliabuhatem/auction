@@ -69,8 +69,8 @@ class AdminOrderDatasource {
             .where('createdAt', isLessThanOrEqualTo: threshold20h)
             .count()
             .get(),
-        _db.collection('orders').where('status', isEqualTo: 'paid').get(),
-        _db.collection('orders').where('status', isEqualTo: 'refunded').get(),
+        _db.collection('orders').where('status', isEqualTo: 'paid').limit(500).get(),
+        _db.collection('orders').where('status', isEqualTo: 'refunded').limit(500).get(),
       ]);
 
       final pendingCount  = (results[0] as AggregateQuerySnapshot).count ?? 0;

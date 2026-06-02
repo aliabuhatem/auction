@@ -88,7 +88,7 @@ class AdminRemoteDatasource {
       safeCount(_db.collection('bids').where('createdAt',
           isGreaterThanOrEqualTo: todayTs)),                                            // 3
       safeCount(_db.collection('orders').where('status', isEqualTo: 'pending')),       // 4
-      safeGet(_db.collection('orders').where('status', isEqualTo: 'paid')),            // 5
+      safeGet(_db.collection('orders').where('status', isEqualTo: 'paid').limit(500)), // 5
       safeGet(_db.collection('bids').orderBy('createdAt', descending: true).limit(8)), // 6
       safeGet(_db.collection('auctions')
           .where('status', isEqualTo: 'live').orderBy('endsAt').limit(5)),              // 7

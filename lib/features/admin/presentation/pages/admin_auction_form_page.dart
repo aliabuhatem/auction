@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../bloc/admin_auction_form_bloc.dart';
 import '../../domain/entities/admin_auction_entity.dart';
 import '../../data/datasources/admin_auction_datasource.dart';
+import '../../data/datasources/admin_product_datasource.dart';
+import '../../domain/entities/admin_product_entity.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class AdminAuctionFormPage extends StatefulWidget {
@@ -30,7 +32,7 @@ class _AdminAuctionFormPageState extends State<AdminAuctionFormPage> {
 
   // State
   AuctionCategory _category    = AuctionCategory.vacation;
-  AuctionStatus   _status      = AuctionStatus.draft;
+  AuctionStatus   _status      = AuctionStatus.scheduled;
   DateTime        _startAt     = DateTime.now().add(const Duration(hours: 1));
   DateTime        _endsAt      = DateTime.now().add(const Duration(days: 3));
   List<String>    _imageUrls   = [];
@@ -104,16 +106,36 @@ class _AdminAuctionFormPageState extends State<AdminAuctionFormPage> {
             endsAt:       _endsAt,
             imageUrls:    _imageUrls,
             tempId:       _tempId,
-            onCategoryChanged: (v) => setState(() => _category = v!),
-            onStatusChanged:   (v) => setState(() => _status   = v!),
-            onStartAtChanged:  (v) => setState(() => _startAt  = v),
-            onEndsAtChanged:   (v) => setState(() => _endsAt   = v),
-            onSave: () => _save(ctx),
+            onCategoryChanged:  (v) => setState(() => _category = v!),
+            onStatusChanged:    (v) => setState(() => _status   = v!),
+            onStartAtChanged:   (v) => setState(() => _startAt  = v),
+            onEndsAtChanged:    (v) => setState(() => _endsAt   = v),
+            onSave:             () => _save(ctx),
+            onPickFromCatalog:  () => _pickFromCatalog(ctx),
             auctionId: widget.existing?.id,
           ),
         );
       }),
     );
+  }
+
+  Future<void> _pickFromCatalog(BuildContext ctx) async {
+    final ds = ctx.read<AdminProductDatasource>();
+    final products = await ds.getProducts(isActive: true, limit: 200);
+    if (!ctx.mounted) return;
+    final picked = await showDialog<AdminProductEntity>(
+      context: ctx,
+      builder: (_) => _ProductPickerDialog(products: products),
+    );
+    if (picked == null) return;
+    setState(() {
+      _titleCtrl.text    = picked.title;
+      _descCtrl.text     = picked.description;
+      _retailCtrl.text   = picked.retailValue.toInt().toString();
+      _locationCtrl.text = picked.location ?? '';
+      _category          = picked.category;
+      _imageUrls         = List.from(picked.images);
+    });
   }
 
   void _save(BuildContext ctx) {
@@ -156,6 +178,7 @@ class _FormScaffold extends StatelessWidget {
   final ValueChanged<DateTime>         onStartAtChanged;
   final ValueChanged<DateTime>         onEndsAtChanged;
   final VoidCallback                   onSave;
+  final VoidCallback                   onPickFromCatalog;
   final String?                        auctionId;
 
   const _FormScaffold({
@@ -177,6 +200,7 @@ class _FormScaffold extends StatelessWidget {
     required this.onStartAtChanged,
     required this.onEndsAtChanged,
     required this.onSave,
+    required this.onPickFromCatalog,
     this.auctionId,
   });
 
@@ -209,6 +233,7 @@ class _FormScaffold extends StatelessWidget {
                     backgroundColor: AppColors.primaryRed,
                     foregroundColor: Colors.white,
                     elevation: 0,
+                    minimumSize: const Size(0, 36),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -242,6 +267,48 @@ class _FormScaffold extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (!isEdit) ...[
+                      GestureDetector(
+                        onTap: onPickFromCatalog,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF5F5),
+                            border: Border.all(color: AppColors.primaryRed.withValues(alpha: 0.3)),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primaryRed.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.inventory_2_outlined,
+                                  color: AppColors.primaryRed, size: 18),
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Selecteer uit productcatalogus',
+                                      style: TextStyle(
+                                          fontSize: 13, fontWeight: FontWeight.w700,
+                                          color: Color(0xFF1A1D27))),
+                                  SizedBox(height: 2),
+                                  Text('Importeer titel, beschrijving en afbeeldingen',
+                                      style: TextStyle(fontSize: 11, color: Color(0xFF8B9CB6))),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios,
+                                size: 13, color: AppColors.primaryRed),
+                          ]),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                     _Section(
                       title: 'Basisinformatie',
                       children: [
@@ -676,4 +743,167 @@ class _ImageThumb extends StatelessWidget {
       ],
     );
   }
+}
+
+// ── Product picker dialog ─────────────────────────────────────────────────────
+
+class _ProductPickerDialog extends StatefulWidget {
+  final List<AdminProductEntity> products;
+  const _ProductPickerDialog({required this.products});
+
+  @override
+  State<_ProductPickerDialog> createState() => _ProductPickerDialogState();
+}
+
+class _ProductPickerDialogState extends State<_ProductPickerDialog> {
+  final _searchCtrl = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
+
+  List<AdminProductEntity> get _filtered {
+    if (_query.isEmpty) return widget.products;
+    final q = _query.toLowerCase();
+    return widget.products.where((p) =>
+        p.title.toLowerCase().contains(q) ||
+        p.category.label.toLowerCase().contains(q)).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final filtered = _filtered;
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+      child: SizedBox(
+        width: 560,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 12, 12),
+              child: Row(children: [
+                const Text('Selecteer product',
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w800,
+                        color: Color(0xFF1A1D27))),
+                const Spacer(),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 18, color: Color(0xFF8B9CB6)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ]),
+            ),
+            // Search
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              child: TextField(
+                controller: _searchCtrl,
+                onChanged: (v) => setState(() => _query = v),
+                style: const TextStyle(fontSize: 13, color: Color(0xFF1A1D27)),
+                decoration: InputDecoration(
+                  hintText: 'Zoek op naam of categorie…',
+                  hintStyle: const TextStyle(fontSize: 13, color: Color(0xFFB0B8C8)),
+                  prefixIcon: const Icon(Icons.search, size: 18, color: Color(0xFF8B9CB6)),
+                  filled: true,
+                  fillColor: const Color(0xFFF8F9FC),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFFE8EAF0))),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFFE8EAF0))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide:
+                          const BorderSide(color: AppColors.primaryRed, width: 1.5)),
+                ),
+              ),
+            ),
+            const Divider(height: 1, color: Color(0xFFF0F0F5)),
+            // List
+            Flexible(
+              child: filtered.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.all(32),
+                      child: Text('Geen producten gevonden.',
+                          style: TextStyle(fontSize: 13, color: Color(0xFF8B9CB6))),
+                    )
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) =>
+                          const Divider(height: 1, color: Color(0xFFF0F0F5)),
+                      itemBuilder: (context, i) {
+                        final p = filtered[i];
+                        return InkWell(
+                          onTap: () => Navigator.of(context).pop(p),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                            child: Row(children: [
+                              // Thumbnail
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: p.images.isNotEmpty
+                                    ? Image.network(p.images.first,
+                                        width: 52, height: 52, fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) =>
+                                            _placeholder())
+                                    : _placeholder(),
+                              ),
+                              const SizedBox(width: 12),
+                              // Info
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(p.title,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF1A1D27))),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                        '${p.category.emoji} ${p.category.label}',
+                                        style: const TextStyle(
+                                            fontSize: 11,
+                                            color: Color(0xFF8B9CB6))),
+                                  ],
+                                ),
+                              ),
+                              // Retail value
+                              Text(
+                                '€ ${p.retailValue.toInt()}',
+                                style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primaryRed),
+                              ),
+                            ]),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder() => Container(
+        width: 52, height: 52,
+        color: const Color(0xFFF0F0F5),
+        child: const Icon(Icons.image_outlined,
+            size: 20, color: Color(0xFFB0B8C8)),
+      );
 }

@@ -77,7 +77,7 @@ class _VoucherDetail extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),
@@ -89,11 +89,13 @@ class _VoucherDetail extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
                       color: Color(0xFFE63946),
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(24)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.local_activity, color: Colors.white, size: 28),
+                        const Icon(Icons.local_activity,
+                            color: Colors.white, size: 28),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -109,30 +111,35 @@ class _VoucherDetail extends StatelessWidget {
                               ),
                               Text(
                                 'Geldig t/m ${voucher.expiresAtFormatted}',
-                                style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                style: const TextStyle(
+                                    color: Colors.white70, fontSize: 12),
                               ),
                             ],
                           ),
                         ),
                         if (voucher.isUsed)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white24,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text('Gebruikt',
-                                style: TextStyle(color: Colors.white, fontSize: 11)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 11)),
                           ),
                         if (voucher.isExpired && !voucher.isUsed)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.black26,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text('Verlopen',
-                                style: TextStyle(color: Colors.white, fontSize: 11)),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 11)),
                           ),
                       ],
                     ),
@@ -151,7 +158,8 @@ class _VoucherDetail extends StatelessWidget {
                     child: Column(
                       children: [
                         Text('Vouchercode',
-                            style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                            style: TextStyle(
+                                color: Colors.grey[600], fontSize: 12)),
                         const SizedBox(height: 4),
                         Text(
                           voucher.code,
@@ -176,7 +184,10 @@ class _VoucherDetail extends StatelessWidget {
                   ),
                 ],
               ),
-            ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9)),
+            )
+                .animate()
+                .fadeIn(duration: 400.ms)
+                .scale(begin: const Offset(0.9, 0.9)),
           ],
         ),
       ),

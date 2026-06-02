@@ -15,7 +15,8 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\" -Recurse -Directory | Where-Object { $_.Name -eq \"domain\" -or $_.Name -eq \"data\" } | Select-Object -ExpandProperty FullName | Sort-Object)",
       "Bash(flutter analyze *)",
-      "Bash(findstr -i \"signingconfig\\\\|minifyEnabled\\\\|shrinkResources\")"
+      "Bash(findstr -i \"signingconfig\\\\|minifyEnabled\\\\|shrinkResources\")",
+      "Bash(git fetch *)"
     ]
   }
 }

@@ -21,7 +21,7 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.category?.name ?? 'Alle veilingen';
+    final title = widget.category?.label ?? 'Alle veilingen';
     return Scaffold(
       appBar: AppBar(title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold))),
       body: BlocBuilder<AuctionListBloc, AuctionListState>(

@@ -9,6 +9,8 @@ abstract class AuctionRepository {
     int              page = 1,
   });
 
+  Stream<List<AuctionEntity>> watchAuctions({AuctionCategory? category});
+
   Future<Either<Failure, AuctionEntity>> getAuctionById(String id);
 
   Stream<AuctionEntity> watchAuction(String auctionId);

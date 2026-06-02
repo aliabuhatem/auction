@@ -9,8 +9,8 @@ android {
     // TODO: Replace "com.example.auction" with your production applicationId
     //       (e.g. "nl.vakantieveilingen.app") and update google-services.json.
     namespace = "com.example.auction"
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -25,7 +25,7 @@ android {
     defaultConfig {
         applicationId = "com.example.auction"
         minSdk = flutter.minSdkVersion  // Firebase minimum
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

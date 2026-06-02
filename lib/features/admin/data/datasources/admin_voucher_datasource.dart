@@ -49,36 +49,18 @@ class AdminVoucherDatasource {
 
   Future<VoucherStatsEntity> getVoucherStats() async {
     try {
-      final validCount = (await _db
-              .collection('vouchers')
-              .where('status', isEqualTo: 'valid')
-              .count()
-              .get())
-          .count ?? 0;
-      final usedCount = (await _db
-              .collection('vouchers')
-              .where('status', isEqualTo: 'used')
-              .count()
-              .get())
-          .count ?? 0;
-      final expiredCount = (await _db
-              .collection('vouchers')
-              .where('status', isEqualTo: 'expired')
-              .count()
-              .get())
-          .count ?? 0;
-      final revokedCount = (await _db
-              .collection('vouchers')
-              .where('status', isEqualTo: 'revoked')
-              .count()
-              .get())
-          .count ?? 0;
+      final results = await Future.wait([
+        _db.collection('vouchers').where('status', isEqualTo: 'valid').count().get(),
+        _db.collection('vouchers').where('status', isEqualTo: 'used').count().get(),
+        _db.collection('vouchers').where('status', isEqualTo: 'expired').count().get(),
+        _db.collection('vouchers').where('status', isEqualTo: 'revoked').count().get(),
+      ]);
 
       return VoucherStatsEntity(
-        validCount:   validCount,
-        usedCount:    usedCount,
-        expiredCount: expiredCount,
-        revokedCount: revokedCount,
+        validCount:   results[0].count ?? 0,
+        usedCount:    results[1].count ?? 0,
+        expiredCount: results[2].count ?? 0,
+        revokedCount: results[3].count ?? 0,
       );
     } catch (e) {
       throw Exception('Fout bij ophalen statistieken: $e');

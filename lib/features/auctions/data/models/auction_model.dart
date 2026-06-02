@@ -44,15 +44,17 @@ class AuctionModel extends AuctionEntity {
 
   static AuctionStatus _parseStatus(String? s) {
     switch (s) {
-      case 'upcoming': return AuctionStatus.upcoming;
-      case 'ended':    return AuctionStatus.ended;
-      case 'sold':     return AuctionStatus.sold;
-      default:         return AuctionStatus.live;
+      case 'upcoming':
+      case 'scheduled': return AuctionStatus.upcoming;
+      case 'ended':     return AuctionStatus.ended;
+      case 'sold':      return AuctionStatus.sold;
+      default:          return AuctionStatus.live;
     }
   }
 
   static AuctionCategory _parseCategory(String? c) {
     switch (c) {
+      case 'vacation':    return AuctionCategory.vacation;
       case 'beauty':      return AuctionCategory.beauty;
       case 'sauna':       return AuctionCategory.sauna;
       case 'food':        return AuctionCategory.food;
@@ -60,7 +62,9 @@ class AuctionModel extends AuctionEntity {
       case 'products':    return AuctionCategory.products;
       case 'sports':      return AuctionCategory.sports;
       case 'wellness':    return AuctionCategory.wellness;
-      case 'dayTrips':    return AuctionCategory.dayTrips;
+      case 'dayTrips':    // mobile casing
+      case 'daytrips':    // admin casing
+        return AuctionCategory.dayTrips;
       default:            return AuctionCategory.vacation;
     }
   }

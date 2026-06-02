@@ -34,7 +34,21 @@ class _AdminShellState extends State<AdminShell> {
       return s is AdminAuthenticated ? s.user : null;
     });
 
-    return Scaffold(
+    // Override the app-level button theme (minimumSize: double.infinity) which
+    // crashes inside Row's unbounded first-pass layout on web.
+    return Theme(
+      data: Theme.of(context).copyWith(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(minimumSize: const Size(0, 40)),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 40)),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(minimumSize: const Size(0, 36)),
+        ),
+      ),
+      child: Scaffold(
       backgroundColor: const Color(0xFFF8F9FC),
       body: Row(
         children: [
@@ -60,6 +74,7 @@ class _AdminShellState extends State<AdminShell> {
           ),
         ],
       ),
+    ),   // Theme
     );
   }
 }

@@ -5,6 +5,22 @@ import 'package:equatable/equatable.dart';
 enum AuctionStatus { upcoming, live, ended, sold }
 enum AuctionCategory { vacation, beauty, sauna, food, products, experiences, sports, wellness, dayTrips }
 
+extension AuctionCategoryX on AuctionCategory {
+  String get label {
+    switch (this) {
+      case AuctionCategory.vacation:    return 'Vakantie';
+      case AuctionCategory.beauty:      return 'Beauty';
+      case AuctionCategory.sauna:       return 'Sauna';
+      case AuctionCategory.food:        return 'Eten';
+      case AuctionCategory.products:    return 'Producten';
+      case AuctionCategory.experiences: return 'Beleving';
+      case AuctionCategory.sports:      return 'Sport';
+      case AuctionCategory.wellness:    return 'Wellness';
+      case AuctionCategory.dayTrips:    return 'Dagtrips';
+    }
+  }
+}
+
 class AuctionEntity extends Equatable {
   final String id;
   final String title;

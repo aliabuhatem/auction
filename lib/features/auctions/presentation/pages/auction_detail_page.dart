@@ -1,14 +1,15 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:share_plus/share_plus.dart';
 import '../bloc/bidding_bloc.dart';
 import '../widgets/bid_history_list.dart';
-import '../widgets/auction_timer_badge.dart';
 import '../../../../core/widgets/bid_button.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/countdown_widget.dart';
 
 class AuctionDetailPage extends StatefulWidget {
   final String auctionId;
@@ -17,7 +18,8 @@ class AuctionDetailPage extends StatefulWidget {
   State<AuctionDetailPage> createState() => _AuctionDetailPageState();
 }
 
-class _AuctionDetailPageState extends State<AuctionDetailPage> with SingleTickerProviderStateMixin {
+class _AuctionDetailPageState extends State<AuctionDetailPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _imageIndex = 0;
 
@@ -39,172 +41,236 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> with SingleTicker
     return BlocConsumer<BiddingBloc, BiddingState>(
       listener: (context, state) {
         if (state is BiddingSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Row(children: [Icon(Icons.check_circle, color: Colors.white), SizedBox(width: 8), Text('Bod geplaatst! 🎉')]),
-              backgroundColor: Colors.green,
-            ),
-          );
+          HapticFeedback.mediumImpact();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Row(children: [
+              Icon(Icons.check_circle_rounded, color: Colors.white),
+              SizedBox(width: 10),
+              Text('Bod geplaatst!', style: TextStyle(fontWeight: FontWeight.w700)),
+            ]),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ));
         } else if (state is BiddingFailed) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.error), backgroundColor: Colors.red),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(state.error),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ));
         } else if (state is BiddingLoaded && state.wasOutbid) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Je bent overboden! Bied opnieuw.'), backgroundColor: Colors.orange),
-          );
+          HapticFeedback.heavyImpact();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text('Je bent overboden! Bied opnieuw.'),
+            backgroundColor: AppColors.warning,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ));
         }
       },
       builder: (context, state) {
-        if (state is BiddingLoading) return Scaffold(appBar: AppBar(), body: const AuctionDetailShimmer());
-        if (state is BiddingError) return Scaffold(body: Center(child: Text(state.message)));
+        if (state is BiddingLoading) {
+          return Scaffold(appBar: AppBar(), body: const AuctionDetailShimmer());
+        }
+        if (state is BiddingError) {
+          return Scaffold(
+            body: Center(child: Text(state.message,
+                style: const TextStyle(color: AppColors.textSecondary))),
+          );
+        }
 
         final auction = switch (state) {
-          BiddingLoaded(:final auction) => auction,
+          BiddingLoaded(:final auction)  => auction,
           BiddingPlacing(:final auction) => auction,
           BiddingSuccess(:final auction) => auction,
-          BiddingFailed(:final auction) => auction,
+          BiddingFailed(:final auction)  => auction,
           _ => null,
         };
         if (auction == null) return const Scaffold(body: AuctionDetailShimmer());
 
         final isPlacing = state is BiddingPlacing;
+        final isDark    = Theme.of(context).brightness == Brightness.dark;
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 300,
-                pinned: true,
-                backgroundColor: Colors.black,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: _buildImageGallery(auction.imageUrls),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Scaffold(
+            backgroundColor: isDark ? AppColors.darkBackground : AppColors.backgroundLight,
+            extendBodyBehindAppBar: true,
+            body: CustomScrollView(
+              slivers: [
+                // ── Immersive image app bar ───────────────────────────────
+                SliverAppBar(
+                  expandedHeight:  320,
+                  pinned:          true,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  systemOverlayStyle: SystemUiOverlayStyle.light,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: _ImageGallery(
+                      imageUrls:    auction.imageUrls,
+                      imageIndex:   _imageIndex,
+                      onPageChanged: (i) => setState(() => _imageIndex = i),
+                    ),
+                  ),
+                  leading: _GlassIconButton(
+                    icon: Icons.arrow_back_ios_new_rounded,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
+                  actions: [
+                    _GlassIconButton(
+                      icon: auction.isWatchlisted
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_border_rounded,
+                      iconColor: auction.isWatchlisted
+                          ? AppColors.primaryRed
+                          : Colors.white,
+                      onTap: () => context.read<BiddingBloc>()
+                          .add(ToggleWatchlist(auction.id)),
+                    ),
+                    const SizedBox(width: 4),
+                    _GlassIconButton(
+                      icon: Icons.share_rounded,
+                      onTap: () =>
+                          Share.share('Check deze veiling: ${auction.title}'),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                 ),
-                actions: [
-                  IconButton(
-                    icon: Icon(auction.isWatchlisted ? Icons.favorite : Icons.favorite_border, color: Colors.white),
-                    onPressed: () => context.read<BiddingBloc>().add(ToggleWatchlist(auction.id)),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.share, color: Colors.white),
-                    onPressed: () => Share.share('Check deze veiling: ${auction.title}'),
-                  ),
-                ],
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
+
+                // ── Body content ──────────────────────────────────────────
+                SliverToBoxAdapter(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryRed.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(auction.category.name, style: const TextStyle(color: AppColors.primaryRed, fontWeight: FontWeight.w600, fontSize: 12)),
+                      _HeaderSection(auction: auction, isDark: isDark),
+                      _BidPanel(
+                        auction: auction, isPlacing: isPlacing, isDark: isDark,
                       ),
-                      const SizedBox(height: 10),
-                      Text(auction.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
-                      const SizedBox(height: 6),
-                      Row(children: [
-                        const Icon(Icons.location_on_outlined, size: 16, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Text(auction.location, style: const TextStyle(color: Colors.grey)),
-                      ]),
+                      const SizedBox(height: 16),
+                      _StatsRow(auction: auction, isDark: isDark),
                       const SizedBox(height: 20),
-                      _buildBiddingBox(auction, isPlacing, context),
-                      const SizedBox(height: 20),
-                      // Retail value row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _statItem('Waarde', CurrencyFormatter.format(auction.retailValue), Colors.grey),
-                          _statItem('Jij bespaart', '-${auction.savingsPercent.toStringAsFixed(0)}%', Colors.green),
-                          _statItem('Biedingen', '${auction.bidCount}', AppColors.primaryRed),
-                        ],
+                      _TabSection(
+                        auction:       auction,
+                        tabController: _tabController,
+                        isDark:        isDark,
                       ),
-                      const SizedBox(height: 20),
-                      // Tabs
-                      TabBar(
-                        controller: _tabController,
-                        indicatorColor: AppColors.primaryRed,
-                        labelColor: AppColors.primaryRed,
-                        unselectedLabelColor: Colors.grey,
-                        tabs: const [Tab(text: 'Beschrijving'), Tab(text: 'Biedingen')],
-                      ),
-                      SizedBox(
-                        height: 300,
-                        child: TabBarView(
-                          controller: _tabController,
-                          children: [
-                            SingleChildScrollView(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Text(auction.description, style: const TextStyle(height: 1.6, color: AppColors.textSecondary)),
-                            ),
-                            BidHistoryList(auctionId: auction.id),
-                          ],
-                        ),
-                      ),
+                      const SizedBox(height: 100),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
   }
+}
 
-  Widget _buildImageGallery(List<String> urls) {
-    if (urls.isEmpty) return Container(color: Colors.grey[300]);
+// ── Glass icon button ─────────────────────────────────────────────────────────
+
+class _GlassIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color? iconColor;
+  final VoidCallback onTap;
+  const _GlassIconButton({required this.icon, this.iconColor, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: GestureDetector(
+        onTap: onTap,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              width: 40, height: 40,
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.15), width: 1,
+                ),
+              ),
+              child: Icon(icon, color: iconColor ?? Colors.white, size: 20),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Image gallery ─────────────────────────────────────────────────────────────
+
+class _ImageGallery extends StatelessWidget {
+  final List<String> imageUrls;
+  final int imageIndex;
+  final ValueChanged<int> onPageChanged;
+  const _ImageGallery({
+    required this.imageUrls,
+    required this.imageIndex,
+    required this.onPageChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrls.isEmpty) return Container(color: AppColors.backgroundGrey);
+
     return Stack(
+      fit: StackFit.expand,
       children: [
         PageView.builder(
-          itemCount: urls.length,
-          onPageChanged: (i) => setState(() => _imageIndex = i),
+          itemCount: imageUrls.length,
+          onPageChanged: onPageChanged,
           itemBuilder: (_, i) => Image.network(
-            urls[i],
+            imageUrls[i],
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
-              color: Colors.grey[300],
-              child: const Center(child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey)),
+              color: AppColors.backgroundGrey,
+              child: const Center(child: Icon(Icons.image_not_supported_outlined,
+                  size: 48, color: AppColors.textHint)),
             ),
             loadingBuilder: (_, child, progress) {
               if (progress == null) return child;
               return Container(
-                color: Colors.grey[200],
+                color: AppColors.backgroundGrey,
                 child: Center(
                   child: CircularProgressIndicator(
                     value: progress.expectedTotalBytes != null
                         ? progress.cumulativeBytesLoaded / progress.expectedTotalBytes!
                         : null,
-                    color: Colors.white,
-                    strokeWidth: 2,
+                    color: AppColors.primaryRed, strokeWidth: 2,
                   ),
                 ),
               );
             },
           ),
         ),
-        if (urls.length > 1)
+
+        const Positioned.fill(
+          child: DecoratedBox(
+            decoration: BoxDecoration(gradient: AppColors.imageOverlay),
+          ),
+        ),
+
+        if (imageUrls.length > 1)
           Positioned(
-            bottom: 16,
-            left: 0,
-            right: 0,
+            bottom: 20, left: 0, right: 0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(urls.length, (i) => AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+              children: List.generate(imageUrls.length, (i) => AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
                 margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: i == _imageIndex ? 16 : 6,
+                width:  i == imageIndex ? 18 : 6,
                 height: 6,
                 decoration: BoxDecoration(
-                  color: i == _imageIndex ? Colors.white : Colors.white54,
+                  color: i == imageIndex
+                      ? Colors.white
+                      : Colors.white.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(3),
                 ),
               )),
@@ -213,63 +279,304 @@ class _AuctionDetailPageState extends State<AuctionDetailPage> with SingleTicker
       ],
     );
   }
+}
 
-  Widget _buildBiddingBox(auction, bool isPlacing, BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryRed.withOpacity(0.2)),
-      ),
+// ── Header ────────────────────────────────────────────────────────────────────
+
+class _HeaderSection extends StatelessWidget {
+  final dynamic auction;
+  final bool isDark;
+  const _HeaderSection({required this.auction, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final textPrimary   = isDark ? AppColors.textOnDark   : AppColors.textPrimary;
+    final textSecondary = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('Huidig bod', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                Text(CurrencyFormatter.format(auction.currentBid),
-                    style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.primaryRed)),
-              ]),
-              Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                const Text('Eindigt over', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                AuctionTimerBadge(endsAt: auction.endsAt, large: true),
-              ]),
-            ],
-          ),
-          const SizedBox(height: 16),
-          BidButton(
-            nextBid: auction.currentBid + 1.0,
-            isLoading: isPlacing,
-            onTap: isPlacing ? null : () {
-              context.read<BiddingBloc>().add(SubmitBid(
-                auctionId: auction.id,
-                amount: auction.currentBid + 1.0,
-              ));
-            },
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color:        AppColors.primaryRed.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(100),
+            ),
+            child: Text(
+              auction.category.label.toUpperCase(),
+              style: const TextStyle(
+                color: AppColors.primaryRed, fontWeight: FontWeight.w700,
+                fontSize: 11, letterSpacing: 0.8,
+              ),
+            ),
           ),
           const SizedBox(height: 10),
-          OutlinedButton.icon(
-            onPressed: () => context.read<BiddingBloc>().add(SetAlarm(auction.id)),
-            icon: const Icon(Icons.alarm, size: 18),
-            label: const Text('Stel alarm in'),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 44),
-              side: const BorderSide(color: Colors.grey),
-              foregroundColor: AppColors.textPrimary,
+          Text(
+            auction.title,
+            style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.w800,
+              color: textPrimary, letterSpacing: -0.3, height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined, size: 15, color: textSecondary),
+              const SizedBox(width: 4),
+              Text(auction.location,
+                  style: TextStyle(color: textSecondary, fontSize: 13)),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Bid panel ─────────────────────────────────────────────────────────────────
+
+class _BidPanel extends StatelessWidget {
+  final dynamic auction;
+  final bool isPlacing;
+  final bool isDark;
+  const _BidPanel({required this.auction, required this.isPlacing, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color:        isDark ? AppColors.darkCard : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border:       Border.all(
+            color: isDark ? AppColors.darkBorder : AppColors.border,
+            width: isDark ? 1 : 1.5,
+          ),
+          boxShadow: isDark
+              ? null
+              : [const BoxShadow(color: AppColors.cardShadow, blurRadius: 20, offset: Offset(0, 6))],
+        ),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Huidig bod',
+                          style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      const SizedBox(height: 2),
+                      Text(
+                        CurrencyFormatter.format(auction.currentBid),
+                        style: const TextStyle(
+                          fontSize: 32, fontWeight: FontWeight.w900,
+                          color: AppColors.primaryRed, letterSpacing: -0.5, height: 1,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text('${auction.bidCount} biedingen',
+                          style: const TextStyle(color: AppColors.textSecondary,
+                              fontSize: 12, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Text('Eindigt over',
+                        style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    const SizedBox(height: 4),
+                    _TimerChip(endsAt: auction.endsAt),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            BidButton(
+              nextBid:   auction.currentBid + 1.0,
+              isLoading: isPlacing,
+              onTap: isPlacing
+                  ? null
+                  : () => context.read<BiddingBloc>().add(SubmitBid(
+                        auctionId: auction.id,
+                        amount:    auction.currentBid + 1.0,
+                      )),
+            ),
+            const SizedBox(height: 10),
+            AlarmButton(
+              isSet: false,
+              onTap: () => context.read<BiddingBloc>().add(SetAlarm(auction.id)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TimerChip extends StatelessWidget {
+  final DateTime endsAt;
+  const _TimerChip({required this.endsAt});
+
+  @override
+  Widget build(BuildContext context) {
+    final remaining = endsAt.difference(DateTime.now());
+    final isUrgent  = remaining.inMinutes < 10;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: isUrgent
+            ? AppColors.primaryRed.withValues(alpha: 0.10)
+            : AppColors.success.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: CountdownWidget(
+        endsAt: endsAt,
+        style: TextStyle(
+          fontSize: 16, fontWeight: FontWeight.w800, letterSpacing: 0.5,
+          color: isUrgent ? AppColors.primaryRed : AppColors.success,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Stats row ─────────────────────────────────────────────────────────────────
+
+class _StatsRow extends StatelessWidget {
+  final dynamic auction;
+  final bool isDark;
+  const _StatsRow({required this.auction, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          _StatCard(label: 'Winkelwaarde',
+              value: CurrencyFormatter.format(auction.retailValue),
+              color: AppColors.textSecondary, isDark: isDark),
+          const SizedBox(width: 10),
+          _StatCard(label: 'Jij bespaart',
+              value: '-${auction.savingsPercent.toStringAsFixed(0)}%',
+              color: AppColors.success, isDark: isDark),
+          const SizedBox(width: 10),
+          _StatCard(label: 'Biedingen',
+              value: '${auction.bidCount}',
+              color: AppColors.primaryRed, isDark: isDark),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color  color;
+  final bool   isDark;
+  const _StatCard({
+    required this.label, required this.value,
+    required this.color, required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color:        isDark ? AppColors.darkCard : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border:       isDark ? Border.all(color: AppColors.darkBorder) : null,
+          boxShadow: isDark
+              ? null
+              : [const BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: Offset(0, 2))],
+        ),
+        child: Column(
+          children: [
+            Text(value,
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: color)),
+            const SizedBox(height: 2),
+            Text(label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, height: 1.2)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Tab section ───────────────────────────────────────────────────────────────
+
+class _TabSection extends StatelessWidget {
+  final dynamic auction;
+  final TabController tabController;
+  final bool isDark;
+  const _TabSection({
+    required this.auction, required this.tabController, required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            height: 44,
+            decoration: BoxDecoration(
+              color:        isDark ? AppColors.darkCard : AppColors.backgroundGrey,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TabBar(
+              controller:    tabController,
+              dividerColor:  Colors.transparent,
+              indicator: BoxDecoration(
+                gradient:     AppColors.primaryGradient,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: const [BoxShadow(
+                  color: AppColors.primaryShadow, blurRadius: 8, offset: Offset(0, 2),
+                )],
+              ),
+              indicatorSize:       TabBarIndicatorSize.tab,
+              labelColor:          Colors.white,
+              unselectedLabelColor: AppColors.textSecondary,
+              labelStyle: const TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.w700, fontSize: 13),
+              tabs: const [Tab(text: 'Beschrijving'), Tab(text: 'Biedingen')],
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 320,
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                SingleChildScrollView(
+                  child: Text(
+                    auction.description,
+                    style: TextStyle(
+                      height: 1.7, fontSize: 14,
+                      color: isDark ? const Color(0xFFCBD5E1) : AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+                BidHistoryList(auctionId: auction.id),
+              ],
             ),
           ),
         ],
       ),
     );
-  }
-
-  Widget _statItem(String label, String value, Color color) {
-    return Column(children: [
-      Text(label, style: const TextStyle(fontSize: 11, color: Colors.grey)),
-      const SizedBox(height: 2),
-      Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: color)),
-    ]);
   }
 }

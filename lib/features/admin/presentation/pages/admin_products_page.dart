@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/admin_product_bloc.dart';
-import '../widgets/admin_shell.dart';
 import '../../domain/entities/admin_product_entity.dart';
 import '../../domain/entities/admin_category_entity.dart';
 import '../../domain/entities/admin_auction_entity.dart';
 import '../../data/datasources/admin_product_datasource.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../widgets/admin_shell.dart';
 import 'admin_product_form_page.dart';
 
 class AdminProductsPage extends StatelessWidget {
@@ -134,6 +134,7 @@ class _ProductsTabState extends State<_ProductsTab> {
   AuctionCategory? _category;
   bool?            _isActive;
   final _searchCtrl = TextEditingController();
+  List<AdminProductEntity> _cachedProducts = [];
 
   @override
   void dispose() {
@@ -199,6 +200,10 @@ class _ProductsTabState extends State<_ProductsTab> {
   }
 
   Widget _buildList(BuildContext context, AdminProductState state) {
+    if (state is AdminProductLoaded) {
+      _cachedProducts = state.products;
+    }
+
     if (state is AdminProductLoading || state is AdminProductInitial ||
         state is AdminProductSaving) {
       return const Center(
@@ -220,36 +225,46 @@ class _ProductsTabState extends State<_ProductsTab> {
         ],
       ));
     }
-    if (state is AdminProductLoaded) {
-      if (state.products.isEmpty) {
-        return const Center(child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.inventory_2_outlined,
-                size: 56, color: Color(0xFFCBD5E1)),
-            SizedBox(height: 12),
-            Text('Geen producten gevonden',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-            SizedBox(height: 4),
-            Text('Voeg je eerste product toe',
-                style: TextStyle(color: Color(0xFF8B9CB6), fontSize: 13)),
-          ],
-        ));
-      }
-      return ListView.separated(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        itemCount: state.products.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
-        itemBuilder: (context, i) => _ProductCard(
-          product: state.products[i],
-          onEdit: () => _openForm(context, state.products[i]),
-          onDelete: () => _confirmDelete(context, state.products[i]),
-          onToggle: (v) => context.read<AdminProductBloc>()
-              .add(ToggleProductActive(state.products[i].id, v)),
-        ),
-      );
+
+    // Show the product list — either from the latest loaded state or the cache.
+    // This prevents a blank page when the shared bloc transitions to a
+    // categories-related state (AdminCategoryLoading / AdminCategoryLoaded).
+    final products = (state is AdminProductLoaded)
+        ? state.products
+        : _cachedProducts;
+
+    if (products.isEmpty && state is! AdminProductLoaded) {
+      return const Center(
+          child: CircularProgressIndicator(color: AppColors.primaryRed));
     }
-    return const SizedBox.shrink();
+
+    if (products.isEmpty) {
+      return const Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.inventory_2_outlined,
+              size: 56, color: Color(0xFFCBD5E1)),
+          SizedBox(height: 12),
+          Text('Geen producten gevonden',
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
+          SizedBox(height: 4),
+          Text('Voeg je eerste product toe',
+              style: TextStyle(color: Color(0xFF8B9CB6), fontSize: 13)),
+        ],
+      ));
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+      itemCount: products.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (context, i) => _ProductCard(
+        product: products[i],
+        onEdit: () => _openForm(context, products[i]),
+        onDelete: () => _confirmDelete(context, products[i]),
+        onToggle: (v) => context.read<AdminProductBloc>()
+            .add(ToggleProductActive(products[i].id, v)),
+      ),
+    );
   }
 
   void _openForm(BuildContext context, AdminProductEntity? existing) {

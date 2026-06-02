@@ -234,6 +234,7 @@ class _State extends State<AdminProductFormPage> {
                     backgroundColor: AppColors.primaryRed,
                     foregroundColor: Colors.white,
                     elevation: 0,
+                    minimumSize: const Size(0, 36),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.symmetric(

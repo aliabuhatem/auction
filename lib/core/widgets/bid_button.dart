@@ -91,7 +91,7 @@ class _BidButtonState extends State<BidButton>
             boxShadow: _isEnabled
                 ? [
                     BoxShadow(
-                      color:      AppColors.primaryRed.withOpacity(0.40),
+                      color:      AppColors.primaryRed.withValues(alpha: 0.40),
                       blurRadius: 14,
                       offset:     const Offset(0, 5),
                     ),
@@ -176,7 +176,7 @@ class _AlarmButtonState extends State<AlarmButton>
         height: AppDimensions.buttonHeightS,
         decoration: BoxDecoration(
           color: widget.isSet
-              ? AppColors.primaryRed.withOpacity(0.08)
+              ? AppColors.primaryRed.withValues(alpha: 0.08)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           border: Border.all(

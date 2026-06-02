@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../bloc/admin_auction_list_bloc.dart';
-import '../widgets/admin_shell.dart';
 import '../../domain/entities/admin_auction_entity.dart';
 import '../../data/datasources/admin_auction_datasource.dart';
+import '../../data/datasources/admin_product_datasource.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../widgets/admin_shell.dart';
 import 'admin_auction_form_page.dart';
 
 class AdminAuctionsPage extends StatelessWidget {
@@ -16,10 +17,7 @@ class AdminAuctionsPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => AdminAuctionListBloc(
         context.read<AdminAuctionDatasource>())..add(LoadAdminAuctions()),
-      child: const AdminShell(
-        selectedIndex: 1,
-        child: _AuctionListBody(),
-      ),
+      child: const AdminShell(selectedIndex: 1, child: _AuctionListBody()),
     );
   }
 }
@@ -140,16 +138,19 @@ class _AuctionListBodyState extends State<_AuctionListBody> {
   }
 
   void _openForm(BuildContext context, AdminAuctionEntity? auction) {
+    final bloc           = context.read<AdminAuctionListBloc>();
+    final auctionDs      = context.read<AdminAuctionDatasource>();
+    final productDs      = context.read<AdminProductDatasource>();
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => RepositoryProvider.value(
-        value: context.read<AdminAuctionDatasource>(),
+      builder: (_) => MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider.value(value: auctionDs),
+          RepositoryProvider.value(value: productDs),
+        ],
         child: AdminAuctionFormPage(existing: auction),
       ),
     )).then((_) {
-      // Refresh list after returning from form
-      if (mounted) {
-        context.read<AdminAuctionListBloc>().add(LoadAdminAuctions());
-      }
+      if (mounted) bloc.add(LoadAdminAuctions());
     });
   }
 

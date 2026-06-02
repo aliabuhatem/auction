@@ -4,6 +4,7 @@ import '../models/bid_model.dart';
 
 abstract class AuctionRemoteDatasource {
   Future<List<AuctionModel>> getAuctions({String? category, String? query, int page = 1});
+  Stream<List<AuctionModel>> watchAuctions({String? category});
   Future<AuctionModel> getAuctionById(String id);
   Stream<AuctionModel> watchAuction(String id);
   Future<bool> placeBid(String auctionId, double amount, String userId, String? userName);
@@ -39,13 +40,13 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
     Query q;
     if (category != null && category != 'all') {
       q = _auctions
-          .where('status', whereIn: ['live', 'upcoming'])
+          .where('status', whereIn: ['live', 'scheduled'])
           .where('category', isEqualTo: category)
           .orderBy('endsAt')
           .limit(_pageSize);
     } else {
       q = _auctions
-          .where('status', whereIn: ['live', 'upcoming'])
+          .where('status', whereIn: ['live', 'scheduled'])
           .orderBy('endsAt')
           .limit(_pageSize);
     }
@@ -70,6 +71,26 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
     }
 
     return results;
+  }
+
+  @override
+  Stream<List<AuctionModel>> watchAuctions({String? category}) {
+    Query q;
+    if (category != null && category != 'all') {
+      q = _auctions
+          .where('status', whereIn: ['live', 'scheduled'])
+          .where('category', isEqualTo: category)
+          .orderBy('endsAt')
+          .limit(_pageSize);
+    } else {
+      q = _auctions
+          .where('status', whereIn: ['live', 'scheduled'])
+          .orderBy('endsAt')
+          .limit(_pageSize);
+    }
+    return q.snapshots().map(
+      (snap) => snap.docs.map((d) => AuctionModel.fromFirestore(d)).toList(),
+    );
   }
 
   @override

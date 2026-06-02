@@ -7,10 +7,10 @@ import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
-  final String  orderId;
+  final String orderId;
   final String? voucherId;
-  final String  auctionTitle;
-  final double  amount;
+  final String auctionTitle;
+  final double amount;
 
   const PaymentSuccessPage({
     super.key,
@@ -49,8 +49,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF2ECC71), Color(0xFF27AE60)],
-                begin:  Alignment.topCenter,
-                end:    Alignment.bottomCenter,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
           ),
@@ -65,15 +65,15 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
 
                   // Success icon
                   Container(
-                    width:  100,
+                    width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color:  Colors.white.withOpacity(0.2),
-                      shape:  BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.check_circle_rounded,
-                      size:  60,
+                      size: 60,
                       color: Colors.white,
                     ),
                   ),
@@ -82,8 +82,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                   const Text(
                     'Betaling geslaagd!',
                     style: TextStyle(
-                      color:      Colors.white,
-                      fontSize:   28,
+                      color: Colors.white,
+                      fontSize: 28,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -92,7 +92,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                     widget.auctionTitle,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color:    Colors.white70,
+                      color: Colors.white70,
                       fontSize: 16,
                     ),
                   ),
@@ -100,8 +100,8 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                   Text(
                     '€ ${widget.amount.toStringAsFixed(2)}',
                     style: const TextStyle(
-                      color:      Colors.white,
-                      fontSize:   22,
+                      color: Colors.white,
+                      fontSize: 22,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -110,16 +110,16 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
 
                   // Voucher card
                   Container(
-                    width:      double.infinity,
-                    padding:    const EdgeInsets.all(24),
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color:        Colors.white,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color:      Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 20,
-                          offset:     const Offset(0, 8),
+                          offset: const Offset(0, 8),
                         ),
                       ],
                     ),
@@ -129,15 +129,15 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                           'Je voucher',
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
-                            fontSize:   18,
-                            color:      AppColors.textPrimary,
+                            fontSize: 18,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         const Text(
                           'Toon deze QR-code bij het bedrijf',
                           style: TextStyle(
-                            color:    AppColors.textSecondary,
+                            color: AppColors.textSecondary,
                             fontSize: 13,
                           ),
                         ),
@@ -146,36 +146,39 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                         // QR code
                         if (widget.voucherId != null)
                           QrImageView(
-                            data:            widget.voucherId!,
-                            version:         QrVersions.auto,
-                            size:            200,
+                            data: widget.voucherId!,
+                            version: QrVersions.auto,
+                            size: 200,
                             backgroundColor: Colors.white,
                             eyeStyle: const QrEyeStyle(
-                              eyeShape:  QrEyeShape.square,
-                              color:     AppColors.textPrimary,
+                              eyeShape: QrEyeShape.square,
+                              color: AppColors.textPrimary,
                             ),
                             dataModuleStyle: const QrDataModuleStyle(
                               dataModuleShape: QrDataModuleShape.square,
-                              color:           AppColors.textPrimary,
+                              color: AppColors.textPrimary,
                             ),
                           )
                         else
                           Container(
-                            width:  200,
+                            width: 200,
                             height: 200,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color:        AppColors.backgroundLight,
+                              color: AppColors.backgroundLight,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.qr_code_2, size: 64, color: AppColors.textHint),
+                                Icon(Icons.qr_code_2,
+                                    size: 64, color: AppColors.textHint),
                                 SizedBox(height: 8),
                                 Text('Voucher wordt aangemaakt...',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                                    style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12)),
                               ],
                             ),
                           ),
@@ -183,20 +186,20 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                         if (widget.voucherId != null) ...[
                           const SizedBox(height: 16),
                           Container(
-                            padding:    const EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              color:        AppColors.backgroundLight,
+                              color: AppColors.backgroundLight,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               widget.voucherId!,
                               style: const TextStyle(
-                                fontFamily:   'monospace',
-                                fontWeight:   FontWeight.w700,
-                                fontSize:     16,
+                                fontFamily: 'monospace',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
                                 letterSpacing: 2,
-                                color:         AppColors.textPrimary,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                           ),
@@ -210,7 +213,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                   // Action buttons
                   if (widget.voucherId != null)
                     SizedBox(
-                      width:  double.infinity,
+                      width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
                         onPressed: () => context.go(
@@ -219,7 +222,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: AppColors.success,
-                          elevation:       0,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                           textStyle: const TextStyle(
@@ -248,9 +251,9 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
           Align(
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
-              confettiController:  _confetti,
+              confettiController: _confetti,
               blastDirectionality: BlastDirectionality.explosive,
-              numberOfParticles:   50,
+              numberOfParticles: 50,
               colors: const [
                 AppColors.accentGold,
                 Colors.white,

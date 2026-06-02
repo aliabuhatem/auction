@@ -181,8 +181,8 @@ class AdminAuctionDatasource {
       endsAt:      _ts(d['endsAt']),
       winnerId:    d['winnerId']    as String?,
       winnerName:  d['winnerName']  as String?,
-      createdAt:   d['createdAt']   ?? '',
-      createdBy:   d['createdBy']   ?? '',
+      createdAt:   _tsToString(d['createdAt']),
+      createdBy:   d['createdBy']   as String? ?? '',
     );
   }
 
@@ -190,5 +190,11 @@ class AdminAuctionDatasource {
     if (v is Timestamp) return v.toDate();
     if (v is String)    return DateTime.tryParse(v) ?? (fallback ?? DateTime.now());
     return fallback ?? DateTime.now();
+  }
+
+  static String _tsToString(dynamic v) {
+    if (v is Timestamp) return v.toDate().toIso8601String();
+    if (v is String)    return v;
+    return '';
   }
 }

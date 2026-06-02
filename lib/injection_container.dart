@@ -13,6 +13,7 @@ import 'features/auctions/domain/usecases/get_auction_detail_usecase.dart';
 import 'features/auctions/domain/usecases/get_auctions_usecase.dart';
 import 'features/auctions/domain/usecases/place_bid_usecase.dart';
 import 'features/auctions/domain/usecases/watch_auction_usecase.dart';
+import 'features/auctions/domain/usecases/watch_auctions_usecase.dart';
 import 'features/auctions/presentation/bloc/auction_detail_bloc.dart';
 import 'features/auctions/presentation/bloc/auction_list_bloc.dart';
 import 'features/auctions/presentation/bloc/bidding_bloc.dart';
@@ -89,6 +90,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetAuctionDetailUseCase(sl()));
   sl.registerLazySingleton(() => PlaceBidUseCase(sl()));
   sl.registerLazySingleton(() => WatchAuctionUseCase(sl()));
+  sl.registerLazySingleton(() => WatchAuctionsUseCase(sl()));
 
   // ── My Auctions ───────────────────────────────────────────────────────────────
   sl.registerLazySingleton<MyAuctionsRemoteDatasource>(
@@ -134,7 +136,8 @@ Future<void> init() async {
   sl.registerFactory(() => LocaleBloc(sl<SharedPreferences>()));
 
   sl.registerFactory(() => AuctionListBloc(
-        getAuctions: sl(),
+        getAuctions:   sl(),
+        watchAuctions: sl(),
       ));
 
   sl.registerFactory(() => AuctionDetailBloc(

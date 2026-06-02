@@ -168,7 +168,7 @@ class _BalanceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color:      AppColors.primaryRed.withOpacity(0.3),
+            color:      AppColors.primaryRed.withValues(alpha: 0.3),
             blurRadius: 20,
             offset:     const Offset(0, 8),
           ),
@@ -216,7 +216,7 @@ class _BalanceCard extends StatelessWidget {
             Text(
               'Tegoed geldig voor biedingen in de app',
               style: TextStyle(
-                color:    Colors.white.withOpacity(0.7),
+                color:    Colors.white.withValues(alpha: 0.7),
                 fontSize: 12,
               ),
             ),
@@ -245,7 +245,7 @@ class _TxTile extends StatelessWidget {
       leading: Container(
         padding:    const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color:  (isCredit ? AppColors.success : AppColors.error).withOpacity(0.1),
+          color:  (isCredit ? AppColors.success : AppColors.error).withValues(alpha: 0.1),
           shape:  BoxShape.circle,
         ),
         child: Icon(

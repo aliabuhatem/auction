@@ -14,10 +14,10 @@ class ReferralPage extends StatefulWidget {
 }
 
 class _ReferralPageState extends State<ReferralPage> {
-  String?  _code;
-  int      _referred = 0;
-  double   _earned   = 0;
-  bool     _loading  = true;
+  String? _code;
+  int _referred = 0;
+  double _earned = 0;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -27,10 +27,17 @@ class _ReferralPageState extends State<ReferralPage> {
 
   Future<void> _load() async {
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) { setState(() => _loading = false); return; }
+    if (uid == null) {
+      setState(() => _loading = false);
+      return;
+    }
 
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
-    if (!doc.exists) { setState(() => _loading = false); return; }
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (!doc.exists) {
+      setState(() => _loading = false);
+      return;
+    }
     final data = doc.data()!;
 
     String? code = data['referralCode'] as String?;
@@ -47,10 +54,10 @@ class _ReferralPageState extends State<ReferralPage> {
         .get();
 
     setState(() {
-      _code     = code;
+      _code = code;
       _referred = refSnap.docs.length;
-      _earned   = _referred * 5.0; // €5 per referral
-      _loading  = false;
+      _earned = _referred * 5.0; // €5 per referral
+      _loading = false;
     });
   }
 
@@ -92,15 +99,15 @@ class _ReferralPageState extends State<ReferralPage> {
                   children: [
                     // Header illustration
                     Container(
-                      width:  120,
+                      width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color:        AppColors.primaryRed.withOpacity(0.1),
-                        shape:        BoxShape.circle,
+                        color: AppColors.primaryRed.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
                       ),
                       child: const Icon(
                         Icons.people_alt_rounded,
-                        size:  60,
+                        size: 60,
                         color: AppColors.primaryRed,
                       ),
                     ),
@@ -116,26 +123,27 @@ class _ReferralPageState extends State<ReferralPage> {
                     const Text(
                       'Jij én je vriend ontvangen €5 biedingstegoed\nzodra je vriend zich registreert.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.textSecondary, height: 1.5),
+                      style: TextStyle(
+                          color: AppColors.textSecondary, height: 1.5),
                     ),
 
                     const SizedBox(height: 32),
 
                     // Referral code card
                     Container(
-                      width:      double.infinity,
-                      padding:    const EdgeInsets.all(20),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color:        AppColors.backgroundLight,
+                        color: AppColors.backgroundLight,
                         borderRadius: BorderRadius.circular(16),
-                        border:       Border.all(color: AppColors.border),
+                        border: Border.all(color: AppColors.border),
                       ),
                       child: Column(
                         children: [
                           const Text(
                             'Jouw uitnodigingscode',
                             style: TextStyle(
-                                color:      AppColors.textSecondary,
+                                color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 12),
@@ -143,18 +151,18 @@ class _ReferralPageState extends State<ReferralPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24, vertical: 16),
                             decoration: BoxDecoration(
-                              color:        Colors.white,
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              border:       Border.all(
+                              border: Border.all(
                                   color: AppColors.primaryRed, width: 2),
                             ),
                             child: Text(
                               _code ?? '------',
                               style: const TextStyle(
-                                fontSize:     32,
-                                fontWeight:   FontWeight.w900,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w900,
                                 letterSpacing: 6,
-                                color:         AppColors.primaryRed,
+                                color: AppColors.primaryRed,
                               ),
                             ),
                           ),
@@ -164,7 +172,8 @@ class _ReferralPageState extends State<ReferralPage> {
                               Expanded(
                                 child: OutlinedButton.icon(
                                   onPressed: _copy,
-                                  icon:  const Icon(Icons.copy_rounded, size: 18),
+                                  icon:
+                                      const Icon(Icons.copy_rounded, size: 18),
                                   label: const Text('Kopiëren'),
                                 ),
                               ),
@@ -172,7 +181,8 @@ class _ReferralPageState extends State<ReferralPage> {
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: _share,
-                                  icon:  const Icon(Icons.share_rounded, size: 18),
+                                  icon:
+                                      const Icon(Icons.share_rounded, size: 18),
                                   label: const Text('Delen'),
                                 ),
                               ),
@@ -189,7 +199,7 @@ class _ReferralPageState extends State<ReferralPage> {
                       children: [
                         Expanded(
                           child: _StatCard(
-                            icon:  Icons.group_rounded,
+                            icon: Icons.group_rounded,
                             value: '$_referred',
                             label: 'Uitgenodigd',
                             color: AppColors.info,
@@ -198,7 +208,7 @@ class _ReferralPageState extends State<ReferralPage> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: _StatCard(
-                            icon:  Icons.account_balance_wallet_rounded,
+                            icon: Icons.account_balance_wallet_rounded,
                             value: '€ ${_earned.toStringAsFixed(0)}',
                             label: 'Verdiend',
                             color: AppColors.success,
@@ -225,9 +235,9 @@ class _ReferralPageState extends State<ReferralPage> {
 
 class _StatCard extends StatelessWidget {
   final IconData icon;
-  final String   value;
-  final String   label;
-  final Color    color;
+  final String value;
+  final String label;
+  final Color color;
   const _StatCard({
     required this.icon,
     required this.value,
@@ -238,11 +248,11 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:    const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color:        color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
-        border:       Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -264,18 +274,20 @@ class _HowItWorks extends StatelessWidget {
   static const _steps = [
     _Step(
       number: '1',
-      title:  'Deel je code',
-      body:   'Deel je persoonlijke code met vrienden via WhatsApp, mail of social media.',
+      title: 'Deel je code',
+      body:
+          'Deel je persoonlijke code met vrienden via WhatsApp, mail of social media.',
     ),
     _Step(
       number: '2',
-      title:  'Vriend registreert',
-      body:   'Je vriend downloadt de app en voert jouw code in tijdens de registratie.',
+      title: 'Vriend registreert',
+      body:
+          'Je vriend downloadt de app en voert jouw code in tijdens de registratie.',
     ),
     _Step(
       number: '3',
-      title:  'Beiden profiteren',
-      body:   'Jullie ontvangen allebei €5 biedingstegoed. Bied mee en win!',
+      title: 'Beiden profiteren',
+      body: 'Jullie ontvangen allebei €5 biedingstegoed. Bied mee en win!',
     ),
   ];
 
@@ -315,7 +327,7 @@ class _StepTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width:  36,
+            width: 36,
             height: 36,
             alignment: Alignment.center,
             decoration: const BoxDecoration(

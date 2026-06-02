@@ -50,9 +50,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Future<void> _finish() async {
     // Request FCM permission on page 3 completion.
     await FirebaseMessaging.instance.requestPermission(
-      alert:       true,
-      badge:       true,
-      sound:       true,
+      alert: true,
+      badge: true,
+      sound: true,
       provisional: false,
     );
 
@@ -66,7 +66,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (_page < _slides.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 350),
-        curve:    Curves.easeInOut,
+        curve: Curves.easeInOut,
       );
     } else {
       _finish();
@@ -84,10 +84,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           // Slides
           PageView.builder(
-            controller:     _controller,
-            itemCount:      _slides.length,
-            onPageChanged:  (i) => setState(() => _page = i),
-            itemBuilder:    (_, i) => _SlideView(slide: _slides[i]),
+            controller: _controller,
+            itemCount: _slides.length,
+            onPageChanged: (i) => setState(() => _page = i),
+            itemBuilder: (_, i) => _SlideView(slide: _slides[i]),
           ),
 
           // Skip button (hidden on last slide)
@@ -107,8 +107,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                     ),
-                    child: const Text('Overslaan',
-                        style: TextStyle(fontSize: 13)),
+                    child:
+                        const Text('Overslaan', style: TextStyle(fontSize: 13)),
                   ),
                 ),
               ),
@@ -126,27 +126,27 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     // Page indicator
                     AnimatedSmoothIndicator(
                       activeIndex: _page,
-                      count:       _slides.length,
+                      count: _slides.length,
                       effect: const WormEffect(
-                        dotWidth:       8,
-                        dotHeight:      8,
+                        dotWidth: 8,
+                        dotHeight: 8,
                         activeDotColor: Colors.white,
-                        dotColor:       Colors.white38,
-                        spacing:        8,
+                        dotColor: Colors.white38,
+                        spacing: 8,
                       ),
                     ),
                     const SizedBox(height: 32),
 
                     // CTA button
                     SizedBox(
-                      width:  double.infinity,
+                      width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
                         onPressed: _next,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: _slides[_page].gradient.first,
-                          elevation:       0,
+                          elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14)),
                           textStyle: const TextStyle(
@@ -169,10 +169,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _Slide {
-  final IconData      icon;
-  final String        title;
-  final String        body;
-  final List<Color>   gradient;
+  final IconData icon;
+  final String title;
+  final String body;
+  final List<Color> gradient;
   const _Slide({
     required this.icon,
     required this.title,
@@ -191,8 +191,8 @@ class _SlideView extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: slide.gradient,
-          begin:  Alignment.topLeft,
-          end:    Alignment.bottomRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
       child: SafeArea(
@@ -204,11 +204,11 @@ class _SlideView extends StatelessWidget {
               const SizedBox(height: 40),
               // Icon container
               Container(
-                width:  120,
+                width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color:  Colors.white.withOpacity(0.2),
-                  shape:  BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
                 ),
                 child: Icon(slide.icon, size: 60, color: Colors.white),
               ),
@@ -217,10 +217,10 @@ class _SlideView extends StatelessWidget {
                 slide.title,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color:       Colors.white,
-                  fontSize:    28,
-                  fontWeight:  FontWeight.w900,
-                  height:      1.2,
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w900,
+                  height: 1.2,
                 ),
               ),
               const SizedBox(height: 20),
@@ -228,9 +228,9 @@ class _SlideView extends StatelessWidget {
                 slide.body,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color:      Colors.white70,
-                  fontSize:   16,
-                  height:     1.6,
+                  color: Colors.white70,
+                  fontSize: 16,
+                  height: 1.6,
                 ),
               ),
               // Space for bottom controls

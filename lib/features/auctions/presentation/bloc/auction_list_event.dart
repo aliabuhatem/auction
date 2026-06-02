@@ -17,3 +17,13 @@ class SearchAuctions extends AuctionListEvent {
   const SearchAuctions(this.query);
   @override List<Object> get props => [query];
 }
+class AuctionListStreamUpdated extends AuctionListEvent {
+  final List<AuctionEntity> auctions;
+  const AuctionListStreamUpdated(this.auctions);
+  @override List<Object> get props => [auctions];
+}
+class AuctionListStreamFailed extends AuctionListEvent {
+  final String error;
+  const AuctionListStreamFailed(this.error);
+  @override List<Object> get props => [error];
+}
