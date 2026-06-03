@@ -26,7 +26,8 @@ class BiddingLoaded extends BiddingState {
   });
 
   @override
-  List<Object?> get props => [auction, wasOutbid, isMine, isAlarmed, autoBidMax, showExtensionBanner];
+  List<Object?> get props =>
+      [auction, wasOutbid, isMine, isAlarmed, autoBidMax, showExtensionBanner];
 }
 
 class BiddingPlacing extends BiddingState {
@@ -63,4 +64,10 @@ class BiddingError extends BiddingState {
   final String message;
   const BiddingError(this.message);
   @override List<Object> get props => [message];
+}
+
+class BiddingWon extends BiddingState {
+  final AuctionEntity auction;
+  const BiddingWon({required this.auction});
+  @override List<Object> get props => [auction];
 }

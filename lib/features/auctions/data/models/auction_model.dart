@@ -23,34 +23,97 @@ class AuctionModel extends AuctionEntity {
     super.watchers,
     super.extensionSeconds,
     super.lastBidderId,
+    super.createdAt,
+    super.viewCount,
+    super.shippingCost,
+    super.shippingMethod,
+    super.shippingDays,
   });
 
   factory AuctionModel.fromFirestore(DocumentSnapshot doc) {
     final d = doc.data() as Map<String, dynamic>;
     final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ?? [];
     return AuctionModel(
-      id: doc.id,
-      title: d['title'] ?? '',
-      description: d['description'] ?? '',
-      imageUrl: d['imageUrl'] ?? (urls.isNotEmpty ? urls.first : ''),
-      imageUrls: urls,
-      currentBid: (d['currentBid'] as num?)?.toDouble() ?? 1.0,
-      startingBid: (d['startingBid'] as num?)?.toDouble() ?? 1.0,
-      bidCount: (d['bidCount'] as int?) ?? 0,
-      endsAt: (d['endsAt'] as Timestamp?)?.toDate() ?? DateTime.now().add(const Duration(days: 1)),
-      status: _parseStatus(d['status']),
-      category: _parseCategory(d['category']),
-      location: d['location'] ?? '',
-      retailValue: (d['retailValue'] as num?)?.toDouble() ?? 0.0,
-      isWatchlisted: d['isWatchlisted'] ?? false,
-      winnerId: d['winnerId'],
-      minBidIncrement: (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
-      buyNowPrice: (d['buyNowPrice'] as num?)?.toDouble(),
-      watchers: (d['watchers'] as int?) ?? 0,
+      id:               doc.id,
+      title:            d['title'] ?? '',
+      description:      d['description'] ?? '',
+      imageUrl:         d['imageUrl'] ?? (urls.isNotEmpty ? urls.first : ''),
+      imageUrls:        urls,
+      currentBid:       (d['currentBid'] as num?)?.toDouble() ?? 1.0,
+      startingBid:      (d['startingBid'] as num?)?.toDouble() ?? 1.0,
+      bidCount:         (d['bidCount'] as int?) ?? 0,
+      endsAt:           (d['endsAt'] as Timestamp?)?.toDate() ??
+                        DateTime.now().add(const Duration(days: 1)),
+      status:           _parseStatus(d['status']),
+      category:         _parseCategory(d['category']),
+      location:         d['location'] ?? '',
+      retailValue:      (d['retailValue'] as num?)?.toDouble() ?? 0.0,
+      isWatchlisted:    d['isWatchlisted'] ?? false,
+      winnerId:         d['winnerId'],
+      minBidIncrement:  (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
+      buyNowPrice:      (d['buyNowPrice'] as num?)?.toDouble(),
+      watchers:         (d['watchers'] as int?) ?? 0,
       extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
-      lastBidderId: d['lastBidderId'] as String?,
+      lastBidderId:     d['lastBidderId'] as String?,
+      createdAt:        (d['createdAt'] as Timestamp?)?.toDate(),
+      viewCount:        (d['viewCount'] as int?) ?? 0,
+      shippingCost:     (d['shippingCost'] as num?)?.toDouble(),
+      shippingMethod:   d['shippingMethod'] as String?,
+      shippingDays:     d['shippingDays'] as int?,
     );
   }
+
+  factory AuctionModel.fromJson(Map<String, dynamic> d) {
+    final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ?? [];
+    return AuctionModel(
+      id:               d['id'] as String? ?? '',
+      title:            d['title'] ?? '',
+      description:      d['description'] ?? '',
+      imageUrl:         d['imageUrl'] ?? (urls.isNotEmpty ? urls.first : ''),
+      imageUrls:        urls,
+      currentBid:       (d['currentBid'] as num?)?.toDouble() ?? 1.0,
+      startingBid:      (d['startingBid'] as num?)?.toDouble() ?? 1.0,
+      bidCount:         (d['bidCount'] as int?) ?? 0,
+      endsAt:           DateTime.fromMillisecondsSinceEpoch(d['endsAt'] as int),
+      status:           _parseStatus(d['status']),
+      category:         _parseCategory(d['category']),
+      location:         d['location'] ?? '',
+      retailValue:      (d['retailValue'] as num?)?.toDouble() ?? 0.0,
+      isWatchlisted:    d['isWatchlisted'] ?? false,
+      winnerId:         d['winnerId'],
+      minBidIncrement:  (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
+      buyNowPrice:      (d['buyNowPrice'] as num?)?.toDouble(),
+      watchers:         (d['watchers'] as int?) ?? 0,
+      extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
+      lastBidderId:     d['lastBidderId'] as String?,
+      createdAt:        d['createdAt'] != null
+                        ? DateTime.fromMillisecondsSinceEpoch(d['createdAt'] as int)
+                        : null,
+      viewCount:        (d['viewCount'] as int?) ?? 0,
+      shippingCost:     (d['shippingCost'] as num?)?.toDouble(),
+      shippingMethod:   d['shippingMethod'] as String?,
+      shippingDays:     d['shippingDays'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id':           id,
+    'title':        title,
+    'description':  description,
+    'imageUrl':     imageUrl,
+    'imageUrls':    imageUrls,
+    'currentBid':   currentBid,
+    'startingBid':  startingBid,
+    'bidCount':     bidCount,
+    'endsAt':       endsAt.millisecondsSinceEpoch,
+    'status':       status.firestoreValue,
+    'category':     category.firestoreValue,
+    'location':     location,
+    'retailValue':  retailValue,
+    'isWatchlisted': isWatchlisted,
+    'winnerId':     winnerId,
+    if (createdAt != null) 'createdAt': createdAt!.millisecondsSinceEpoch,
+  };
 
   static AuctionStatus _parseStatus(String? s) {
     switch (s) {
@@ -72,54 +135,9 @@ class AuctionModel extends AuctionEntity {
       case 'products':    return AuctionCategory.products;
       case 'sports':      return AuctionCategory.sports;
       case 'wellness':    return AuctionCategory.wellness;
-      case 'dayTrips':    // mobile casing
-      case 'daytrips':    // admin casing
-        return AuctionCategory.dayTrips;
+      case 'dayTrips':
+      case 'daytrips':    return AuctionCategory.dayTrips;
       default:            return AuctionCategory.vacation;
     }
   }
-
-  factory AuctionModel.fromJson(Map<String, dynamic> d) {
-    final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ?? [];
-    return AuctionModel(
-      id: d['id'] as String? ?? '',
-      title: d['title'] ?? '',
-      description: d['description'] ?? '',
-      imageUrl: d['imageUrl'] ?? (urls.isNotEmpty ? urls.first : ''),
-      imageUrls: urls,
-      currentBid: (d['currentBid'] as num?)?.toDouble() ?? 1.0,
-      startingBid: (d['startingBid'] as num?)?.toDouble() ?? 1.0,
-      bidCount: (d['bidCount'] as int?) ?? 0,
-      endsAt: DateTime.fromMillisecondsSinceEpoch(d['endsAt'] as int),
-      status: _parseStatus(d['status']),
-      category: _parseCategory(d['category']),
-      location: d['location'] ?? '',
-      retailValue: (d['retailValue'] as num?)?.toDouble() ?? 0.0,
-      isWatchlisted: d['isWatchlisted'] ?? false,
-      winnerId: d['winnerId'],
-      minBidIncrement: (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
-      buyNowPrice: (d['buyNowPrice'] as num?)?.toDouble(),
-      watchers: (d['watchers'] as int?) ?? 0,
-      extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
-      lastBidderId: d['lastBidderId'] as String?,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'description': description,
-    'imageUrl': imageUrl,
-    'imageUrls': imageUrls,
-    'currentBid': currentBid,
-    'startingBid': startingBid,
-    'bidCount': bidCount,
-    'endsAt': endsAt.millisecondsSinceEpoch,
-    'status': status.firestoreValue,
-    'category': category.firestoreValue,
-    'location': location,
-    'retailValue': retailValue,
-    'isWatchlisted': isWatchlisted,
-    'winnerId': winnerId,
-  };
 }

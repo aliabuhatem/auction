@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'dart:async';
@@ -39,7 +40,11 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     result.fold(
       (f) => emit(BiddingError(f.message)),
       (auction) {
-        emit(BiddingLoaded(auction: auction));
+        final uid = FirebaseAuth.instance.currentUser?.uid;
+        emit(BiddingLoaded(
+          auction: auction,
+          isMine: uid != null && auction.lastBidderId == uid,
+        ));
         _sub?.cancel();
         _sub = watchAuction(e.auctionId).listen(
           (a) => add(AuctionStreamUpdate(a)),
@@ -50,30 +55,52 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
   }
 
   void _onUpdate(AuctionStreamUpdate e, Emitter<BiddingState> emit) {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
+    // Winner detection — works regardless of current state
+    if (e.auction.status == AuctionStatus.sold &&
+        currentUserId != null &&
+        e.auction.winnerId == currentUserId) {
+      emit(BiddingWon(auction: e.auction));
+      return;
+    }
+
+    // Transition BiddingSuccess → BiddingLoaded on next stream update
+    if (state is BiddingSuccess) {
+      final s = state as BiddingSuccess;
+      final isMine = currentUserId != null && e.auction.lastBidderId == currentUserId;
+      emit(BiddingLoaded(
+        auction:    e.auction,
+        isMine:     isMine,
+        isAlarmed:  s.isAlarmed,
+        autoBidMax: s.autoBidMax,
+      ));
+      return;
+    }
+
     if (state is! BiddingLoaded) return;
     final s = state as BiddingLoaded;
 
-    final prevBid  = s.auction.currentBid;
-    final newBid   = e.auction.currentBid;
+    final prevBid   = s.auction.currentBid;
+    final newBid    = e.auction.currentBid;
     final bidRaised = newBid > prevBid;
 
-    // Detect outbid: bid went up and last bidder is NOT current user
-    final wasOutbid = bidRaised && s.isMine && e.auction.lastBidderId != null;
+    final isMine    = currentUserId != null && e.auction.lastBidderId == currentUserId;
+    final wasOutbid = bidRaised && s.isMine && !isMine;
 
-    // Detect auction extension: bid was just placed in the last 60 seconds
-    final timeLeft = e.auction.endsAt.difference(DateTime.now()).inSeconds;
+    final timeLeft    = e.auction.endsAt.difference(DateTime.now()).inSeconds;
     final wasExtended = bidRaised && timeLeft <= (e.auction.extensionSeconds + 5);
 
     emit(BiddingLoaded(
-      auction:    e.auction,
-      wasOutbid:  wasOutbid,
-      isMine:     s.isMine,
-      isAlarmed:  s.isAlarmed,
-      autoBidMax: s.autoBidMax,
+      auction:             e.auction,
+      wasOutbid:           wasOutbid,
+      isMine:              isMine,
+      isAlarmed:           s.isAlarmed,
+      autoBidMax:          s.autoBidMax,
       showExtensionBanner: wasExtended,
     ));
 
-    // Auto-bid: if outbid and user has auto-bid set and can still afford it
+    // Auto-bid: re-bid if outbid and max allows
     if (wasOutbid && s.autoBidMax != null) {
       final autoAmount = newBid + e.auction.minBidIncrement;
       if (autoAmount <= s.autoBidMax!) {
@@ -86,11 +113,17 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     if (state is! BiddingLoaded) return;
     final s = state as BiddingLoaded;
     emit(BiddingPlacing(auction: s.auction, isAutoBid: e.isAutoBid));
-    final result = await placeBid(PlaceBidParams(auctionId: e.auctionId, bidAmount: e.amount));
+    final result = await placeBid(
+        PlaceBidParams(auctionId: e.auctionId, bidAmount: e.amount));
     result.fold(
       (f) => emit(BiddingFailed(auction: s.auction, error: f.message)),
-      (_) => emit(BiddingSuccess(auction: s.auction, isAutoBid: e.isAutoBid,
-                                 isMine: true, autoBidMax: s.autoBidMax, isAlarmed: s.isAlarmed)),
+      (_) => emit(BiddingSuccess(
+        auction:    s.auction,
+        isAutoBid:  e.isAutoBid,
+        isMine:     true,
+        autoBidMax: s.autoBidMax,
+        isAlarmed:  s.isAlarmed,
+      )),
     );
   }
 
@@ -100,22 +133,20 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     final wasWatchlisted = s.auction.isWatchlisted;
 
     emit(BiddingLoaded(
-      auction: _copyAuction(s.auction, watchlisted: !wasWatchlisted),
-      isMine: s.isMine,
+      auction:    _copyAuction(s.auction, watchlisted: !wasWatchlisted),
+      isMine:     s.isMine,
       autoBidMax: s.autoBidMax,
-      isAlarmed: s.isAlarmed,
+      isAlarmed:  s.isAlarmed,
     ));
 
     final result = await repository.watchlistAuction(e.auctionId);
     result.fold(
-      (f) {
-        emit(BiddingLoaded(
-          auction: _copyAuction(s.auction, watchlisted: wasWatchlisted),
-          isMine: s.isMine,
-          autoBidMax: s.autoBidMax,
-          isAlarmed: s.isAlarmed,
-        ));
-      },
+      (f) => emit(BiddingLoaded(
+        auction:    _copyAuction(s.auction, watchlisted: wasWatchlisted),
+        isMine:     s.isMine,
+        autoBidMax: s.autoBidMax,
+        isAlarmed:  s.isAlarmed,
+      )),
       (_) {},
     );
   }
@@ -126,8 +157,10 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     final isAlarmed = s.isAlarmed;
 
     emit(BiddingLoaded(
-      auction: s.auction, isMine: s.isMine,
-      isAlarmed: !isAlarmed, autoBidMax: s.autoBidMax,
+      auction:    s.auction,
+      isMine:     s.isMine,
+      isAlarmed:  !isAlarmed,
+      autoBidMax: s.autoBidMax,
     ));
 
     final result = isAlarmed
@@ -136,8 +169,10 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
 
     result.fold(
       (f) => emit(BiddingLoaded(
-        auction: s.auction, isMine: s.isMine,
-        isAlarmed: isAlarmed, autoBidMax: s.autoBidMax,
+        auction:    s.auction,
+        isMine:     s.isMine,
+        isAlarmed:  isAlarmed,
+        autoBidMax: s.autoBidMax,
       )),
       (_) {},
     );
@@ -147,8 +182,10 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     if (state is! BiddingLoaded) return;
     final s = state as BiddingLoaded;
     emit(BiddingLoaded(
-      auction: s.auction, isMine: s.isMine,
-      isAlarmed: s.isAlarmed, autoBidMax: e.maxAmount,
+      auction:    s.auction,
+      isMine:     s.isMine,
+      isAlarmed:  s.isAlarmed,
+      autoBidMax: e.maxAmount,
     ));
   }
 
@@ -156,33 +193,40 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     if (state is! BiddingLoaded) return;
     final s = state as BiddingLoaded;
     emit(BiddingLoaded(
-      auction: s.auction, isMine: s.isMine,
-      isAlarmed: s.isAlarmed, autoBidMax: null,
+      auction:    s.auction,
+      isMine:     s.isMine,
+      isAlarmed:  s.isAlarmed,
+      autoBidMax: null,
     ));
   }
 
-  AuctionEntity _copyAuction(AuctionEntity a, {bool? watchlisted, DateTime? endsAt}) {
+  AuctionEntity _copyAuction(AuctionEntity a, {bool? watchlisted}) {
     return AuctionEntity(
-      id: a.id,
-      title: a.title,
-      description: a.description,
-      imageUrl: a.imageUrl,
-      imageUrls: a.imageUrls,
-      currentBid: a.currentBid,
-      startingBid: a.startingBid,
-      bidCount: a.bidCount,
-      endsAt: endsAt ?? a.endsAt,
-      status: a.status,
-      category: a.category,
-      location: a.location,
-      retailValue: a.retailValue,
-      isWatchlisted: watchlisted ?? a.isWatchlisted,
-      winnerId: a.winnerId,
-      minBidIncrement: a.minBidIncrement,
-      buyNowPrice: a.buyNowPrice,
-      watchers: a.watchers,
+      id:               a.id,
+      title:            a.title,
+      description:      a.description,
+      imageUrl:         a.imageUrl,
+      imageUrls:        a.imageUrls,
+      currentBid:       a.currentBid,
+      startingBid:      a.startingBid,
+      bidCount:         a.bidCount,
+      endsAt:           a.endsAt,
+      status:           a.status,
+      category:         a.category,
+      location:         a.location,
+      retailValue:      a.retailValue,
+      isWatchlisted:    watchlisted ?? a.isWatchlisted,
+      winnerId:         a.winnerId,
+      minBidIncrement:  a.minBidIncrement,
+      buyNowPrice:      a.buyNowPrice,
+      watchers:         a.watchers,
       extensionSeconds: a.extensionSeconds,
-      lastBidderId: a.lastBidderId,
+      lastBidderId:     a.lastBidderId,
+      createdAt:        a.createdAt,
+      viewCount:        a.viewCount,
+      shippingCost:     a.shippingCost,
+      shippingMethod:   a.shippingMethod,
+      shippingDays:     a.shippingDays,
     );
   }
 

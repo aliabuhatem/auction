@@ -67,7 +67,7 @@ class AuctionEntity extends Equatable {
   final int extensionSeconds;
   final String? lastBidderId;
   // ── Discovery & metadata ──────────────────────────────────────────────────
-  final DateTime createdAt;
+  final DateTime? createdAt;   // null = unknown (isNew returns false)
   final int viewCount;
   // ── Shipping ─────────────────────────────────────────────────────────────
   final double? shippingCost;
@@ -95,28 +95,23 @@ class AuctionEntity extends Equatable {
     this.watchers = 0,
     this.extensionSeconds = 30,
     this.lastBidderId,
-    DateTime? createdAt,
+    this.createdAt,
     this.viewCount = 0,
     this.shippingCost,
     this.shippingMethod,
     this.shippingDays,
-  }) : createdAt = createdAt ?? const _Epoch();
+  });
 
-  Duration get timeRemaining => endsAt.difference(DateTime.now());
-  bool get isLive         => status == AuctionStatus.live;
-  bool get isEnding       => timeRemaining.inMinutes < 10 && timeRemaining.inSeconds > 0;
-  bool get isEndingSoon   => timeRemaining.inSeconds > 0 && timeRemaining.inSeconds <= 60;
-  bool get isNew          => createdAt.isAfter(DateTime.now().subtract(const Duration(hours: 24)));
-  double get nextMinBid   => currentBid + minBidIncrement;
-  double get savingsPercent =>
+  Duration get timeRemaining  => endsAt.difference(DateTime.now());
+  bool get isLive             => status == AuctionStatus.live;
+  bool get isEnding           => timeRemaining.inMinutes < 10 && timeRemaining.inSeconds > 0;
+  bool get isEndingSoon       => timeRemaining.inSeconds > 0 && timeRemaining.inSeconds <= 60;
+  bool get isNew              => createdAt != null &&
+      createdAt!.isAfter(DateTime.now().subtract(const Duration(hours: 24)));
+  double get nextMinBid       => currentBid + minBidIncrement;
+  double get savingsPercent   =>
       ((retailValue - currentBid) / retailValue * 100).clamp(0, 100);
 
   @override
   List<Object?> get props => [id, title, currentBid, bidCount, endsAt, status, watchers];
-}
-
-// Workaround: const default DateTime value
-class _Epoch implements DateTime {
-  const _Epoch();
-  @override dynamic noSuchMethod(Invocation i) => DateTime(2020);
 }
