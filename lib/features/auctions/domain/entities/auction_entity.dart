@@ -1,5 +1,3 @@
-// Auction entity
-
 import 'package:equatable/equatable.dart';
 
 enum AuctionStatus { upcoming, live, ended, sold }
@@ -59,9 +57,22 @@ class AuctionEntity extends Equatable {
   final AuctionStatus status;
   final AuctionCategory category;
   final String location;
-  final double retailValue;   // Original market price
+  final double retailValue;
   final bool isWatchlisted;
   final String? winnerId;
+  // ── Advanced bidding ──────────────────────────────────────────────────────
+  final double minBidIncrement;
+  final double? buyNowPrice;
+  final int watchers;
+  final int extensionSeconds;
+  final String? lastBidderId;
+  // ── Discovery & metadata ──────────────────────────────────────────────────
+  final DateTime createdAt;
+  final int viewCount;
+  // ── Shipping ─────────────────────────────────────────────────────────────
+  final double? shippingCost;
+  final String? shippingMethod;
+  final int? shippingDays;
 
   const AuctionEntity({
     required this.id,
@@ -79,17 +90,33 @@ class AuctionEntity extends Equatable {
     required this.retailValue,
     this.isWatchlisted = false,
     this.winnerId,
-  });
+    this.minBidIncrement = 1.0,
+    this.buyNowPrice,
+    this.watchers = 0,
+    this.extensionSeconds = 30,
+    this.lastBidderId,
+    DateTime? createdAt,
+    this.viewCount = 0,
+    this.shippingCost,
+    this.shippingMethod,
+    this.shippingDays,
+  }) : createdAt = createdAt ?? const _Epoch();
 
-  // Time remaining
   Duration get timeRemaining => endsAt.difference(DateTime.now());
-  bool get isLive => status == AuctionStatus.live;
-  bool get isEnding => timeRemaining.inMinutes < 10;
-
-  // Savings compared to retail
+  bool get isLive         => status == AuctionStatus.live;
+  bool get isEnding       => timeRemaining.inMinutes < 10 && timeRemaining.inSeconds > 0;
+  bool get isEndingSoon   => timeRemaining.inSeconds > 0 && timeRemaining.inSeconds <= 60;
+  bool get isNew          => createdAt.isAfter(DateTime.now().subtract(const Duration(hours: 24)));
+  double get nextMinBid   => currentBid + minBidIncrement;
   double get savingsPercent =>
       ((retailValue - currentBid) / retailValue * 100).clamp(0, 100);
 
   @override
-  List<Object?> get props => [id, title, currentBid, bidCount, endsAt, status];
+  List<Object?> get props => [id, title, currentBid, bidCount, endsAt, status, watchers];
+}
+
+// Workaround: const default DateTime value
+class _Epoch implements DateTime {
+  const _Epoch();
+  @override dynamic noSuchMethod(Invocation i) => DateTime(2020);
 }

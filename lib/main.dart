@@ -47,11 +47,12 @@ Future<void> main() async {
   // ── Dependency injection ──────────────────────────────────────────────────
   await di.init();
 
-  // ── Notification service ──────────────────────────────────────────────────
-  // Initialize FCM + local notifications after DI so the service is
-  // already registered before we start listening to messages.
-  // On web the service registers the service worker for background push.
-  await di.sl<NotificationService>().initialize();
-
   runApp(const AuctionApp());
+
+  // ── Notification service ──────────────────────────────────────────────────
+  // Deferred so the first frame paints before FCM token negotiation begins.
+  // FCM + local notifications don't need to be ready before the UI appears.
+  di.sl<NotificationService>().initialize().catchError(
+    (e) => debugPrint('NotificationService init error: $e'),
+  );
 }

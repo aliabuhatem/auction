@@ -16,7 +16,18 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\abuha\\\\StudioProjects\\\\auction\\\\lib\\\\features\" -Recurse -Directory | Where-Object { $_.Name -eq \"domain\" -or $_.Name -eq \"data\" } | Select-Object -ExpandProperty FullName | Sort-Object)",
       "Bash(flutter analyze *)",
       "Bash(findstr -i \"signingconfig\\\\|minifyEnabled\\\\|shrinkResources\")",
-      "Bash(git fetch *)"
+      "Bash(git fetch *)",
+      "Bash(npm run *)",
+      "WebFetch(domain:au.trustpilot.com)",
+      "WebFetch(domain:play.google.com)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:www.vakantieveilingen.nl)",
+      "WebFetch(domain:www.vakantieveilingen.be)",
+      "WebFetch(domain:vakantieveilingen.en.aptoide.com)",
+      "WebFetch(domain:www.bokt.nl)",
+      "WebFetch(domain:www.ouders.nl)"
     ]
   }
 }

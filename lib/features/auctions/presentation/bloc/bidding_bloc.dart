@@ -29,6 +29,8 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     on<SubmitBid>            (_onSubmitBid);
     on<ToggleWatchlist>      (_onWatchlist);
     on<SetAlarm>             (_onAlarm);
+    on<SetAutoBid>           (_onSetAutoBid);
+    on<ClearAutoBid>         (_onClearAutoBid);
   }
 
   Future<void> _onLoad(LoadAuctionForBidding e, Emitter<BiddingState> emit) async {
@@ -48,21 +50,47 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
   }
 
   void _onUpdate(AuctionStreamUpdate e, Emitter<BiddingState> emit) {
-    if (state is BiddingLoaded) {
-      final s = state as BiddingLoaded;
-      final outbid = s.auction.currentBid < e.auction.currentBid;
-      emit(BiddingLoaded(auction: e.auction, wasOutbid: outbid && s.isMine, isMine: s.isMine));
+    if (state is! BiddingLoaded) return;
+    final s = state as BiddingLoaded;
+
+    final prevBid  = s.auction.currentBid;
+    final newBid   = e.auction.currentBid;
+    final bidRaised = newBid > prevBid;
+
+    // Detect outbid: bid went up and last bidder is NOT current user
+    final wasOutbid = bidRaised && s.isMine && e.auction.lastBidderId != null;
+
+    // Detect auction extension: bid was just placed in the last 60 seconds
+    final timeLeft = e.auction.endsAt.difference(DateTime.now()).inSeconds;
+    final wasExtended = bidRaised && timeLeft <= (e.auction.extensionSeconds + 5);
+
+    emit(BiddingLoaded(
+      auction:    e.auction,
+      wasOutbid:  wasOutbid,
+      isMine:     s.isMine,
+      isAlarmed:  s.isAlarmed,
+      autoBidMax: s.autoBidMax,
+      showExtensionBanner: wasExtended,
+    ));
+
+    // Auto-bid: if outbid and user has auto-bid set and can still afford it
+    if (wasOutbid && s.autoBidMax != null) {
+      final autoAmount = newBid + e.auction.minBidIncrement;
+      if (autoAmount <= s.autoBidMax!) {
+        add(SubmitBid(auctionId: e.auction.id, amount: autoAmount, isAutoBid: true));
+      }
     }
   }
 
   Future<void> _onSubmitBid(SubmitBid e, Emitter<BiddingState> emit) async {
     if (state is! BiddingLoaded) return;
     final s = state as BiddingLoaded;
-    emit(BiddingPlacing(auction: s.auction));
+    emit(BiddingPlacing(auction: s.auction, isAutoBid: e.isAutoBid));
     final result = await placeBid(PlaceBidParams(auctionId: e.auctionId, bidAmount: e.amount));
     result.fold(
       (f) => emit(BiddingFailed(auction: s.auction, error: f.message)),
-      (_) => emit(BiddingSuccess(auction: s.auction)),
+      (_) => emit(BiddingSuccess(auction: s.auction, isAutoBid: e.isAutoBid,
+                                 isMine: true, autoBidMax: s.autoBidMax, isAlarmed: s.isAlarmed)),
     );
   }
 
@@ -71,22 +99,24 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     final s = state as BiddingLoaded;
     final wasWatchlisted = s.auction.isWatchlisted;
 
-    // Optimistic update
     emit(BiddingLoaded(
-      auction: _copyAuctionWithWatchlist(s.auction, !wasWatchlisted),
+      auction: _copyAuction(s.auction, watchlisted: !wasWatchlisted),
       isMine: s.isMine,
+      autoBidMax: s.autoBidMax,
+      isAlarmed: s.isAlarmed,
     ));
 
     final result = await repository.watchlistAuction(e.auctionId);
     result.fold(
       (f) {
-        // Revert on failure
         emit(BiddingLoaded(
-          auction: _copyAuctionWithWatchlist(s.auction, wasWatchlisted),
+          auction: _copyAuction(s.auction, watchlisted: wasWatchlisted),
           isMine: s.isMine,
+          autoBidMax: s.autoBidMax,
+          isAlarmed: s.isAlarmed,
         ));
       },
-      (_) {}, // optimistic update stays
+      (_) {},
     );
   }
 
@@ -95,11 +125,9 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
     final s = state as BiddingLoaded;
     final isAlarmed = s.isAlarmed;
 
-    // Optimistic update
     emit(BiddingLoaded(
-      auction: s.auction,
-      isMine: s.isMine,
-      isAlarmed: !isAlarmed,
+      auction: s.auction, isMine: s.isMine,
+      isAlarmed: !isAlarmed, autoBidMax: s.autoBidMax,
     ));
 
     final result = isAlarmed
@@ -107,16 +135,33 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
         : await repository.setAuctionAlarm(e.auctionId);
 
     result.fold(
-      (f) {
-        // Revert on failure
-        emit(BiddingLoaded(auction: s.auction, isMine: s.isMine, isAlarmed: isAlarmed));
-      },
+      (f) => emit(BiddingLoaded(
+        auction: s.auction, isMine: s.isMine,
+        isAlarmed: isAlarmed, autoBidMax: s.autoBidMax,
+      )),
       (_) {},
     );
   }
 
-  // AuctionEntity is immutable — copy by creating an AuctionModel copy via its fields
-  AuctionEntity _copyAuctionWithWatchlist(AuctionEntity a, bool watchlisted) {
+  void _onSetAutoBid(SetAutoBid e, Emitter<BiddingState> emit) {
+    if (state is! BiddingLoaded) return;
+    final s = state as BiddingLoaded;
+    emit(BiddingLoaded(
+      auction: s.auction, isMine: s.isMine,
+      isAlarmed: s.isAlarmed, autoBidMax: e.maxAmount,
+    ));
+  }
+
+  void _onClearAutoBid(ClearAutoBid e, Emitter<BiddingState> emit) {
+    if (state is! BiddingLoaded) return;
+    final s = state as BiddingLoaded;
+    emit(BiddingLoaded(
+      auction: s.auction, isMine: s.isMine,
+      isAlarmed: s.isAlarmed, autoBidMax: null,
+    ));
+  }
+
+  AuctionEntity _copyAuction(AuctionEntity a, {bool? watchlisted, DateTime? endsAt}) {
     return AuctionEntity(
       id: a.id,
       title: a.title,
@@ -126,13 +171,18 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
       currentBid: a.currentBid,
       startingBid: a.startingBid,
       bidCount: a.bidCount,
-      endsAt: a.endsAt,
+      endsAt: endsAt ?? a.endsAt,
       status: a.status,
       category: a.category,
       location: a.location,
       retailValue: a.retailValue,
-      isWatchlisted: watchlisted,
+      isWatchlisted: watchlisted ?? a.isWatchlisted,
       winnerId: a.winnerId,
+      minBidIncrement: a.minBidIncrement,
+      buyNowPrice: a.buyNowPrice,
+      watchers: a.watchers,
+      extensionSeconds: a.extensionSeconds,
+      lastBidderId: a.lastBidderId,
     );
   }
 

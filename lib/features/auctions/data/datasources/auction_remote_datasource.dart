@@ -115,29 +115,38 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
       final doc = await tx.get(ref);
       if (!doc.exists) throw Exception('Veiling niet gevonden');
 
-      final d = doc.data()! as Map<String, dynamic>;
+      final d   = doc.data()! as Map<String, dynamic>;
       final cur = (d['currentBid'] as num).toDouble();
       final end = (d['endsAt'] as Timestamp).toDate();
+      final inc = (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0;
+      final extSec = (d['extensionSeconds'] as int?) ?? 30;
 
-      if (amount <= cur) {
-        throw Exception('Bod moet hoger zijn dan €${cur.toStringAsFixed(2)}');
+      if (amount < cur + inc) {
+        throw Exception('Minimumbieding is €${(cur + inc).toStringAsFixed(2)}');
       }
       if (DateTime.now().isAfter(end)) {
         throw Exception('De veiling is al afgelopen');
       }
 
-      tx.update(ref, {
-        'currentBid': amount,
-        'bidCount': FieldValue.increment(1),
+      // Auto-extend: if bid placed in last 60 seconds, add extensionSeconds
+      final timeLeft = end.difference(DateTime.now());
+      final updates = <String, dynamic>{
+        'currentBid':   amount,
+        'bidCount':     FieldValue.increment(1),
         'lastBidderId': userId,
-      });
+      };
+      if (timeLeft.inSeconds <= 60) {
+        updates['endsAt'] = Timestamp.fromDate(end.add(Duration(seconds: extSec)));
+      }
+
+      tx.update(ref, updates);
 
       tx.set(ref.collection('bids').doc(), {
         'auctionId': auctionId,
-        'userId': userId,
-        'userName': userName ?? 'Anoniem',
-        'amount': amount,
-        'placedAt': FieldValue.serverTimestamp(),
+        'userId':    userId,
+        'userName':  userName ?? 'Anoniem',
+        'amount':    amount,
+        'placedAt':  FieldValue.serverTimestamp(),
       });
 
       return true;

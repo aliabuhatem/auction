@@ -18,6 +18,11 @@ class AuctionModel extends AuctionEntity {
     required super.retailValue,
     super.isWatchlisted,
     super.winnerId,
+    super.minBidIncrement,
+    super.buyNowPrice,
+    super.watchers,
+    super.extensionSeconds,
+    super.lastBidderId,
   });
 
   factory AuctionModel.fromFirestore(DocumentSnapshot doc) {
@@ -39,6 +44,11 @@ class AuctionModel extends AuctionEntity {
       retailValue: (d['retailValue'] as num?)?.toDouble() ?? 0.0,
       isWatchlisted: d['isWatchlisted'] ?? false,
       winnerId: d['winnerId'],
+      minBidIncrement: (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
+      buyNowPrice: (d['buyNowPrice'] as num?)?.toDouble(),
+      watchers: (d['watchers'] as int?) ?? 0,
+      extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
+      lastBidderId: d['lastBidderId'] as String?,
     );
   }
 
@@ -87,6 +97,11 @@ class AuctionModel extends AuctionEntity {
       retailValue: (d['retailValue'] as num?)?.toDouble() ?? 0.0,
       isWatchlisted: d['isWatchlisted'] ?? false,
       winnerId: d['winnerId'],
+      minBidIncrement: (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0,
+      buyNowPrice: (d['buyNowPrice'] as num?)?.toDouble(),
+      watchers: (d['watchers'] as int?) ?? 0,
+      extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
+      lastBidderId: d['lastBidderId'] as String?,
     );
   }
 
