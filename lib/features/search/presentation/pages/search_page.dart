@@ -306,7 +306,7 @@ class _CategoryFilterBar extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
                     color: isSelected
-                        ? Colors.white
+                        ? AppColors.textOnGold
                         : (isDark
                             ? const Color(0xFF8892A4)
                             : AppColors.textSecondary),

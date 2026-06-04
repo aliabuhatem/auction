@@ -582,8 +582,8 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
     final minBid  = auction.nextMinBid;
     final isActive = auction.isLive;
 
-    final cardColor  = isDark ? AppColors.darkCard : Colors.white;
-    final borderCol  = isDark ? AppColors.darkBorder : AppColors.border;
+    final cardColor  = isDark ? AppColors.glassFill : Colors.white;
+    final borderCol  = isDark ? AppColors.goldBorder : AppColors.border;
     final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimary;
     final textSec    = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
@@ -594,7 +594,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
           color:        cardColor,
           borderRadius: BorderRadius.circular(20),
           border:       Border.all(color: borderCol, width: isDark ? 1 : 1.5),
-          boxShadow: isDark ? null : [const BoxShadow(
+          boxShadow: isDark ? AppColors.glassShadow : [const BoxShadow(
               color: AppColors.cardShadow, blurRadius: 24, offset: Offset(0, 8))],
         ),
         child: Column(
@@ -1145,14 +1145,14 @@ class _QuickBidChip extends StatelessWidget {
             children: [
               Text(label,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
+                    color: isSelected ? AppColors.textOnGold : AppColors.textSecondary,
                     fontWeight: FontWeight.w600, fontSize: 11,
                   )),
               const SizedBox(height: 2),
               Text(
                 CurrencyFormatter.format(amount),
                 style: TextStyle(
-                  color: isSelected ? Colors.white : AppColors.textPrimary,
+                  color: isSelected ? AppColors.textOnGold : AppColors.textPrimary,
                   fontWeight: FontWeight.w800, fontSize: 12,
                 ),
               ),
@@ -1265,7 +1265,7 @@ class _TabSection extends StatelessWidget {
               labelColor:           Colors.white,
               unselectedLabelColor: AppColors.textSecondary,
               labelStyle: const TextStyle(
-                  fontFamily: 'Nunito', fontWeight: FontWeight.w700, fontSize: 13),
+                  fontWeight: FontWeight.w700, fontSize: 13),
               tabs: [
                 Tab(text: AppStrings.tabDescription(context)),
                 Tab(text: AppStrings.tabBids(context)),

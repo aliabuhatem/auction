@@ -13,7 +13,7 @@ void _applySystemUi({required bool isDark}) {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor:                    Colors.transparent,
     statusBarIconBrightness:           isDark ? Brightness.light : Brightness.dark,
-    systemNavigationBarColor:          isDark ? const Color(0xFF101624) : Colors.white,
+    systemNavigationBarColor:          isDark ? const Color(0xFF0A0A0F) : const Color(0xFFF7F4ED),
     systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
   ));
 }
@@ -31,8 +31,8 @@ Future<void> main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    // Nav bar color is updated again in app.dart when theme toggles.
-    _applySystemUi(isDark: false);
+    // Dark-first; corrected again below once prefs are read.
+    _applySystemUi(isDark: true);
   }
 
   // ── Firebase ──────────────────────────────────────────────────────────────
@@ -52,7 +52,8 @@ Future<void> main() async {
   await di.init();
 
   // Read persisted dark-mode preference synchronously (prefs already loaded).
-  final isDark = di.sl<SharedPreferences>().getBool('dark_mode') ?? false;
+  // Defaults to true — the luxury experience is dark-first.
+  final isDark = di.sl<SharedPreferences>().getBool('dark_mode') ?? true;
 
   // Apply correct system UI for the persisted theme before first frame.
   if (!kIsWeb) _applySystemUi(isDark: isDark);

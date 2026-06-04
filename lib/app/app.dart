@@ -18,7 +18,7 @@ import '../features/profile/presentation/bloc/locale_bloc.dart';
 
 class AuctionApp extends StatelessWidget {
   final ThemeMode initialTheme;
-  const AuctionApp({super.key, this.initialTheme = ThemeMode.light});
+  const AuctionApp({super.key, this.initialTheme = ThemeMode.dark});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class _AppViewState extends State<_AppView> {
       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarColor:                    Colors.transparent,
         statusBarIconBrightness:           next == ThemeMode.dark ? Brightness.light : Brightness.dark,
-        systemNavigationBarColor:          next == ThemeMode.dark ? const Color(0xFF101624) : Colors.white,
+        systemNavigationBarColor:          next == ThemeMode.dark ? const Color(0xFF0A0A0F) : const Color(0xFFF7F4ED),
         systemNavigationBarIconBrightness: next == ThemeMode.dark ? Brightness.light : Brightness.dark,
       ));
     }

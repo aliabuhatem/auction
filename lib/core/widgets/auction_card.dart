@@ -61,23 +61,19 @@ class _AuctionCardState extends State<AuctionCard>
         scale: _scaleAnim,
         child: Container(
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: isDark
-                ? Border.all(color: AppColors.darkBorder, width: 1)
-                : null,
+            color: isDark ? AppColors.glassFill : Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDark ? AppColors.glassBorder : AppColors.ivoryBorder,
+              width: 1,
+            ),
             boxShadow: isDark
-                ? null
-                : [
-                    const BoxShadow(
-                      color: AppColors.cardShadow,
+                ? AppColors.glassShadow
+                : const [
+                    BoxShadow(
+                      color: AppColors.cardShadowMedium,
                       blurRadius: 16,
                       offset: Offset(0, 4),
-                    ),
-                    const BoxShadow(
-                      color: AppColors.cardShadowMedium,
-                      blurRadius: 4,
-                      offset: Offset(0, 1),
                     ),
                   ],
           ),
@@ -243,7 +239,7 @@ class _SavingsBadge extends StatelessWidget {
       child: Text(
         '-${percent.round()}%',
         style: const TextStyle(
-          color: Colors.white,
+          color: AppColors.textOnGold,
           fontWeight: FontWeight.w800,
           fontSize: 11,
           letterSpacing: 0.3,
@@ -342,15 +338,21 @@ class _InfoSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        AppStrings.currentBid(context),
-                        style: TextStyle(fontSize: 10, color: textSecondary),
+                        AppStrings.currentBid(context).toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: textSecondary,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.6,
+                        ),
                       ),
+                      const SizedBox(height: 1),
                       Text(
                         CurrencyFormatter.format(auction.currentBid),
                         style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
-                          color: AppColors.primaryRed,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 17,
+                          color: AppColors.gold,
                           letterSpacing: -0.2,
                         ),
                       ),
@@ -359,17 +361,18 @@ class _InfoSection extends StatelessWidget {
                 ),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryRed.withValues(alpha: 0.09),
+                    color: AppColors.gold.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.goldBorder),
                   ),
                   child: Text(
                     '${auction.bidCount}×',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.primaryRed,
+                      color: AppColors.gold,
                     ),
                   ),
                 ),

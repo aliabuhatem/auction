@@ -156,7 +156,7 @@ class _DashboardContent extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient:     const LinearGradient(
-                colors: [AppColors.primaryRed, Color(0xFFC1121F)],
+                colors: [AppColors.gold, AppColors.goldDim],
                 begin:  Alignment.topLeft,
                 end:    Alignment.bottomRight,
               ),

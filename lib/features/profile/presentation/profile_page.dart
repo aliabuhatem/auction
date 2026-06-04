@@ -27,7 +27,7 @@ class ProfilePage extends StatelessWidget {
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.primaryRed, Color(0xFFc1121f)],
+                    colors: [AppColors.gold, AppColors.goldDim],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),

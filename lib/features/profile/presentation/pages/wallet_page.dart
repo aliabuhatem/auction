@@ -176,29 +176,21 @@ class _BalanceCard extends StatelessWidget {
       margin:     const EdgeInsets.all(16),
       padding:    const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primaryRed, Color(0xFFc1121f)],
-          begin:  Alignment.topLeft,
-          end:    Alignment.bottomRight,
-        ),
+        gradient: AppColors.darkGradient,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color:      AppColors.primaryRed.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset:     const Offset(0, 8),
-          ),
-        ],
+        border: Border.all(color: AppColors.goldBorder, width: 1),
+        boxShadow: AppColors.goldGlow(opacity: 0.18),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.biddingCredit(context),
+            AppStrings.biddingCredit(context).toUpperCase(),
             style: const TextStyle(
-              color:    Colors.white70,
-              fontSize: 13,
+              color:    AppColors.textSecondary,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
+              letterSpacing: 1,
             ),
           ),
           const SizedBox(height: 8),
@@ -208,7 +200,7 @@ class _BalanceCard extends StatelessWidget {
               const Text(
                 '€',
                 style: TextStyle(
-                  color:    Colors.white,
+                  color:    AppColors.gold,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                 ),
@@ -217,9 +209,9 @@ class _BalanceCard extends StatelessWidget {
               Text(
                 CurrencyFormatter.decimal(balance),
                 style: const TextStyle(
-                  color:      Colors.white,
+                  color:      AppColors.gold,
                   fontSize:   44,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w800,
                   height:     1,
                 ),
               ),
@@ -227,12 +219,12 @@ class _BalanceCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Row(children: [
-            const Icon(Icons.info_outline, color: Colors.white54, size: 14),
+            const Icon(Icons.info_outline, color: AppColors.textSecondary, size: 14),
             const SizedBox(width: 6),
             Text(
               AppStrings.creditInfo(context),
-              style: TextStyle(
-                color:    Colors.white.withValues(alpha: 0.7),
+              style: const TextStyle(
+                color:    AppColors.textSecondary,
                 fontSize: 12,
               ),
             ),

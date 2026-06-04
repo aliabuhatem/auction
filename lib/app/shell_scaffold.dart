@@ -76,18 +76,18 @@ class _PremiumBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isDark ? AppColors.darkSurface : Colors.white;
+    final bg = isDark ? AppColors.darkSurface : AppColors.ivorySurface;
 
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: bg.withValues(alpha: isDark ? 0.85 : 0.95),
+            color: bg.withValues(alpha: isDark ? 0.75 : 0.95),
             border: Border(
               top: BorderSide(
                 color: isDark
-                    ? Colors.white.withValues(alpha: 0.08)
+                    ? AppColors.goldBorder
                     : Colors.black.withValues(alpha: 0.06),
                 width: 0.5,
               ),
@@ -181,9 +181,12 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
                 color: selected
-                    ? AppColors.primaryRed.withValues(alpha: 0.12)
+                    ? AppColors.gold.withValues(alpha: 0.14)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
+                boxShadow: selected
+                    ? [BoxShadow(color: AppColors.gold.withValues(alpha: 0.25), blurRadius: 12)]
+                    : null,
               ),
               child: Icon(
                 selected ? widget.tab.activeIcon : widget.tab.icon,
@@ -195,9 +198,9 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontFamily: 'Nunito',
                 fontSize:   10,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                letterSpacing: 0.2,
                 color:      labelColor,
               ),
               child: Text(widget.tab.label),

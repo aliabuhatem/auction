@@ -82,18 +82,18 @@ class _BidButtonState extends State<BidButton>
           decoration: BoxDecoration(
             gradient: _isEnabled
                 ? const LinearGradient(
-                    colors: [AppColors.primaryRed, AppColors.primaryDark],
+                    colors: [AppColors.goldBright, AppColors.gold],
                     begin:  Alignment.topLeft,
                     end:    Alignment.bottomRight,
                   )
                 : null,
-            color: _isEnabled ? null : AppColors.backgroundGrey,
+            color: _isEnabled ? null : AppColors.glassFillStrong,
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
             boxShadow: _isEnabled
                 ? [
                     BoxShadow(
-                      color:      AppColors.primaryRed.withValues(alpha: 0.40),
-                      blurRadius: 14,
+                      color:      AppColors.gold.withValues(alpha: 0.40),
+                      blurRadius: 18,
                       offset:     const Offset(0, 5),
                     ),
                   ]
@@ -105,7 +105,7 @@ class _BidButtonState extends State<BidButton>
                     width:  24,
                     height: 24,
                     child:  CircularProgressIndicator(
-                      color:       Colors.white,
+                      color:       AppColors.textOnGold,
                       strokeWidth: 2.5,
                     ),
                   )
@@ -114,9 +114,9 @@ class _BidButtonState extends State<BidButton>
                         AppStrings.bidAmount(context,
                             CurrencyFormatter.format(widget.nextBid)),
                     style: TextStyle(
-                      color:       _isEnabled ? Colors.white : AppColors.textHint,
+                      color:       _isEnabled ? AppColors.textOnGold : AppColors.textHint,
                       fontSize:    AppDimensions.fontXXL,
-                      fontWeight:  FontWeight.w800,
+                      fontWeight:  FontWeight.w700,
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -305,13 +305,13 @@ class QuickBidBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color:        AppColors.primaryRed,
+          color:        AppColors.gold,
           borderRadius: BorderRadius.circular(AppDimensions.radiusRound),
         ),
         child: Text(
           AppStrings.bidNow(context),
           style: const TextStyle(
-            color:      Colors.white,
+            color:      AppColors.textOnGold,
             fontWeight: FontWeight.bold,
             fontSize:   AppDimensions.fontS,
           ),
