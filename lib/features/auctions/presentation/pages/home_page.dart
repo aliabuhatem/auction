@@ -107,34 +107,34 @@ class _AppBarSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isDark ? AppColors.darkSurface : Colors.white;
+    final bg = isDark ? AppColors.darkBackground : AppColors.surfaceWhite;
     return SliverAppBar(
       pinned: true,
       backgroundColor: bg,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      scrolledUnderElevation: 1,
-      shadowColor: AppColors.cardShadow,
+      scrolledUnderElevation: 0,
       title: Row(
         children: [
           Container(
-            width: 32,
-            height: 32,
-            decoration: const BoxDecoration(
-              gradient: AppColors.primaryGradient,
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              gradient: AppColors.goldGradient,
               shape: BoxShape.circle,
+              boxShadow: AppColors.goldGlow(opacity: 0.35),
             ),
-            child:
-                const Icon(Icons.gavel_rounded, color: Colors.white, size: 18),
+            child: const Icon(Icons.gavel_rounded,
+                color: AppColors.textOnGold, size: 18),
           ),
           const SizedBox(width: 10),
           Text(
             'Vakantieveilingen',
             style: TextStyle(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
               fontSize: 19,
-              letterSpacing: -0.3,
-              color: isDark ? AppColors.textOnDark : AppColors.textPrimary,
+              letterSpacing: -0.2,
+              color: isDark ? AppColors.textPrimary : AppColors.textPrimaryLight,
             ),
           ),
         ],
@@ -168,15 +168,16 @@ class _AppBarIconButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.08)
-              : AppColors.backgroundLight,
+          color: isDark ? AppColors.glassFill : AppColors.backgroundGrey,
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark ? AppColors.glassBorder : AppColors.ivoryBorder,
+          ),
         ),
         child: Icon(
           icon,
           size: 22,
-          color: isDark ? AppColors.textOnDark : AppColors.textPrimary,
+          color: isDark ? AppColors.textPrimary : AppColors.textPrimaryLight,
         ),
       ),
     );
@@ -197,7 +198,7 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final bg = isDark ? AppColors.darkSurface : Colors.white;
+    final bg = isDark ? AppColors.darkBackground : AppColors.surfaceWhite;
     return Container(
       color: bg,
       child: BlocBuilder<AuctionListBloc, AuctionListState>(
@@ -253,16 +254,21 @@ class _CategoryPill extends StatelessWidget {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected ? AppColors.primaryGradient : null,
+          gradient: isSelected ? AppColors.goldGradient : null,
           color: isSelected
               ? null
-              : (isDark ? AppColors.darkCard : AppColors.backgroundGrey),
+              : (isDark ? AppColors.glassFill : AppColors.backgroundGrey),
           borderRadius: BorderRadius.circular(100),
+          border: Border.all(
+            color: isSelected
+                ? Colors.transparent
+                : (isDark ? AppColors.glassBorder : AppColors.ivoryBorder),
+          ),
           boxShadow: isSelected
               ? [
                   const BoxShadow(
                     color: AppColors.primaryShadow,
-                    blurRadius: 10,
+                    blurRadius: 12,
                     offset: Offset(0, 3),
                   ),
                 ]
@@ -271,11 +277,11 @@ class _CategoryPill extends StatelessWidget {
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(
-            fontWeight: FontWeight.w700,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
             fontSize: 13,
             color: isSelected
                 ? AppColors.textOnGold
-                : (isDark ? const Color(0xFF8892A4) : AppColors.textSecondary),
+                : (isDark ? AppColors.textSecondary : AppColors.textSecondaryLight),
           ),
           child: Text(label),
         ),
@@ -347,7 +353,7 @@ class _SectionHeader extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   fontSize: 17,
                   letterSpacing: -0.2,
-                  color: isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                  color: isDark ? AppColors.textPrimary : AppColors.textPrimaryLight,
                 ),
               ),
             ),

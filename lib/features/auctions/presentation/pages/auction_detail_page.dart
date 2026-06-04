@@ -413,7 +413,7 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textPrimary   = isDark ? AppColors.textOnDark   : AppColors.textPrimary;
+    final textPrimary   = isDark ? AppColors.textOnDark   : AppColors.textPrimaryLight;
     final textSecondary = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
     return Padding(
@@ -584,7 +584,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
 
     final cardColor  = isDark ? AppColors.glassFill : Colors.white;
     final borderCol  = isDark ? AppColors.goldBorder : AppColors.border;
-    final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimary;
+    final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimaryLight;
     final textSec    = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
     return Padding(

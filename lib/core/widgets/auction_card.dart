@@ -292,7 +292,7 @@ class _InfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimary;
+    final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimaryLight;
     final textSecondary =
         isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
