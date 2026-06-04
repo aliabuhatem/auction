@@ -32,7 +32,7 @@ class AuctionListLoaded extends AuctionListState {
     isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     currentPage: currentPage, selectedCategory: selectedCategory,
   );
-  @override List<Object?> get props => [auctions, hasMore, isLoadingMore, currentPage, selectedCategory];
+  @override List<Object?> get props => [auctions, endingSoonAuctions, featuredAuctions, hasMore, isLoadingMore, currentPage, selectedCategory];
 }
 class AuctionListError extends AuctionListState {
   final String message;

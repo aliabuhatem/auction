@@ -13,27 +13,54 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  final _scroll = ScrollController();
+
   @override
   void initState() {
     super.initState();
     context.read<AuctionListBloc>().add(FilterByCategory(category: widget.category));
+    _scroll.addListener(() {
+      if (_scroll.offset >= _scroll.position.maxScrollExtent * 0.9) {
+        context.read<AuctionListBloc>().add(LoadMoreAuctions());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final title = widget.category?.label ?? 'Alle veilingen';
     return Scaffold(
-      appBar: AppBar(title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold))),
+      appBar: AppBar(
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      ),
       body: BlocBuilder<AuctionListBloc, AuctionListState>(
         builder: (context, state) {
           if (state is AuctionListLoading) return const AuctionGridShimmer();
           if (state is AuctionListLoaded) {
-            return CustomScrollView(
-              slivers: [
-                AuctionGrid(auctions: state.auctions, hasMore: state.hasMore),
-                const SliverToBoxAdapter(child: SizedBox(height: 20)),
-              ],
+            return RefreshIndicator(
+              onRefresh: () async =>
+                  context.read<AuctionListBloc>().add(FilterByCategory(category: widget.category)),
+              child: CustomScrollView(
+                controller: _scroll,
+                slivers: [
+                  AuctionGrid(
+                    auctions: state.auctions,
+                    hasMore: state.hasMore,
+                    isLoadingMore: state.isLoadingMore,
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                ],
+              ),
             );
+          }
+          if (state is AuctionListError) {
+            return Center(child: Text(state.message));
           }
           return const SizedBox.shrink();
         },

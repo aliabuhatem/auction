@@ -71,28 +71,28 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 8),
-                _section(AppStrings.sectionAccount(context), [
-                  _tile(Icons.manage_accounts_outlined, AppStrings.editProfile(context),
+                _section(context, AppStrings.sectionAccount(context), [
+                  _tile(context, Icons.manage_accounts_outlined, AppStrings.editProfile(context),
                       () => context.push(AppRoutes.profileSettings)),
-                  _tile(Icons.account_balance_wallet_outlined, AppStrings.walletAndCredit(context),
+                  _tile(context, Icons.account_balance_wallet_outlined, AppStrings.walletAndCredit(context),
                       () => context.push(AppRoutes.wallet)),
-                  _tile(Icons.person_add_outlined, AppStrings.inviteFriends(context),
+                  _tile(context, Icons.person_add_outlined, AppStrings.inviteFriends(context),
                       () => context.push(AppRoutes.referral)),
-                  _tile(Icons.notifications_outlined, AppStrings.notifications(context),
+                  _tile(context, Icons.notifications_outlined, AppStrings.notifications(context),
                       () => context.push(AppRoutes.notifications)),
-                  _tile(Icons.dark_mode_outlined, AppStrings.darkMode(context),
+                  _tile(context, Icons.dark_mode_outlined, AppStrings.darkMode(context),
                       () => ThemeModeNotifier.of(context)?.toggleTheme()),
-                  _tile(Icons.language, AppStrings.language(context), () => _showLanguageDialog(context)),
+                  _tile(context, Icons.language, AppStrings.language(context), () => _showLanguageDialog(context)),
                 ]),
-                _section(AppStrings.sectionMore(context), [
-                  _tile(Icons.help_outline, AppStrings.help(context), () => _showHelp(context)),
-                  _tile(Icons.info_outline, AppStrings.about(context), () => _showAbout(context)),
+                _section(context, AppStrings.sectionMore(context), [
+                  _tile(context, Icons.help_outline, AppStrings.help(context), () => _showHelp(context)),
+                  _tile(context, Icons.info_outline, AppStrings.about(context), () => _showAbout(context)),
                 ]),
-                _section(AppStrings.sectionAccountManage(context), [
-                  _tile(Icons.logout, AppStrings.logout(context), () {
+                _section(context, AppStrings.sectionAccountManage(context), [
+                  _tile(context, Icons.logout, AppStrings.logout(context), () {
                     context.read<AuthBloc>().add(LogoutRequested());
                   }, color: Colors.red),
-                  _tile(Icons.delete_outline, AppStrings.deleteAccount(context),
+                  _tile(context, Icons.delete_outline, AppStrings.deleteAccount(context),
                       () => _deleteAccount(context),
                       color: Colors.red),
                 ]),
@@ -234,7 +234,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _section(String title, List<Widget> tiles) {
+  Widget _section(BuildContext context, String title, List<Widget> tiles) {
+    final surface = Theme.of(context).colorScheme.surface;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,7 +246,7 @@ class ProfilePage extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: surface,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8)],
           ),
@@ -255,10 +256,11 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _tile(IconData icon, String title, VoidCallback? onTap, {Color? color}) {
+  Widget _tile(BuildContext context, IconData icon, String title, VoidCallback? onTap, {Color? color}) {
+    final textColor = color ?? Theme.of(context).colorScheme.onSurface;
     return ListTile(
-      leading: Icon(icon, color: color ?? AppColors.textPrimary, size: 22),
-      title: Text(title, style: TextStyle(color: color ?? AppColors.textPrimary, fontWeight: FontWeight.w500)),
+      leading: Icon(icon, color: color ?? Theme.of(context).colorScheme.onSurface, size: 22),
+      title: Text(title, style: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
       onTap: onTap,
     );

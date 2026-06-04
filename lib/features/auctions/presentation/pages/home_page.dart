@@ -301,7 +301,7 @@ class _ContentView extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           // ── Featured / ending soon ────────────────────────────────────────
-          if (state.featuredAuctions.isNotEmpty) ...[
+          if (state.endingSoonAuctions.isNotEmpty) ...[
             const _SectionHeader(
               title: '🔥 Snel sluitend',
               onMore: null,

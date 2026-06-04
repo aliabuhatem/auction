@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../app/app_routes.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../auth/presentation/bloc/auth_bloc.dart';
@@ -78,9 +80,8 @@ class NotificationsPage extends StatelessWidget {
                 time: _formatTime(d['createdAt'] as Timestamp?, context),
                 isUnread: isUnread,
                 onTap: () {
-                  if (isUnread) {
-                    docs[i].reference.update({'read': true});
-                  }
+                  if (isUnread) docs[i].reference.update({'read': true});
+                  _navigateTo(context, type, d['data'] as Map<String, dynamic>? ?? {});
                 },
               );
             },
@@ -88,6 +89,25 @@ class NotificationsPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _navigateTo(BuildContext context, String type, Map<String, dynamic> data) {
+    final auctionId = data['auctionId'] as String? ?? '';
+    final orderId   = data['orderId']   as String? ?? '';
+    switch (type) {
+      case 'outbid':
+      case 'alarm':
+      case 'won':
+        if (auctionId.isNotEmpty) context.push(AppRoutes.auctionDetailPath(auctionId));
+        break;
+      case 'payment':
+      case 'payment_reminder':
+        if (orderId.isNotEmpty) context.push(AppRoutes.paymentPath(orderId));
+        break;
+      case 'voucher':
+        context.push(AppRoutes.tickets);
+        break;
+    }
   }
 
   Future<void> _markAllRead(String userId) async {
