@@ -32,7 +32,7 @@ class AppColors {
   static const Color glassFillStrong =
       Color(0x14FFFFFF); // rgba(255,255,255,0.08)
   static const Color glassBorder = Color(0x1AFFFFFF); // rgba(255,255,255,0.10)
-  static const Color goldBorder = Color(0x33C9A84C); // rgba(201,168,76,0.20)
+  static const Color goldBorder = Color(0x334FB8E0); // subtle accent-teal hairline
 
   // ── Brand (legacy names → gold) ──────────────────────────────────────────────
   static const Color primaryRed = gold; // primary accent / CTA / price
@@ -106,7 +106,7 @@ class AppColors {
   // ── Shadows ──────────────────────────────────────────────────────────────────
   static const Color cardShadow = Color(0x66000000); // deep glass shadow
   static const Color cardShadowMedium = Color(0x40000000);
-  static const Color primaryShadow = Color(0x4DC9A84C); // gold glow
+  static const Color primaryShadow = Color(0x4D4FB8E0); // accent-teal glow
   static const Color deepShadow = Color(0x99000000);
 
   // ── Timer / Countdown ────────────────────────────────────────────────────────

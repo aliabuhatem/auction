@@ -14,6 +14,7 @@ import '../../domain/entities/auction_entity.dart';
 import '../widgets/bid_history_list.dart';
 import '../../../../core/widgets/bid_button.dart';
 import '../../../../core/widgets/loading_shimmer.dart';
+import '../../../../core/widgets/product_image.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -145,6 +146,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                   surfaceTintColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.light,
                   flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
                     background: Hero(
                       tag: 'auction-img-${auction.id}',
                       child: _ImageGallery(
@@ -371,25 +373,18 @@ class _ImageGallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (imageUrls.isEmpty) return Container(color: AppColors.backgroundGrey);
+    // No images on the product → show a single bundled product picture.
+    final urls = imageUrls.isEmpty ? <String>[''] : imageUrls;
     return Stack(
       fit: StackFit.expand,
       children: [
         PageView.builder(
-          itemCount: imageUrls.length,
+          itemCount: urls.length,
           onPageChanged: onPageChanged,
-          itemBuilder: (_, i) => Image.network(
-            imageUrls[i],
+          itemBuilder: (_, i) => ProductImage(
+            imageUrl: urls[i],
+            seed: 'detail-$i-${urls[i]}',
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
-              color: AppColors.backgroundGrey,
-              child: const Center(child: Icon(Icons.image_not_supported_outlined,
-                  size: 48, color: AppColors.textHint)),
-            ),
-            loadingBuilder: (_, child, p) =>
-                p == null ? child : Container(color: AppColors.backgroundGrey,
-                    child: const Center(child: CircularProgressIndicator(
-                        color: AppColors.primaryRed, strokeWidth: 2))),
           ),
         ),
         const Positioned.fill(

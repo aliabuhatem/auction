@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,6 +9,7 @@ import '../constants/app_colors.dart';
 import '../constants/app_strings.dart';
 import '../utils/currency_formatter.dart';
 import 'countdown_widget.dart';
+import 'product_image.dart';
 
 class AuctionCard extends StatefulWidget {
   final AuctionEntity auction;
@@ -110,29 +110,10 @@ class _ImageSection extends StatelessWidget {
         children: [
           Hero(
             tag: 'auction-img-${auction.id}',
-            child: CachedNetworkImage(
+            child: ProductImage(
               imageUrl: auction.imageUrl,
+              seed: auction.id,
               fit: BoxFit.cover,
-              placeholder: (_, __) => Container(
-                color: AppColors.backgroundGrey,
-                child: const Center(
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.primaryRed,
-                    ),
-                  ),
-                ),
-              ),
-              errorWidget: (_, __, ___) => Container(
-                color: AppColors.backgroundGrey,
-                child: const Center(
-                  child: Icon(Icons.image_not_supported_outlined,
-                      color: AppColors.textHint, size: 32),
-                ),
-              ),
             ),
           ),
 

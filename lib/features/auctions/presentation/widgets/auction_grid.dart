@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../domain/entities/auction_entity.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -14,6 +15,7 @@ class AuctionGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (auctions.isEmpty && !isLoadingMore) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return SliverFillRemaining(
         hasScrollBody: false,
         child: Center(
@@ -21,16 +23,20 @@ class AuctionGrid extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 72,
-                height: 72,
+                width: 84,
+                height: 84,
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundGrey,
-                  borderRadius: BorderRadius.circular(20),
+                  color: isDark ? AppColors.glassFill : AppColors.backgroundGrey,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                      color: isDark ? AppColors.glassBorder : AppColors.ivoryBorder),
                 ),
                 child: const Icon(Icons.gavel_outlined,
-                    size: 36, color: AppColors.textHint),
-              ),
-              const SizedBox(height: 16),
+                    size: 38, color: AppColors.textHint),
+              )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .moveY(begin: -5, end: 5, duration: 2200.ms, curve: Curves.easeInOut),
+              const SizedBox(height: 18),
               Text(
                 AppStrings.noAuctions(context),
                 style: const TextStyle(
@@ -40,7 +46,7 @@ class AuctionGrid extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ).animate().fadeIn(duration: 400.ms),
       );
     }
 
