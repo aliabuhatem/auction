@@ -208,7 +208,7 @@ class SavingsBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppDimensions.radiusS),
       ),
       child: Text(
-        '-${savingsPercent.toStringAsFixed(0)}%',
+        '-${savingsPercent.round()}%',
         style: const TextStyle(
           color:      Colors.white,
           fontWeight: FontWeight.bold,

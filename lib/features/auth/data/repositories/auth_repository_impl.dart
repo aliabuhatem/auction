@@ -55,11 +55,14 @@ class AuthRepositoryImpl implements AuthRepository {
   Stream<UserEntity?> get authStateChanges => datasource.authStateChanges;
 
   String _parseFirebaseError(String msg) {
-    if (msg.contains('user-not-found')) return 'Geen account gevonden met dit e-mailadres';
-    if (msg.contains('wrong-password')) return 'Onjuist wachtwoord';
-    if (msg.contains('email-already-in-use')) return 'Er bestaat al een account met dit e-mailadres';
-    if (msg.contains('invalid-email')) return 'Ongeldig e-mailadres';
-    if (msg.contains('weak-password')) return 'Wachtwoord is te zwak (minimaal 6 tekens)';
-    return 'Er is iets misgegaan. Probeer opnieuw.';
+    if (msg.contains('user-not-found'))      return 'No account found with this email address';
+    if (msg.contains('wrong-password'))      return 'Incorrect password. Please try again';
+    if (msg.contains('email-already-in-use')) return 'An account with this email already exists';
+    if (msg.contains('invalid-email'))       return 'Invalid email address';
+    if (msg.contains('weak-password'))       return 'Password is too weak (minimum 6 characters)';
+    if (msg.contains('too-many-requests'))   return 'Too many attempts. Please try again later';
+    if (msg.contains('network-request-failed')) return 'Network error. Check your internet connection';
+    if (msg.contains('invalid-credential'))  return 'Invalid credentials';
+    return 'Something went wrong. Please try again';
   }
 }

@@ -724,7 +724,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                               keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               decoration: InputDecoration(
                                 prefixText: '€ ',
-                                hintText: minBid.toStringAsFixed(2),
+                                hintText: CurrencyFormatter.decimal(minBid),
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 14, vertical: 10),
                                 border: OutlineInputBorder(
@@ -1182,7 +1182,8 @@ class _StatsRow extends StatelessWidget {
               color: AppColors.textSecondary, isDark: isDark),
           const SizedBox(width: 10),
           _StatCard(label: AppStrings.yourSaving(context),
-              value: '-${auction.savingsPercent.toStringAsFixed(0)}%',
+              value: CurrencyFormatter.formatDiscountPercent(
+                  auction.retailValue, auction.currentBid),
               color: AppColors.success, isDark: isDark),
           const SizedBox(width: 10),
           _StatCard(label: AppStrings.tabBids(context),

@@ -241,7 +241,7 @@ class _SavingsBadge extends StatelessWidget {
         ],
       ),
       child: Text(
-        '-${percent.toStringAsFixed(0)}%',
+        '-${percent.round()}%',
         style: const TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.w800,

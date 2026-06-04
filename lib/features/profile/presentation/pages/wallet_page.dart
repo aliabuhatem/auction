@@ -208,7 +208,7 @@ class _BalanceCard extends StatelessWidget {
               ),
               const SizedBox(width: 4),
               Text(
-                balance.toStringAsFixed(2),
+                CurrencyFormatter.decimal(balance),
                 style: const TextStyle(
                   color:      Colors.white,
                   fontSize:   44,

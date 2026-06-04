@@ -18,13 +18,13 @@ class ServerException extends AppException {
 
 /// Thrown when there is no internet / host unreachable.
 class NetworkException extends AppException {
-  const NetworkException([super.message = 'Geen internetverbinding', Object? originalError])
+  const NetworkException([super.message = 'No internet connection', Object? originalError])
       : super(code: 'network_error', originalError: originalError);
 }
 
 /// Thrown when reading/writing local cache fails.
 class CacheException extends AppException {
-  const CacheException([super.message = 'Cache fout', Object? originalError])
+  const CacheException([super.message = 'Cache error', Object? originalError])
       : super(code: 'cache_error', originalError: originalError);
 }
 
@@ -37,21 +37,21 @@ class DatabaseException extends AppException {
 class AuthException extends AppException {
   const AuthException(super.message, {super.code, super.originalError});
 
-  /// Converts a Firebase auth error code to a human-readable Dutch message.
+  /// Converts a Firebase auth error code to a human-readable message.
   factory AuthException.fromFirebase(dynamic error) {
     final code = error?.code as String? ?? '';
     final message = switch (code) {
-      'user-not-found'       => 'Geen account gevonden met dit e-mailadres',
-      'wrong-password'       => 'Onjuist wachtwoord. Probeer het opnieuw',
-      'email-already-in-use' => 'Er bestaat al een account met dit e-mailadres',
-      'weak-password'        => 'Wachtwoord is te zwak (minimaal 6 tekens)',
-      'invalid-email'        => 'Ongeldig e-mailadres',
-      'too-many-requests'    => 'Te veel pogingen. Probeer het later opnieuw',
-      'network-request-failed' => 'Netwerkfout. Controleer je internetverbinding',
-      'operation-not-allowed' => 'Deze aanmeldmethode is niet ingeschakeld',
-      'user-disabled'        => 'Dit account is uitgeschakeld',
-      'invalid-credential'   => 'Ongeldige inloggegevens',
-      _                      => 'Er is iets misgegaan. Probeer opnieuw',
+      'user-not-found'         => 'No account found with this email address',
+      'wrong-password'         => 'Incorrect password. Please try again',
+      'email-already-in-use'   => 'An account with this email already exists',
+      'weak-password'          => 'Password is too weak (minimum 6 characters)',
+      'invalid-email'          => 'Invalid email address',
+      'too-many-requests'      => 'Too many attempts. Please try again later',
+      'network-request-failed' => 'Network error. Check your internet connection',
+      'operation-not-allowed'  => 'This sign-in method is not enabled',
+      'user-disabled'          => 'This account has been disabled',
+      'invalid-credential'     => 'Invalid credentials',
+      _                        => 'Something went wrong. Please try again',
     };
     return AuthException(message, code: code, originalError: error);
   }
