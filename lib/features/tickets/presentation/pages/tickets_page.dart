@@ -55,10 +55,10 @@ class _TicketsPageState extends State<TicketsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.error_outline,
-                            size: 48, color: Colors.grey),
+                            size: 48, color: AppColors.textSecondary),
                         const SizedBox(height: 12),
                         Text(AppStrings.errorPrefix(context),
-                            style: const TextStyle(color: Colors.grey)),
+                            style: const TextStyle(color: AppColors.textSecondary)),
                       ],
                     ),
                   ),
@@ -80,15 +80,15 @@ class _TicketsPageState extends State<TicketsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Icon(Icons.local_activity_outlined,
-                            size: 64, color: Colors.grey),
+                            size: 64, color: AppColors.textSecondary),
                         const SizedBox(height: 16),
                         Text(AppStrings.noTickets(context),
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 16)),
+                                color: AppColors.textSecondary, fontSize: 16)),
                         const SizedBox(height: 8),
                         Text(AppStrings.winVoucherHint(context),
                             style: const TextStyle(
-                                color: Colors.grey, fontSize: 13)),
+                                color: AppColors.textSecondary, fontSize: 13)),
                       ],
                     ),
                   ),
@@ -199,7 +199,7 @@ class _VoucherCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
               child: Column(children: [
-                Text(AppStrings.voucherCode(context), style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(AppStrings.voucherCode(context), style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                 const SizedBox(height: 4),
                 Text(voucher.code,
                     style: const TextStyle(
@@ -208,7 +208,7 @@ class _VoucherCard extends StatelessWidget {
                 const Divider(),
                 const SizedBox(height: 8),
                 Text(AppStrings.showQr(context),
-                    textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                    textAlign: TextAlign.center, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
               ]),
             ),
           ],

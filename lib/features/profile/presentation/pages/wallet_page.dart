@@ -127,12 +127,12 @@ class _WalletPageState extends State<WalletPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(Icons.account_balance_wallet_outlined,
-                                  size: 64, color: Colors.grey),
+                                  size: 64, color: AppColors.textSecondary),
                               const SizedBox(height: 16),
                               Text(
                                 AppStrings.noTransactions(context),
-                                style: TextStyle(
-                                    color: Colors.grey.shade500, fontSize: 16),
+                                style: const TextStyle(
+                                    color: AppColors.textSecondary, fontSize: 16),
                               ),
                             ],
                           ),

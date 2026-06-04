@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                   // Divider
                   Row(children: [
                     const Expanded(child: Divider()),
-                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(AppStrings.continueWith(context), style: const TextStyle(color: Colors.grey))),
+                    Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Text(AppStrings.continueWith(context), style: const TextStyle(color: AppColors.textSecondary))),
                     const Expanded(child: Divider()),
                   ]),
                   const SizedBox(height: 16),

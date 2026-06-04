@@ -56,7 +56,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
           isScrollable: true,
           indicatorColor: AppColors.primaryRed,
           labelColor: AppColors.primaryRed,
-          unselectedLabelColor: Colors.grey,
+          unselectedLabelColor: AppColors.textSecondary,
           tabs: [
             Tab(text: AppStrings.active(context)),
             Tab(text: AppStrings.won(context)),
@@ -75,10 +75,10 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.grey),
+                  const Icon(Icons.error_outline, size: 48, color: AppColors.textSecondary),
                   const SizedBox(height: 12),
                   Text(state.message,
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: AppColors.textSecondary),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 16),
                   ElevatedButton(
@@ -181,10 +181,10 @@ class _EmptyTab extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 64, color: Colors.grey[300]),
+            Icon(icon, size: 64, color: AppColors.textHint),
             const SizedBox(height: 16),
             Text(message,
-                style: const TextStyle(color: Colors.grey, fontSize: 16)),
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 16)),
           ],
         ),
       );
@@ -242,7 +242,7 @@ class _PendingPaymentTab extends StatelessWidget {
                   height: 200,
                   child: Center(
                     child: Text(AppStrings.noPending(context),
-                        style: const TextStyle(color: Colors.grey)),
+                        style: const TextStyle(color: AppColors.textSecondary)),
                   ),
                 ),
               ]),

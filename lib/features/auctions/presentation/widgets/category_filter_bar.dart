@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../domain/entities/auction_entity.dart';
 import '../bloc/auction_list_bloc.dart';
 
@@ -80,7 +81,7 @@ class _CategoryChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: isSelected
               ? Theme.of(context).primaryColor
-              : Colors.grey[100],
+              : AppColors.backgroundGrey,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected

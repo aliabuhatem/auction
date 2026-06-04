@@ -74,7 +74,7 @@ class _SearchPageState extends State<SearchPage> {
         title: Container(
           margin: const EdgeInsets.only(right: 8),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkCard : Colors.grey[100],
+            color: isDark ? AppColors.darkCard : AppColors.backgroundGrey,
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextField(
@@ -151,11 +151,11 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.search, size: 64,
-                color: isDark ? AppColors.darkBorder : Colors.grey[300]),
+                color: isDark ? AppColors.darkBorder : AppColors.textHint),
             const SizedBox(height: 16),
             Text(AppStrings.searchPrompt(context),
                 style: TextStyle(
-                    color: isDark ? const Color(0xFF8892A4) : Colors.grey)),
+                    color: isDark ? const Color(0xFF8892A4) : AppColors.textSecondary)),
           ],
         ),
       );
@@ -172,7 +172,7 @@ class _SearchPageState extends State<SearchPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
-                  color: isDark ? const Color(0xFF8892A4) : Colors.grey[600],
+                  color: isDark ? const Color(0xFF8892A4) : AppColors.textSecondary,
                 ),
               ),
             ),
@@ -205,7 +205,7 @@ class _SearchPageState extends State<SearchPage> {
                     isDark ? AppColors.darkCard : Colors.grey[100],
                 side: BorderSide.none,
                 deleteIcon: const Icon(Icons.close, size: 14),
-                deleteIconColor: Colors.grey,
+                deleteIconColor: AppColors.textHint,
                 onDeleted: () async {
                   final prefs = await SharedPreferences.getInstance();
                   final updated =
@@ -226,10 +226,10 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off, size: 64, color: Colors.grey[300]),
+          const Icon(Icons.search_off, size: 64, color: AppColors.textHint),
           const SizedBox(height: 16),
           Text(AppStrings.noResults(context),
-              style: const TextStyle(color: Colors.grey)),
+              style: const TextStyle(color: AppColors.textSecondary)),
         ],
       ),
     );

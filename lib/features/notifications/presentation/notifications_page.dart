@@ -56,11 +56,11 @@ class NotificationsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.notifications_none,
-                      size: 64, color: Colors.grey),
+                      size: 64, color: AppColors.textSecondary),
                   const SizedBox(height: 16),
                   Text(AppStrings.noNotifications(context),
                       style:
-                          const TextStyle(color: Colors.grey, fontSize: 16)),
+                          const TextStyle(color: AppColors.textSecondary, fontSize: 16)),
                 ],
               ),
             );
@@ -206,7 +206,7 @@ class _NotifTile extends StatelessWidget {
             Text(subtitle, style: const TextStyle(fontSize: 12)),
             const SizedBox(height: 4),
             Text(time,
-                style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
           ],
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

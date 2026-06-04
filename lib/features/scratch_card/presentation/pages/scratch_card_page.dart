@@ -289,7 +289,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
 
   Widget _buildCantScratch() {
     return Container(
-      color: Colors.grey[800],
+      color: AppColors.textSecondary,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

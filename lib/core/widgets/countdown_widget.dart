@@ -40,8 +40,8 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     if (_remaining.isNegative) {
       return Text(
         AppStrings.auctionEnded(context),
-        style: widget.style?.copyWith(color: Colors.grey) ??
-            const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+        style: widget.style?.copyWith(color: AppColors.textSecondary) ??
+            const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.bold),
       );
     }
 

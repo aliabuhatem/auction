@@ -67,6 +67,7 @@ import '../features/admin/domain/entities/admin_product_entity.dart';
 
 // ── Shell wrapper (bottom nav) ────────────────────────────────────────────────
 import 'shell_scaffold.dart';
+import '../core/constants/app_colors.dart';
 import '../core/constants/app_strings.dart';
 
 // AppRoutes constants are defined in app_routes.dart and re-exported above.
@@ -405,7 +406,7 @@ class _ErrorPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+              const Icon(Icons.error_outline, size: 64, color: AppColors.textSecondary),
               const SizedBox(height: 16),
               Text(
                 AppStrings.pageNotFound(context),
@@ -414,7 +415,7 @@ class _ErrorPage extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 error?.toString() ?? '',
-                style: const TextStyle(color: Colors.grey, fontSize: 13),
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),

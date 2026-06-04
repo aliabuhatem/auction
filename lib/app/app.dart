@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,6 +66,14 @@ class _AppViewState extends State<_AppView> {
     SharedPreferences.getInstance().then(
       (prefs) => prefs.setBool(_prefKey, next == ThemeMode.dark),
     );
+    if (!kIsWeb) {
+      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor:                    Colors.transparent,
+        statusBarIconBrightness:           next == ThemeMode.dark ? Brightness.light : Brightness.dark,
+        systemNavigationBarColor:          next == ThemeMode.dark ? const Color(0xFF101624) : Colors.white,
+        systemNavigationBarIconBrightness: next == ThemeMode.dark ? Brightness.light : Brightness.dark,
+      ));
+    }
   }
 
   @override

@@ -9,6 +9,15 @@ import 'injection_container.dart' as di;
 import 'firebase_options.dart';
 import 'features/notifications/notification_service.dart';
 
+void _applySystemUi({required bool isDark}) {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor:                    Colors.transparent,
+    statusBarIconBrightness:           isDark ? Brightness.light : Brightness.dark,
+    systemNavigationBarColor:          isDark ? const Color(0xFF101624) : Colors.white,
+    systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+  ));
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,14 +31,8 @@ Future<void> main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor:                    Colors.transparent,
-        statusBarIconBrightness:           Brightness.dark,
-        systemNavigationBarColor:          Colors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-    );
+    // Nav bar color is updated again in app.dart when theme toggles.
+    _applySystemUi(isDark: false);
   }
 
   // ── Firebase ──────────────────────────────────────────────────────────────
@@ -50,6 +53,9 @@ Future<void> main() async {
 
   // Read persisted dark-mode preference synchronously (prefs already loaded).
   final isDark = di.sl<SharedPreferences>().getBool('dark_mode') ?? false;
+
+  // Apply correct system UI for the persisted theme before first frame.
+  if (!kIsWeb) _applySystemUi(isDark: isDark);
 
   runApp(AuctionApp(initialTheme: isDark ? ThemeMode.dark : ThemeMode.light));
 

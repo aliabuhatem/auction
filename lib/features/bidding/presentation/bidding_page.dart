@@ -54,14 +54,14 @@ class BiddingSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                    color: Colors.grey[300],
+                    color: AppColors.border,
                     borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 20),
             Text(AppStrings.placeBidTitle(context),
                 style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
             const SizedBox(height: 8),
             Text('${AppStrings.currentBid(context)}: ${CurrencyFormatter.format(currentBid)}',
-                style: const TextStyle(color: Colors.grey)),
+                style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 24),
             Container(
               padding: const EdgeInsets.all(20),
@@ -72,7 +72,7 @@ class BiddingSheet extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('${AppStrings.yourBid(context)}: ',
-                      style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                      style: const TextStyle(fontSize: 16, color: AppColors.textSecondary)),
                   Text(
                     CurrencyFormatter.format(next),
                     style: const TextStyle(

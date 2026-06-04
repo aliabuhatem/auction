@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../data/models/bid_model.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/date_formatter.dart';
@@ -13,7 +14,7 @@ class BidHistoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? Colors.white : Colors.black87;
-    final subColor  = isDark ? const Color(0xFF8892A4) : Colors.grey;
+    final subColor  = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
@@ -58,7 +59,7 @@ class BidHistoryList extends StatelessWidget {
               leading: CircleAvatar(
                 backgroundColor: isTop
                     ? const Color(0xFFE63946)
-                    : (isDark ? const Color(0xFF2D3748) : Colors.grey[200]),
+                    : (isDark ? const Color(0xFF2D3748) : AppColors.backgroundGrey),
                 child: Text(
                   bid.maskedUserName.isNotEmpty
                       ? bid.maskedUserName[0].toUpperCase()

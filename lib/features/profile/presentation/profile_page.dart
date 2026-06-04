@@ -98,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                 ]),
                 const SizedBox(height: 32),
                 Text('${AppStrings.appName(context)} v1.0.0',
-                    style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
                 const SizedBox(height: 32),
               ],
             ),
@@ -241,7 +241,7 @@ class ProfilePage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-          child: Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Colors.grey)),
+          child: Text(title, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: AppColors.textSecondary)),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -261,7 +261,7 @@ class ProfilePage extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: color ?? Theme.of(context).colorScheme.onSurface, size: 22),
       title: Text(title, style: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
-      trailing: const Icon(Icons.chevron_right, color: Colors.grey, size: 20),
+      trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary, size: 20),
       onTap: onTap,
     );
   }

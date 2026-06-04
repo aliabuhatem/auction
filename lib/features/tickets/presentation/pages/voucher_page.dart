@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../data/tickets_remote_datasource.dart';
 import '../../domain/voucher_entity.dart';
@@ -38,10 +39,10 @@ class VoucherPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.grey),
+                  const Icon(Icons.error_outline, size: 48, color: AppColors.textSecondary),
                   const SizedBox(height: 12),
                   Text('${AppStrings.errorPrefix(context)}${snap.error}',
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: AppColors.textSecondary),
                       textAlign: TextAlign.center),
                 ],
               ),
@@ -166,8 +167,8 @@ class _VoucherDetail extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(AppStrings.voucherCode(context),
-                            style: TextStyle(
-                                color: Colors.grey[600], fontSize: 12)),
+                            style: const TextStyle(
+                                color: AppColors.textSecondary, fontSize: 12)),
                         const SizedBox(height: 4),
                         Text(
                           voucher.code,
@@ -187,7 +188,7 @@ class _VoucherDetail extends StatelessWidget {
                     child: Text(
                       AppStrings.showQrAtCheckin(context),
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey[600]),
+                      style: const TextStyle(color: AppColors.textSecondary),
                     ),
                   ),
                 ],
@@ -236,7 +237,7 @@ class DashedLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     double dashWidth = 5, dashSpace = 3, startX = 0;
     final paint = Paint()
-      ..color = Colors.grey[300]!
+      ..color = AppColors.border
       ..strokeWidth = 1;
     while (startX < size.width) {
       canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
