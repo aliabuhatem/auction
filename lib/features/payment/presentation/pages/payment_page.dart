@@ -9,6 +9,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
 class PaymentPage extends StatefulWidget {
   final String orderId;
@@ -212,7 +213,7 @@ class _OrderSummary extends StatelessWidget {
                 const SizedBox(height: 8),
                 _Row(
                   label: AppStrings.labelAmount(context),
-                  value: '€ ${amount.toStringAsFixed(2)}',
+                  value: CurrencyFormatter.format(amount),
                   valueStyle:
                       Theme.of(context).textTheme.titleLarge?.copyWith(
                             color:      AppColors.primaryRed,
@@ -295,7 +296,7 @@ class _OrderSummary extends StatelessWidget {
                 paying
                     ? AppStrings.payingBusy(context)
                     : AppStrings.payNowAmount(
-                        context, amount.toStringAsFixed(2)),
+                        context, CurrencyFormatter.format(amount)),
               ),
             ),
           ),

@@ -57,7 +57,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
   @override
   Future<UserModel> loginWithGoogle() async {
     final googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) throw Exception('Google inloggen geannuleerd');
+    if (googleUser == null) throw Exception('Google sign-in cancelled');
 
     final googleAuth = await googleUser.authentication;
     final cred       = GoogleAuthProvider.credential(

@@ -18,7 +18,7 @@ class BidEntity extends Equatable {
   });
 
   String get maskedUserName {
-    if (userName == null || userName!.isEmpty) return 'Anoniem';
+    if (userName == null || userName!.isEmpty) return 'Anonymous';
     final parts = userName!.split(' ');
     return parts.map((p) => p.isNotEmpty ? '${p[0]}***' : '').join(' ');
   }

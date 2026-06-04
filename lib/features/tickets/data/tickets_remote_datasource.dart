@@ -20,7 +20,7 @@ class TicketsRemoteDatasourceImpl implements TicketsRemoteDatasource {
   @override
   Future<VoucherEntity> getTicketById(String voucherId) async {
     final doc = await _firestore.collection('vouchers').doc(voucherId).get();
-    if (!doc.exists) throw Exception('Voucher niet gevonden');
+    if (!doc.exists) throw Exception('Voucher not found');
     return _fromFirestore(doc);
   }
 
