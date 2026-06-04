@@ -25,7 +25,7 @@ class VoucherPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(title: Builder(builder: (ctx) =>
           Text(AppStrings.myVoucher(ctx)))),
       body: FutureBuilder<VoucherEntity>(
@@ -62,7 +62,7 @@ class _VoucherDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
         title: Text(AppStrings.myVoucher(context)),
         actions: [
@@ -97,7 +97,7 @@ class _VoucherDetail extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: const BoxDecoration(
-                      color: Color(0xFFE63946),
+                      color: AppColors.primaryRed,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(24)),
                     ),
@@ -211,7 +211,7 @@ class _VoucherDetail extends StatelessWidget {
           height: 24,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Color(0xFFF0F4F8),
+              color: AppColors.backgroundLight,
               shape: BoxShape.circle,
             ),
           ),
@@ -222,7 +222,7 @@ class _VoucherDetail extends StatelessWidget {
           height: 24,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Color(0xFFF0F4F8),
+              color: AppColors.backgroundLight,
               shape: BoxShape.circle,
             ),
           ),

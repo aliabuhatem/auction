@@ -58,7 +58,7 @@ class BidHistoryList extends StatelessWidget {
             return ListTile(
               leading: CircleAvatar(
                 backgroundColor: isTop
-                    ? const Color(0xFFE63946)
+                    ? AppColors.primaryRed
                     : (isDark ? const Color(0xFF2D3748) : AppColors.backgroundGrey),
                 child: Text(
                   bid.maskedUserName.isNotEmpty
@@ -88,7 +88,7 @@ class BidHistoryList extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
-                  color: isTop ? const Color(0xFFE63946) : textColor,
+                  color: isTop ? AppColors.primaryRed : textColor,
                 ),
               ),
             );

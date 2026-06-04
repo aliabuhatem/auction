@@ -33,7 +33,7 @@ class CategoryChip extends StatelessWidget {
         margin:   const EdgeInsets.only(right: 8),
         padding:  const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryRed : Colors.grey.shade100,
+          color: isSelected ? AppColors.primaryRed : AppColors.backgroundGrey,
           borderRadius: BorderRadius.circular(AppDimensions.radiusRound),
           boxShadow: isSelected && showShadow
               ? [
@@ -46,7 +46,7 @@ class CategoryChip extends StatelessWidget {
               : null,
           border: isSelected
               ? null
-              : Border.all(color: Colors.grey.shade200, width: 1),
+              : Border.all(color: AppColors.border, width: 1),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -98,7 +98,7 @@ class CategoryIconChip extends StatelessWidget {
           margin:  const EdgeInsets.only(right: 8),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryRed : Colors.grey.shade100,
+            color: isSelected ? AppColors.primaryRed : AppColors.backgroundGrey,
             shape: BoxShape.circle,
             boxShadow: isSelected
                 ? [BoxShadow(color: AppColors.primaryRed.withValues(alpha: 0.3), blurRadius: 8)]

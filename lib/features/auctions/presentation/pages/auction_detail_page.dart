@@ -160,7 +160,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                           ? Icons.favorite_rounded
                           : Icons.favorite_border_rounded,
                       iconColor: auction.isWatchlisted
-                          ? Colors.red.shade300
+                          ? AppColors.primaryRed
                           : Colors.white,
                       onTap: () => context.read<BiddingBloc>()
                           .add(ToggleWatchlist(auction.id)),

@@ -3,6 +3,16 @@ import 'package:shimmer/shimmer.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_dimensions.dart';
 
+Color _shimmerBase(BuildContext ctx) =>
+    Theme.of(ctx).brightness == Brightness.dark
+        ? AppColors.darkSurface
+        : AppColors.border;
+
+Color _shimmerHighlight(BuildContext ctx) =>
+    Theme.of(ctx).brightness == Brightness.dark
+        ? AppColors.darkCard
+        : AppColors.backgroundLight;
+
 // ── Base shimmer box ─────────────────────────────────────────────────────────
 
 class ShimmerBox extends StatelessWidget {
@@ -24,8 +34,8 @@ class ShimmerBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor:      baseColor      ?? Colors.grey.shade300,
-      highlightColor: highlightColor ?? Colors.grey.shade100,
+      baseColor:      baseColor      ?? _shimmerBase(context),
+      highlightColor: highlightColor ?? _shimmerHighlight(context),
       child: Container(
         width: width,
         height: height,
@@ -46,8 +56,8 @@ class AuctionCardShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor:      Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor:      _shimmerBase(context),
+      highlightColor: _shimmerHighlight(context),
       child: Container(
         decoration: BoxDecoration(
           color:        Colors.white,
@@ -133,8 +143,8 @@ class AuctionDetailShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor:      Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor:      _shimmerBase(context),
+      highlightColor: _shimmerHighlight(context),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,8 +215,8 @@ class ListTileShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor:      Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor:      _shimmerBase(context),
+      highlightColor: _shimmerHighlight(context),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(
@@ -263,8 +273,8 @@ class ProfileShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor:      Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor:      _shimmerBase(context),
+      highlightColor: _shimmerHighlight(context),
       child: Column(
         children: [
           // Header

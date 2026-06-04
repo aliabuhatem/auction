@@ -87,7 +87,7 @@ class _BidButtonState extends State<BidButton>
                     end:    Alignment.bottomRight,
                   )
                 : null,
-            color: _isEnabled ? null : Colors.grey.shade300,
+            color: _isEnabled ? null : AppColors.backgroundGrey,
             borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
             boxShadow: _isEnabled
                 ? [
@@ -114,7 +114,7 @@ class _BidButtonState extends State<BidButton>
                         AppStrings.bidAmount(context,
                             CurrencyFormatter.format(widget.nextBid)),
                     style: TextStyle(
-                      color:       _isEnabled ? Colors.white : Colors.grey.shade600,
+                      color:       _isEnabled ? Colors.white : AppColors.textHint,
                       fontSize:    AppDimensions.fontXXL,
                       fontWeight:  FontWeight.w800,
                       letterSpacing: 0.3,
@@ -182,7 +182,7 @@ class _AlarmButtonState extends State<AlarmButton>
               : Colors.transparent,
           borderRadius: BorderRadius.circular(AppDimensions.buttonRadius),
           border: Border.all(
-            color: widget.isSet ? AppColors.primaryRed : Colors.grey.shade400,
+            color: widget.isSet ? AppColors.primaryRed : AppColors.border,
             width: 1.5,
           ),
         ),
@@ -203,7 +203,7 @@ class _AlarmButtonState extends State<AlarmButton>
                 child: Icon(
                   widget.isSet ? Icons.alarm_on : Icons.alarm,
                   key:   ValueKey(widget.isSet),
-                  color: widget.isSet ? AppColors.primaryRed : Colors.grey.shade600,
+                  color: widget.isSet ? AppColors.primaryRed : AppColors.textSecondary,
                   size:  AppDimensions.iconS,
                 ),
               ),
@@ -211,7 +211,7 @@ class _AlarmButtonState extends State<AlarmButton>
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                color:      widget.isSet ? AppColors.primaryRed : Colors.grey.shade700,
+                color:      widget.isSet ? AppColors.primaryRed : AppColors.textSecondary,
                 fontWeight: FontWeight.w600,
                 fontSize:   AppDimensions.fontBody,
               ),
@@ -282,7 +282,7 @@ class _WatchlistButtonState extends State<WatchlistButton>
             child: Icon(
               widget.isSaved ? Icons.favorite : Icons.favorite_border,
               key:   ValueKey(widget.isSaved),
-              color: widget.isSaved ? AppColors.primaryRed : Colors.grey.shade600,
+              color: widget.isSaved ? AppColors.primaryRed : AppColors.textSecondary,
               size:  AppDimensions.iconS,
             ),
           ),

@@ -124,7 +124,7 @@ class VoucherDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F4F8),
+      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
         title: Text(AppStrings.myVoucher(context), style: const TextStyle(fontWeight: FontWeight.bold)),
       ),

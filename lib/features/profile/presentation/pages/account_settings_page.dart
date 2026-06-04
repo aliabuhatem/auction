@@ -271,7 +271,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     decoration:   InputDecoration(
                       labelText:  AppStrings.email(context),
                       prefixIcon: const Icon(Icons.email_outlined),
-                      fillColor:  Colors.grey.shade100,
+                      fillColor:  AppColors.backgroundGrey,
                       filled:     true,
                     ),
                   ),
