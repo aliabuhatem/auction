@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/constants/app_strings.dart';
 
 class WalletPage extends StatefulWidget {
@@ -265,7 +266,7 @@ class _TxTile extends StatelessWidget {
       title:    Text(desc, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text(date, style: const TextStyle(fontSize: 12)),
       trailing: Text(
-        '${isCredit ? '+' : '-'} € ${amount.toStringAsFixed(2)}',
+        '${isCredit ? '+' : '-'} ${CurrencyFormatter.format(amount)}',
         style: TextStyle(
           color:      isCredit ? AppColors.success : AppColors.error,
           fontWeight: FontWeight.w800,

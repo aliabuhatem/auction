@@ -6,6 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
 class PaymentSuccessPage extends StatefulWidget {
   final String orderId;
@@ -99,7 +100,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '€ ${widget.amount.toStringAsFixed(2)}',
+                    CurrencyFormatter.format(widget.amount),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,

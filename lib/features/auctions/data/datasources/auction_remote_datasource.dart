@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../models/auction_model.dart';
 import '../models/bid_model.dart';
 
@@ -96,7 +97,7 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
   @override
   Future<AuctionModel> getAuctionById(String id) async {
     final doc = await _auctions.doc(id).get();
-    if (!doc.exists) throw Exception('Veiling niet gevonden');
+    if (!doc.exists) throw Exception('Auction not found');
     return AuctionModel.fromFirestore(doc);
   }
 
@@ -113,7 +114,7 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
     return firestore.runTransaction<bool>((tx) async {
       final ref = _auctions.doc(auctionId);
       final doc = await tx.get(ref);
-      if (!doc.exists) throw Exception('Veiling niet gevonden');
+      if (!doc.exists) throw Exception('Auction not found');
 
       final d   = doc.data()! as Map<String, dynamic>;
       final cur = (d['currentBid'] as num).toDouble();
@@ -122,10 +123,11 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
       final extSec = (d['extensionSeconds'] as int?) ?? 30;
 
       if (amount < cur + inc) {
-        throw Exception('Minimumbieding is €${(cur + inc).toStringAsFixed(2)}');
+        throw Exception(
+            'Minimum bid is ${CurrencyFormatter.format(cur + inc)}');
       }
       if (DateTime.now().isAfter(end)) {
-        throw Exception('De veiling is al afgelopen');
+        throw Exception('This auction has already ended');
       }
 
       // Auto-extend: if bid placed in last 60 seconds, add extensionSeconds
@@ -144,7 +146,7 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
       tx.set(ref.collection('bids').doc(), {
         'auctionId': auctionId,
         'userId':    userId,
-        'userName':  userName ?? 'Anoniem',
+        'userName':  userName ?? 'Anonymous',
         'amount':    amount,
         'placedAt':  FieldValue.serverTimestamp(),
       });

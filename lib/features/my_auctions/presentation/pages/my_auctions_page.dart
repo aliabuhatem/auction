@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/auction_card.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -264,7 +265,7 @@ class _PendingPaymentTab extends StatelessWidget {
                         const Icon(Icons.payment, color: AppColors.primaryRed),
                     title: Text(a.title,
                         style: const TextStyle(fontWeight: FontWeight.w600)),
-                    subtitle: Text('€${a.currentBid.toStringAsFixed(2)}'),
+                    subtitle: Text(CurrencyFormatter.format(a.currentBid)),
                     trailing: _PayButton(
                       onPressed: () async {
                         final orderId = await _findOrderId(a.id);

@@ -46,12 +46,6 @@ class CurrencyFormatter {
 
   static String percent(double value) => '${(value * 100).toStringAsFixed(0)}%';
 
-  // ── Bid formatting ────────
-
-  static String nextBidLabel(double currentBid, {double increment = 1.0}) =>
-      'Bied ${format(currentBid + increment)}';
-  static String minBidLabel(double amount) => 'Minimale bieding: ${format(amount)}';
-
   // ── Plain number helpers ──────
 
   static String number(double value) => _integer.format(value.truncate());

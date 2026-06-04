@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
 class ReferralPage extends StatefulWidget {
   const ReferralPage({super.key});
@@ -210,7 +211,7 @@ class _ReferralPageState extends State<ReferralPage> {
                         Expanded(
                           child: _StatCard(
                             icon: Icons.account_balance_wallet_rounded,
-                            value: '€ ${_earned.toStringAsFixed(0)}',
+                            value: CurrencyFormatter.formatWhole(_earned),
                             label: AppStrings.earned(context),
                             color: AppColors.success,
                           ),
