@@ -12,9 +12,12 @@ class AppColors {
   AppColors._();
 
   // ── Luxury palette (primary tokens) ──────────────────────────────────────────
-  static const Color gold = Color(0xFFC9A84C); // antique gold — primary accent
-  static const Color goldBright = Color(0xFFE3C76A); // hover / highlight gold
-  static const Color goldDim = Color(0xFF8A7434); // pressed / muted gold
+  static const Color gold =
+      Color.fromARGB(255, 4, 54, 70); // antique gold — primary accent
+  static const Color goldBright =
+      Color.fromARGB(255, 10, 67, 143); // hover / highlight gold
+  static const Color goldDim =
+      Color.fromARGB(255, 15, 69, 105); // pressed / muted gold
   static const Color purple =
       Color(0xFF8B6FBF); // deep purple — secondary accent
   static const Color purpleBright = Color(0xFFA98FD6);
@@ -76,10 +79,14 @@ class AppColors {
   static const Color ivoryBorder = Color(0x1A0A0A0F);
 
   // ── Text ─────────────────────────────────────────────────────────────────────
-  static const Color textPrimary = Color.fromARGB(255, 49, 48, 48); // off-white
-  static const Color textSecondary = Color(0xFFA0A0B0); // muted lavender-grey
-  static const Color textHint = Color.fromARGB(255, 25, 25, 26);
-  static const Color textOnDark = Color(0xFFF5F5F5);
+  // textPrimary is the DARK ink for text on light/white surfaces (voucher cards,
+  // QR codes, ivory light theme). Dark-mode UI text comes from textOnDark /
+  // the theme's onSurface instead.
+  static const Color textPrimary = Color(0xFF1A1A22); // dark ink
+  static const Color textSecondary =
+      Color(0xFFA0A0B0); // muted grey — legible on both
+  static const Color textHint = Color(0xFF7A7A88); // mid grey — legible on both
+  static const Color textOnDark = Color(0xFFF5F5F5); // off-white for dark UI
   static const Color textOnRed = Color(0xFF0A0A0F); // dark text on gold buttons
   static const Color textOnGold = Color(0xFF0A0A0F);
 
@@ -109,13 +116,19 @@ class AppColors {
 
   // ── Gradients ────────────────────────────────────────────────────────────────
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [gradientStart, gradientEnd],
+    colors: [
+      Color.fromARGB(255, 72, 119, 163),
+      Color.fromARGB(255, 34, 89, 134)
+    ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient goldGradient = LinearGradient(
-    colors: [goldStart, goldEnd],
+    colors: [
+      Color.fromARGB(255, 74, 121, 148),
+      Color.fromARGB(255, 30, 87, 121)
+    ],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );

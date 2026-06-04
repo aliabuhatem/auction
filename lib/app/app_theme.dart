@@ -41,7 +41,7 @@ class AppTheme {
   // DARK — the hero luxury theme
   // ─────────────────────────────────────────────────────────────────────────────
   static ThemeData get darkTheme {
-    final text = _textTheme(AppColors.textPrimary, AppColors.textSecondary);
+    final text = _textTheme(AppColors.textOnDark, AppColors.textSecondary);
 
     return ThemeData(
       useMaterial3: true,
@@ -62,7 +62,7 @@ class AppTheme {
         secondaryContainer: Color(0xFF221B33),
         onSecondaryContainer: AppColors.purpleBright,
         surface: AppColors.darkSurface,
-        onSurface: AppColors.textPrimary,
+        onSurface: AppColors.textOnDark,
         surfaceContainerHighest: AppColors.darkCard,
         error: AppColors.error,
         onError: Colors.white,
@@ -77,7 +77,7 @@ class AppTheme {
       // ── AppBar — transparent glass ──────────────────────────────────────────
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.textPrimary,
+        foregroundColor: AppColors.textOnDark,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
@@ -85,9 +85,9 @@ class AppTheme {
         systemOverlayStyle: SystemUiOverlayStyle.light,
         titleTextStyle: GoogleFonts.poppins(
           fontSize: 20, fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary, letterSpacing: -0.3,
+          color: AppColors.textOnDark, letterSpacing: -0.3,
         ),
-        iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 24),
+        iconTheme: const IconThemeData(color: AppColors.textOnDark, size: 24),
       ),
 
       // ── Cards — glass ───────────────────────────────────────────────────────
@@ -193,7 +193,7 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.darkCard,
-        contentTextStyle: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14),
+        contentTextStyle: GoogleFonts.inter(color: AppColors.textOnDark, fontSize: 14),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
           side: const BorderSide(color: AppColors.glassBorder),
@@ -209,7 +209,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(20),
           side: const BorderSide(color: AppColors.glassBorder),
         ),
-        titleTextStyle: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+        titleTextStyle: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.textOnDark),
         contentTextStyle: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary, height: 1.5),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
@@ -225,7 +225,7 @@ class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.glassFill,
         selectedColor: AppColors.gold,
-        labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13, color: AppColors.textPrimary),
+        labelStyle: GoogleFonts.inter(fontWeight: FontWeight.w500, fontSize: 13, color: AppColors.textOnDark),
         side: const BorderSide(color: AppColors.glassBorder),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
       ),
@@ -241,12 +241,12 @@ class AppTheme {
       listTileTheme: ListTileThemeData(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         iconColor: AppColors.gold,
-        titleTextStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.textPrimary),
+        titleTextStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.textOnDark),
         subtitleTextStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary),
       ),
 
       progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.gold),
-      iconTheme: const IconThemeData(color: AppColors.textPrimary),
+      iconTheme: const IconThemeData(color: AppColors.textOnDark),
       switchTheme: SwitchThemeData(
         thumbColor: WidgetStateProperty.resolveWith(
             (s) => s.contains(WidgetState.selected) ? AppColors.gold : AppColors.textHint),

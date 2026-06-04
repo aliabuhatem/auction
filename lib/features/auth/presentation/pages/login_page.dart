@@ -60,12 +60,19 @@ class _LoginPageState extends State<LoginPage> {
                   Row(children: [
                     Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: AppColors.primaryRed, borderRadius: BorderRadius.circular(12)),
-                      child: const Icon(Icons.gavel, color: Colors.white, size: 28),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.goldGradient,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: AppColors.goldGlow(opacity: 0.3),
+                      ),
+                      child: const Icon(Icons.gavel, color: AppColors.textOnGold, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Text(AppStrings.appName(context),
-                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 22, color: AppColors.textPrimary)),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800, fontSize: 22,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        )),
                   ]),
                   const SizedBox(height: 40),
                   Text(AppStrings.welcomeBack(context),
