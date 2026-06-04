@@ -200,19 +200,24 @@ class _BalanceCard extends StatelessWidget {
               const Text(
                 '€',
                 style: TextStyle(
-                  color:    AppColors.gold,
+                  color:    AppColors.textSecondary,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(width: 4),
-              Text(
-                CurrencyFormatter.decimal(balance),
-                style: const TextStyle(
-                  color:      AppColors.gold,
-                  fontSize:   44,
-                  fontWeight: FontWeight.w800,
-                  height:     1,
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: balance),
+                duration: const Duration(milliseconds: 900),
+                curve: Curves.easeOutCubic,
+                builder: (_, value, __) => Text(
+                  CurrencyFormatter.decimal(value),
+                  style: const TextStyle(
+                    color:      AppColors.textOnDark,
+                    fontSize:   44,
+                    fontWeight: FontWeight.w800,
+                    height:     1,
+                  ),
                 ),
               ),
             ],

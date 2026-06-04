@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_dimensions.dart';
 import '../constants/app_strings.dart';
@@ -70,7 +71,7 @@ class _BidButtonState extends State<BidButton>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTapDown:   _onTapDown,
       onTapUp:     _onTapUp,
       onTapCancel: _onTapCancel,
@@ -124,6 +125,16 @@ class _BidButtonState extends State<BidButton>
         ),
       ),
     );
+
+    // Luxury sheen sweep across the live CTA (only when actionable).
+    if (!_isEnabled) return button;
+    return button
+        .animate(onPlay: (c) => c.repeat())
+        .shimmer(
+          duration: 2600.ms,
+          delay: 1200.ms,
+          color: Colors.white.withValues(alpha: 0.18),
+        );
   }
 }
 

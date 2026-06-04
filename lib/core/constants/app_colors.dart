@@ -18,6 +18,9 @@ class AppColors {
       Color.fromARGB(255, 10, 67, 143); // hover / highlight gold
   static const Color goldDim =
       Color.fromARGB(255, 15, 69, 105); // pressed / muted gold
+  // Luminous companion accent — used for prices / values that must POP on the
+  // dark background (the base accent above is intentionally deep for fills).
+  static const Color accentBright = Color(0xFF4FB8E0); // bright sky-teal
   static const Color purple =
       Color(0xFF8B6FBF); // deep purple — secondary accent
   static const Color purpleBright = Color(0xFFA98FD6);
@@ -38,11 +41,11 @@ class AppColors {
   static const Color accentGold = gold;
   static const Color accentAmber = goldBright;
 
-  // ── Gradient stops ───────────────────────────────────────────────────────────
-  static const Color gradientStart = Color(0xFFD4B35A); // light gold
-  static const Color gradientEnd = Color(0xFFB8923C); // deep gold
-  static const Color goldStart = Color(0xFFE3C76A);
-  static const Color goldEnd = Color(0xFFB8923C);
+  // ── Gradient stops (follow the accent automatically) ─────────────────────────
+  static const Color gradientStart = goldBright; // brighter accent
+  static const Color gradientEnd   = gold;       // base accent
+  static const Color goldStart     = goldBright;
+  static const Color goldEnd       = goldDim;
 
   // ── Status ───────────────────────────────────────────────────────────────────
   static const Color success = Color(0xFF4CAF82);
@@ -87,8 +90,9 @@ class AppColors {
       Color(0xFFA0A0B0); // muted grey — legible on both
   static const Color textHint = Color(0xFF7A7A88); // mid grey — legible on both
   static const Color textOnDark = Color(0xFFF5F5F5); // off-white for dark UI
-  static const Color textOnRed = Color(0xFF0A0A0F); // dark text on gold buttons
-  static const Color textOnGold = Color(0xFF0A0A0F);
+  // Accent is dark, so text/icons sitting on it must be light.
+  static const Color textOnRed = Color(0xFFF5F5F5);
+  static const Color textOnGold = Color(0xFFF5F5F5);
 
   // Light-luxury text
   static const Color textPrimaryLight = Color(0xFF1A1A22);

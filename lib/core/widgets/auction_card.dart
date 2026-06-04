@@ -108,27 +108,30 @@ class _ImageSection extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          CachedNetworkImage(
-            imageUrl: auction.imageUrl,
-            fit: BoxFit.cover,
-            placeholder: (_, __) => Container(
-              color: AppColors.backgroundGrey,
-              child: const Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.primaryRed,
+          Hero(
+            tag: 'auction-img-${auction.id}',
+            child: CachedNetworkImage(
+              imageUrl: auction.imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => Container(
+                color: AppColors.backgroundGrey,
+                child: const Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: AppColors.primaryRed,
+                    ),
                   ),
                 ),
               ),
-            ),
-            errorWidget: (_, __, ___) => Container(
-              color: AppColors.backgroundGrey,
-              child: const Center(
-                child: Icon(Icons.image_not_supported_outlined,
-                    color: AppColors.textHint, size: 32),
+              errorWidget: (_, __, ___) => Container(
+                color: AppColors.backgroundGrey,
+                child: const Center(
+                  child: Icon(Icons.image_not_supported_outlined,
+                      color: AppColors.textHint, size: 32),
+                ),
               ),
             ),
           ),
@@ -266,7 +269,10 @@ class _LivePill extends StatelessWidget {
             height: 6,
             decoration: const BoxDecoration(
                 color: Colors.white, shape: BoxShape.circle),
-          ),
+          )
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .fadeIn(duration: 700.ms)
+              .scaleXY(begin: 0.7, end: 1.3, duration: 700.ms, curve: Curves.easeInOut),
           const SizedBox(width: 4),
           const Text(
             'LIVE',
@@ -352,7 +358,7 @@ class _InfoSection extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 17,
-                          color: AppColors.gold,
+                          color: AppColors.accentBright,
                           letterSpacing: -0.2,
                         ),
                       ),
@@ -363,16 +369,17 @@ class _InfoSection extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.12),
+                    color: AppColors.accentBright.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.goldBorder),
+                    border: Border.all(
+                        color: AppColors.accentBright.withValues(alpha: 0.3)),
                   ),
                   child: Text(
                     '${auction.bidCount}×',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.gold,
+                      color: AppColors.accentBright,
                     ),
                   ),
                 ),

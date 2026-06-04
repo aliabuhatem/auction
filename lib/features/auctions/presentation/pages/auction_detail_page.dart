@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
@@ -144,10 +145,13 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                   surfaceTintColor: Colors.transparent,
                   systemOverlayStyle: SystemUiOverlayStyle.light,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: _ImageGallery(
-                      imageUrls:    auction.imageUrls,
-                      imageIndex:   _imageIndex,
-                      onPageChanged: (i) => setState(() => _imageIndex = i),
+                    background: Hero(
+                      tag: 'auction-img-${auction.id}',
+                      child: _ImageGallery(
+                        imageUrls:    auction.imageUrls,
+                        imageIndex:   _imageIndex,
+                        onPageChanged: (i) => setState(() => _imageIndex = i),
+                      ),
                     ),
                   ),
                   leading: _GlassIconButton(
@@ -180,7 +184,10 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _HeaderSection(auction: auction, isDark: isDark),
+                      _HeaderSection(auction: auction, isDark: isDark)
+                          .animate()
+                          .fadeIn(duration: 350.ms)
+                          .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
                       // Extension banner
                       if (showExt) _ExtensionBanner(seconds: auction.extensionSeconds),
                       // Winning / outbid status bar
@@ -198,9 +205,15 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                         wasOutbid:  wasOutbid,
                         autoBidMax: autoBidMax,
                         isAlarmed:  isAlarmed,
-                      ),
+                      )
+                          .animate()
+                          .fadeIn(delay: 120.ms, duration: 400.ms)
+                          .slideY(begin: 0.10, end: 0, curve: Curves.easeOutCubic),
                       const SizedBox(height: 16),
-                      _StatsRow(auction: auction, isDark: isDark),
+                      _StatsRow(auction: auction, isDark: isDark)
+                          .animate()
+                          .fadeIn(delay: 220.ms, duration: 400.ms)
+                          .slideY(begin: 0.10, end: 0, curve: Curves.easeOutCubic),
                       const SizedBox(height: 20),
                       _TabSection(
                         auction:       auction,
@@ -622,10 +635,10 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                               fontSize: 32, fontWeight: FontWeight.w900,
                               letterSpacing: -0.5, height: 1,
                               color: _flashColor.value?.withValues(alpha: 1) ??
-                                  AppColors.primaryRed,
+                                  AppColors.accentBright,
                               shadows: _flashCtrl.value > 0 ? [
                                 Shadow(
-                                  color: AppColors.primaryRed
+                                  color: AppColors.accentBright
                                       .withValues(alpha: _flashCtrl.value * 0.4),
                                   blurRadius: 8,
                                 ),
