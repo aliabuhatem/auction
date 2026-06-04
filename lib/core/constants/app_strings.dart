@@ -268,6 +268,10 @@ class AppStrings {
   static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
+  // ── Bidding sheet ────────────────────────────────────────────────────────
+  static String placeBidTitle(BuildContext context) => get(context, 'placeBidTitle');
+  static String yourBid(BuildContext context) => get(context, 'yourBid');
+
   // ── Core widgets ─────────────────────────────────────────────────────────
   static String auctionEnded(BuildContext context) => get(context, 'auctionEnded');
   static String bidAmount(BuildContext context, String amount) =>
@@ -579,6 +583,10 @@ class AppStrings {
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
 
+    // Bidding sheet
+    'placeBidTitle': 'Bod plaatsen',
+    'yourBid': 'Jouw bod',
+
     // Core widgets
     'auctionEnded': 'Afgelopen',
     'bidAmount': 'Bied {amount}',
@@ -881,6 +889,10 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
+    // Bidding sheet
+    'placeBidTitle': 'Place bid',
+    'yourBid': 'Your bid',
+
     // Core widgets
     'auctionEnded': 'Ended',
     'bidAmount': 'Bid {amount}',
@@ -1182,6 +1194,10 @@ class AppStrings {
     'deleteForever': 'حذف نهائي',
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
+
+    // Bidding sheet
+    'placeBidTitle': 'تقديم مزايدة',
+    'yourBid': 'مزايدتك',
 
     // Core widgets
     'auctionEnded': 'انتهى',

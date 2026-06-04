@@ -44,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ctx.go(done ? AppRoutes.home : AppRoutes.onboarding);
           }
           if (state is AuthError) {
-            ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text(state.message), backgroundColor: AppColors.error));
           }
         },
         child: SingleChildScrollView(

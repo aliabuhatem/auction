@@ -191,12 +191,12 @@ class ProfilePage extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(AppStrings.reloginToDeleteMsg(context)),
-              backgroundColor: Colors.orange,
+              backgroundColor: AppColors.warning,
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? 'Fout'), backgroundColor: Colors.red),
+            SnackBar(content: Text(e.message ?? AppStrings.saveFailed(context)), backgroundColor: AppColors.error),
           );
         }
       }

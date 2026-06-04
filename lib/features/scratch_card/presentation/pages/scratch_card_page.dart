@@ -100,7 +100,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text('${AppStrings.errorPrefix(context)}${f.message}'),
-              backgroundColor: Colors.red),
+              backgroundColor: AppColors.error),
         );
       },
       (_) {
@@ -113,7 +113,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
           SnackBar(
             content: Text(AppStrings.scratchPrizeAdded(context)
                 .replaceAll('{prize}', _prize)),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.success,
             duration: const Duration(seconds: 4),
           ),
         );
@@ -191,7 +191,7 @@ class _ScratchCardPageState extends State<ScratchCardPage> {
                     Chip(
                       label: Text(AppStrings.creditReceived(context),
                           style: const TextStyle(color: Colors.white)),
-                      backgroundColor: Colors.green,
+                      backgroundColor: AppColors.success,
                     )
                   else
                     ElevatedButton(

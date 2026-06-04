@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           }
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+              SnackBar(content: Text(state.message), backgroundColor: AppColors.error),
             );
           }
         },
@@ -153,18 +153,36 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _forgotPassword() async {
     final emailCtrl = TextEditingController(text: _email.text.trim());
+    // Pre-compute ALL strings and messenger before any await.
+    final dialogTitle   = AppStrings.forgotPasswordTitle(context);
+    final emailLabel    = AppStrings.email(context);
+    final cancelLabel   = AppStrings.cancel(context);
+    final sendLabel     = AppStrings.sendBtn(context);
+    final successMsg    = AppStrings.resetLinkSentMsg(context);
+    final errorFallback = AppStrings.sendError(context);
+    final messenger     = ScaffoldMessenger.of(context);
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Wachtwoord vergeten'),
+        title: Text(dialogTitle),
         content: TextField(
           controller: emailCtrl,
           keyboardType: TextInputType.emailAddress,
-          decoration: const InputDecoration(labelText: 'E-mailadres', prefixIcon: Icon(Icons.email_outlined)),
+          decoration: InputDecoration(
+            labelText: emailLabel,
+            prefixIcon: const Icon(Icons.email_outlined),
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Annuleren')),
-          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Versturen')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(cancelLabel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(sendLabel),
+          ),
         ],
       ),
     );
@@ -174,14 +192,14 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: emailCtrl.text.trim());
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Reset-link verstuurd. Check je e-mail.'), backgroundColor: Colors.green),
+        messenger.showSnackBar(
+          SnackBar(content: Text(successMsg), backgroundColor: AppColors.success),
         );
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Fout bij versturen'), backgroundColor: Colors.red),
+        messenger.showSnackBar(
+          SnackBar(content: Text(e.message ?? errorFallback), backgroundColor: AppColors.error),
         );
       }
     }

@@ -6,6 +6,7 @@ import '../../auctions/presentation/bloc/bidding_bloc.dart';
 import '../../../core/widgets/bid_button.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_strings.dart';
 
 class BiddingSheet extends StatelessWidget {
   final String auctionId;
@@ -56,10 +57,10 @@ class BiddingSheet extends StatelessWidget {
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(2))),
             const SizedBox(height: 20),
-            const Text('Bod plaatsen',
-                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
+            Text(AppStrings.placeBidTitle(context),
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
             const SizedBox(height: 8),
-            Text('Huidig bod: ${CurrencyFormatter.format(currentBid)}',
+            Text('${AppStrings.currentBid(context)}: ${CurrencyFormatter.format(currentBid)}',
                 style: const TextStyle(color: Colors.grey)),
             const SizedBox(height: 24),
             Container(
@@ -70,8 +71,8 @@ class BiddingSheet extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Jouw bod: ',
-                      style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  Text('${AppStrings.yourBid(context)}: ',
+                      style: const TextStyle(fontSize: 16, color: Colors.grey)),
                   Text(
                     CurrencyFormatter.format(next),
                     style: const TextStyle(

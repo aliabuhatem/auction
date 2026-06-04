@@ -321,7 +321,7 @@ class _PayButtonState extends State<_PayButton> {
               child: CircularProgressIndicator(
                   color: Colors.white, strokeWidth: 2),
             )
-          : const Text('Betalen', style: TextStyle(color: Colors.white)),
+          : Text(AppStrings.payNow(context), style: const TextStyle(color: Colors.white)),
     );
   }
 }

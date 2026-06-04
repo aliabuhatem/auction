@@ -39,7 +39,7 @@ class VoucherPage extends StatelessWidget {
                 children: [
                   const Icon(Icons.error_outline, size: 48, color: Colors.grey),
                   const SizedBox(height: 12),
-                  Text('Fout: ${snap.error}',
+                  Text('${AppStrings.errorPrefix(context)}${snap.error}',
                       style: const TextStyle(color: Colors.grey),
                       textAlign: TextAlign.center),
                 ],
