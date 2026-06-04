@@ -6,7 +6,6 @@ import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../../../../core/network/api_client.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../notifications/notification_service.dart';
 import '../../../../injection_container.dart' as di;
@@ -84,8 +83,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLogout(LogoutRequested e, Emitter<AuthState> emit) async {
     await _notifService?.onUserSignedOut();
     await logoutUseCase(NoParams());
-    // Clear any backend JWT tokens stored in secure storage.
-    try { await di.sl<ApiClient>().clearTokens(); } catch (_) {}
     emit(AuthUnauthenticated());
   }
 

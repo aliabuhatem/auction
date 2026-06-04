@@ -237,6 +237,12 @@ class AppStrings {
   static String cancel(BuildContext context) => get(context, 'cancel');
   static String reloginToDeleteMsg(BuildContext context) => get(context, 'reloginToDeleteMsg');
 
+  // ── Re-authentication ─────────────────────────────────────────────────────
+  static String reauthRequired(BuildContext context) => get(context, 'reauthRequired');
+  static String reauthPrompt(BuildContext context) => get(context, 'reauthPrompt');
+  static String incorrectPassword(BuildContext context) => get(context, 'incorrectPassword');
+  static String confirm(BuildContext context) => get(context, 'confirm');
+
   // ── Account Settings ──────────────────────────────────────────────────────
   static String settingsSaved(BuildContext context) => get(context, 'settingsSaved');
   static String reloginToChangeName(BuildContext context) => get(context, 'reloginToChangeName');
@@ -553,6 +559,12 @@ class AppStrings {
     'cancel': 'Annuleren',
     'reloginToDeleteMsg': 'Log opnieuw in om je account te verwijderen.',
 
+    // Re-authentication
+    'reauthRequired': 'Inloggen vereist',
+    'reauthPrompt': 'Voer je wachtwoord in om je account te verwijderen.',
+    'incorrectPassword': 'Onjuist wachtwoord. Probeer het opnieuw.',
+    'confirm': 'Bevestigen',
+
     // Account Settings
     'settingsSaved': 'Instellingen opgeslagen!',
     'reloginToChangeName': 'Log opnieuw in om je naam te wijzigen.',
@@ -859,6 +871,12 @@ class AppStrings {
     'cancel': 'Cancel',
     'reloginToDeleteMsg': 'Please log in again to delete your account.',
 
+    // Re-authentication
+    'reauthRequired': 'Re-authentication required',
+    'reauthPrompt': 'Enter your password to delete your account.',
+    'incorrectPassword': 'Incorrect password. Please try again.',
+    'confirm': 'Confirm',
+
     // Account Settings
     'settingsSaved': 'Settings saved!',
     'reloginToChangeName': 'Please log in again to change your name.',
@@ -1164,6 +1182,12 @@ class AppStrings {
     'langAr': 'العربية',
     'cancel': 'إلغاء',
     'reloginToDeleteMsg': 'سجل دخولك مجدداً لحذف حسابك.',
+
+    // Re-authentication
+    'reauthRequired': 'مطلوب إعادة المصادقة',
+    'reauthPrompt': 'أدخل كلمة مرورك لحذف حسابك.',
+    'incorrectPassword': 'كلمة مرور خاطئة. حاول مرة أخرى.',
+    'confirm': 'تأكيد',
 
     // Account Settings
     'settingsSaved': 'تم حفظ الإعدادات!',

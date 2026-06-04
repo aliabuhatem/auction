@@ -185,17 +185,18 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
 
     try {
       final uid = _user!.uid;
-      // Delete Firestore user document.
       await FirebaseFirestore.instance.collection('users').doc(uid).delete();
-      // Delete Firebase Auth account (requires recent login).
       await _user!.delete();
       if (mounted) context.go(AppRoutes.login);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login' && mounted) {
+        final success = await _reauthenticate();
+        if (success) await _deleteAccount();
+      } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppStrings.reloginToDelete(context)),
-            backgroundColor: AppColors.warning,
+            content:         Text(AppStrings.saveFailed(context)),
+            backgroundColor: AppColors.error,
           ),
         );
       }
@@ -208,6 +209,67 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
           ),
         );
       }
+    }
+  }
+
+  Future<bool> _reauthenticate() async {
+    final email = _user?.email;
+    if (email == null) return false;
+
+    final pwCtrl = TextEditingController();
+    // Resolve strings before async gap.
+    final title  = AppStrings.reauthRequired(context);
+    final prompt = AppStrings.reauthPrompt(context);
+    final pwLabel = AppStrings.password(context);
+    final cancelLbl = AppStrings.cancel(context);
+    final confirmLbl = AppStrings.confirm(context);
+    final badPwMsg = AppStrings.incorrectPassword(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    final password = await showDialog<String?>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title:   Text(title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(prompt),
+            const SizedBox(height: 12),
+            TextField(
+              controller: pwCtrl,
+              obscureText: true,
+              autofocus: true,
+              decoration: InputDecoration(labelText: pwLabel),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(null),
+            child: Text(cancelLbl),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(pwCtrl.text),
+            child: Text(confirmLbl),
+          ),
+        ],
+      ),
+    );
+    pwCtrl.dispose();
+
+    if (password == null || password.isEmpty) return false;
+
+    try {
+      final cred = EmailAuthProvider.credential(email: email, password: password);
+      await _user!.reauthenticateWithCredential(cred);
+      return true;
+    } on FirebaseAuthException {
+      messenger.showSnackBar(SnackBar(
+        content:         Text(badPwMsg),
+        backgroundColor: AppColors.error,
+      ));
+      return false;
     }
   }
 

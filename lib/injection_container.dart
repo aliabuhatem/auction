@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/network/websocket_client.dart';
 import 'features/auctions/data/datasources/auction_local_datasource.dart';
 import 'features/auctions/data/datasources/auction_remote_datasource.dart';
 import 'features/auctions/data/repositories/auction_repository_impl.dart';
@@ -52,7 +51,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FirebaseAuth.instance);
 
   // ── Core ─────────────────────────────────────────────────────────────────────
-  sl.registerLazySingleton(() => WebSocketClient());
   sl.registerLazySingleton(() => NotificationService());
 
   // ── Auth ─────────────────────────────────────────────────────────────────────
