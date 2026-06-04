@@ -111,6 +111,8 @@ class AppStrings {
   static String searchHint(BuildContext context) => get(context, 'searchHint');
   static String searchPrompt(BuildContext context) => get(context, 'searchPrompt');
   static String noResults(BuildContext context) => get(context, 'noResults');
+  static String recentSearches(BuildContext context) => get(context, 'recentSearches');
+  static String clearHistory(BuildContext context) => get(context, 'clearHistory');
 
   // ── Notifications ─────────────────────────────────────────────────────────
   static String loginForNotifications(BuildContext context) => get(context, 'loginForNotifications');
@@ -349,6 +351,8 @@ class AppStrings {
     'searchHint': 'Zoek een veiling...',
     'searchPrompt': 'Begin met typen om te zoeken',
     'noResults': 'Geen veilingen gevonden',
+    'recentSearches': 'Recente zoekopdrachten',
+    'clearHistory': 'Wis',
 
     // Notifications
     'loginForNotifications': 'Log in om meldingen te zien',
@@ -583,6 +587,8 @@ class AppStrings {
     'searchHint': 'Search for an auction...',
     'searchPrompt': 'Start typing to search',
     'noResults': 'No auctions found',
+    'recentSearches': 'Recent searches',
+    'clearHistory': 'Clear',
 
     // Notifications
     'loginForNotifications': 'Log in to see notifications',
@@ -817,6 +823,8 @@ class AppStrings {
     'searchHint': 'ابحث عن مزاد...',
     'searchPrompt': 'ابدأ الكتابة للبحث',
     'noResults': 'لم يُعثر على مزادات',
+    'recentSearches': 'عمليات البحث الأخيرة',
+    'clearHistory': 'مسح',
 
     // Notifications
     'loginForNotifications': 'سجل دخولك لرؤية الإشعارات',

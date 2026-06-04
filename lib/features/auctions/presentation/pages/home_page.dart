@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -144,11 +146,7 @@ class _AppBarSliver extends StatelessWidget {
           onTap: () => context.push('/search'),
         ),
         const SizedBox(width: 4),
-        _AppBarIconButton(
-          icon: Icons.notifications_outlined,
-          isDark: isDark,
-          onTap: () => context.push('/notifications'),
-        ),
+        _UnreadBellButton(isDark: isDark),
         const SizedBox(width: 8),
       ],
     );
@@ -393,6 +391,71 @@ class _FeaturedCarousel extends StatelessWidget {
           child: AuctionCard(auction: auctions[i]),
         ),
       ),
+    );
+  }
+}
+
+// ── Unread-badge bell button ──────────────────────────────────────────────────
+
+class _UnreadBellButton extends StatelessWidget {
+  final bool isDark;
+  const _UnreadBellButton({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      return _AppBarIconButton(
+        icon: Icons.notifications_outlined,
+        isDark: isDark,
+        onTap: () => context.push('/notifications'),
+      );
+    }
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('notifications')
+          .where('read', isEqualTo: false)
+          .limit(10)
+          .snapshots(),
+      builder: (context, snap) {
+        final count = snap.data?.docs.length ?? 0;
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            _AppBarIconButton(
+              icon: Icons.notifications_outlined,
+              isDark: isDark,
+              onTap: () => context.push('/notifications'),
+            ),
+            if (count > 0)
+              Positioned(
+                top: -2,
+                right: -2,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: AppColors.primaryRed,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                  child: Text(
+                    count > 9 ? '9+' : '$count',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      height: 1,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

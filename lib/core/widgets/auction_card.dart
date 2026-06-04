@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import '../../app/app_routes.dart';
 import '../../features/auctions/domain/entities/auction_entity.dart';
 import '../constants/app_colors.dart';
+import '../constants/app_strings.dart';
 import '../utils/currency_formatter.dart';
 import 'countdown_widget.dart';
 
@@ -52,7 +54,7 @@ class _AuctionCardState extends State<AuctionCard>
       },
       onTapUp: (_) {
         _pressController.reverse();
-        context.push('/auction/${auction.id}');
+        context.push(AppRoutes.auctionDetailPath(auction.id));
       },
       onTapCancel: () => _pressController.reverse(),
       child: ScaleTransition(
@@ -340,7 +342,7 @@ class _InfoSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Huidig bod',
+                        AppStrings.currentBid(context),
                         style: TextStyle(fontSize: 10, color: textSecondary),
                       ),
                       Text(
