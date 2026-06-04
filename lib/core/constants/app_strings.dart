@@ -268,6 +268,16 @@ class AppStrings {
   static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
+  // ── Core widgets ─────────────────────────────────────────────────────────
+  static String auctionEnded(BuildContext context) => get(context, 'auctionEnded');
+  static String bidAmount(BuildContext context, String amount) =>
+      get(context, 'bidAmount').replaceAll('{amount}', amount);
+  static String alarmSet(BuildContext context) => get(context, 'alarmSet');
+  static String setAlarm(BuildContext context) => get(context, 'setAlarm');
+  static String bidNow(BuildContext context) => get(context, 'bidNow');
+  static String shareAuction(BuildContext context, String title) =>
+      get(context, 'shareAuction').replaceAll('{title}', title);
+
   // ── Payment page ─────────────────────────────────────────────────────────
   static String paymentTitle(BuildContext context) => get(context, 'paymentTitle');
   static String orderNotFound(BuildContext context) => get(context, 'orderNotFound');
@@ -569,6 +579,14 @@ class AppStrings {
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
 
+    // Core widgets
+    'auctionEnded': 'Afgelopen',
+    'bidAmount': 'Bied {amount}',
+    'alarmSet': 'Alarm ingesteld ✓',
+    'setAlarm': 'Stel alarm in',
+    'bidNow': 'Bied nu',
+    'shareAuction': 'Check deze veiling: {title}',
+
     // Payment page
     'paymentTitle': 'Betaling',
     'orderNotFound': 'Bestelling niet gevonden.',
@@ -863,6 +881,14 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
+    // Core widgets
+    'auctionEnded': 'Ended',
+    'bidAmount': 'Bid {amount}',
+    'alarmSet': 'Alarm set ✓',
+    'setAlarm': 'Set alarm',
+    'bidNow': 'Bid now',
+    'shareAuction': 'Check out this auction: {title}',
+
     // Payment page
     'paymentTitle': 'Payment',
     'orderNotFound': 'Order not found.',
@@ -1156,6 +1182,14 @@ class AppStrings {
     'deleteForever': 'حذف نهائي',
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
+
+    // Core widgets
+    'auctionEnded': 'انتهى',
+    'bidAmount': 'زايد بـ {amount}',
+    'alarmSet': 'تم ضبط التنبيه ✓',
+    'setAlarm': 'اضبط تنبيهاً',
+    'bidNow': 'زايد الآن',
+    'shareAuction': 'اطلع على هذا المزاد: {title}',
 
     // Payment page
     'paymentTitle': 'الدفع',

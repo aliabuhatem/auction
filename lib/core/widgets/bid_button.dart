@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_dimensions.dart';
+import '../constants/app_strings.dart';
 import '../utils/currency_formatter.dart';
 
 // ── Primary bid button ────────────────────────────────────────────────────────
@@ -110,7 +111,8 @@ class _BidButtonState extends State<BidButton>
                   )
                 : Text(
                     widget.customLabel ??
-                        'Bied ${CurrencyFormatter.format(widget.nextBid)}',
+                        AppStrings.bidAmount(context,
+                            CurrencyFormatter.format(widget.nextBid)),
                     style: TextStyle(
                       color:       _isEnabled ? Colors.white : Colors.grey.shade600,
                       fontSize:    AppDimensions.fontXXL,
@@ -213,7 +215,9 @@ class _AlarmButtonState extends State<AlarmButton>
                 fontWeight: FontWeight.w600,
                 fontSize:   AppDimensions.fontBody,
               ),
-              child: Text(widget.isSet ? 'Alarm ingesteld ✓' : 'Stel alarm in'),
+              child: Text(widget.isSet
+                  ? AppStrings.alarmSet(context)
+                  : AppStrings.setAlarm(context)),
             ),
           ],
         ),
@@ -304,9 +308,9 @@ class QuickBidBadge extends StatelessWidget {
           color:        AppColors.primaryRed,
           borderRadius: BorderRadius.circular(AppDimensions.radiusRound),
         ),
-        child: const Text(
-          'Bied nu',
-          style: TextStyle(
+        child: Text(
+          AppStrings.bidNow(context),
+          style: const TextStyle(
             color:      Colors.white,
             fontWeight: FontWeight.bold,
             fontSize:   AppDimensions.fontS,

@@ -164,7 +164,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                     _GlassIconButton(
                       icon: Icons.share_rounded,
                       onTap: () =>
-                          Share.share('Check deze veiling: ${auction.title}'),
+                          Share.share(AppStrings.shareAuction(context, auction.title)),
                     ),
                     const SizedBox(width: 8),
                   ],

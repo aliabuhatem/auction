@@ -2,9 +2,11 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_strings.dart';
 
 class CountdownWidget extends StatefulWidget {
-  final DateTime endsAt;
+  final DateTime  endsAt;
   final TextStyle? style;
   const CountdownWidget({super.key, required this.endsAt, this.style});
 
@@ -13,7 +15,7 @@ class CountdownWidget extends StatefulWidget {
 }
 
 class _CountdownWidgetState extends State<CountdownWidget> {
-  late Timer _timer;
+  late Timer    _timer;
   late Duration _remaining;
 
   @override
@@ -22,9 +24,7 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     _remaining = widget.endsAt.difference(DateTime.now());
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) {
-        setState(() {
-          _remaining = widget.endsAt.difference(DateTime.now());
-        });
+        setState(() => _remaining = widget.endsAt.difference(DateTime.now()));
       }
     });
   }
@@ -38,20 +38,23 @@ class _CountdownWidgetState extends State<CountdownWidget> {
   @override
   Widget build(BuildContext context) {
     if (_remaining.isNegative) {
-      return Text('Afgelopen',
-          style: widget.style?.copyWith(color: Colors.grey) ??
-              const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold));
+      return Text(
+        AppStrings.auctionEnded(context),
+        style: widget.style?.copyWith(color: Colors.grey) ??
+            const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+      );
     }
 
     final isUrgent = _remaining.inMinutes < 10;
-    final hours = _remaining.inHours;
+    final hours   = _remaining.inHours;
     final minutes = _remaining.inMinutes % 60;
     final seconds = _remaining.inSeconds % 60;
 
     String timeText;
-    if (hours > 24) {
+    if (hours >= 24) {
       final days = hours ~/ 24;
-      timeText = '${days}d ${hours % 24}u';
+      timeText =
+          '$days${AppStrings.cdDay(context)} ${hours % 24}${AppStrings.cdHour(context)}';
     } else if (hours > 0) {
       timeText = '${hours.toString().padLeft(2, '0')}:'
           '${minutes.toString().padLeft(2, '0')}:'
@@ -64,9 +67,9 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     return AnimatedDefaultTextStyle(
       duration: const Duration(milliseconds: 300),
       style: (widget.style ?? const TextStyle()).copyWith(
-        color: isUrgent ? Colors.red : Colors.green,
+        color:      isUrgent ? AppColors.primaryRed : AppColors.success,
         fontWeight: FontWeight.bold,
-        fontSize: isUrgent ? 18 : 16,
+        fontSize:   isUrgent ? 18 : 16,
       ),
       child: Text(timeText),
     );
@@ -80,17 +83,17 @@ class CountdownBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remaining = endsAt.difference(DateTime.now());
-    final isUrgent = remaining.inMinutes < 10;
+    final isUrgent  = remaining.inMinutes < 10;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding:    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isUrgent ? Colors.red : Colors.black54,
+        color:        isUrgent ? AppColors.primaryRed : Colors.black54,
         borderRadius: BorderRadius.circular(8),
       ),
       child: CountdownWidget(
         endsAt: endsAt,
-        style: const TextStyle(color: Colors.white, fontSize: 12),
+        style:  const TextStyle(color: Colors.white, fontSize: 12),
       ),
     );
   }
