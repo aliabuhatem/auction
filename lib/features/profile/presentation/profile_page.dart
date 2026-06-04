@@ -94,7 +94,7 @@ class ProfilePage extends StatelessWidget {
                   }, color: AppColors.error),
                   _tile(context, Icons.delete_outline, AppStrings.deleteAccount(context),
                       () => _deleteAccount(context),
-                      color: Colors.red),
+                      color: AppColors.error),
                 ]),
                 const SizedBox(height: 32),
                 Text('${AppStrings.appName(context)} v1.0.0',

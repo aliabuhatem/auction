@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
 import 'app_theme.dart';
 import '../injection_container.dart' as di;
@@ -15,7 +16,8 @@ import '../features/my_auctions/presentation/bloc/my_auctions_bloc.dart';
 import '../features/profile/presentation/bloc/locale_bloc.dart';
 
 class AuctionApp extends StatelessWidget {
-  const AuctionApp({super.key});
+  final ThemeMode initialTheme;
+  const AuctionApp({super.key, this.initialTheme = ThemeMode.light});
 
   @override
   Widget build(BuildContext context) {
@@ -34,24 +36,36 @@ class AuctionApp extends StatelessWidget {
           create: (_) => di.sl<LocaleBloc>(),
         ),
       ],
-      child: const _AppView(),
+      child: _AppView(initialTheme: initialTheme),
     );
   }
 }
 
 class _AppView extends StatefulWidget {
-  const _AppView();
+  final ThemeMode initialTheme;
+  const _AppView({required this.initialTheme});
   @override
   State<_AppView> createState() => _AppViewState();
 }
 
 class _AppViewState extends State<_AppView> {
-  ThemeMode _themeMode = ThemeMode.light;
+  late ThemeMode _themeMode;
 
-  void _toggleTheme() => setState(() {
-        _themeMode =
-            _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-      });
+  static const _prefKey = 'dark_mode';
+
+  @override
+  void initState() {
+    super.initState();
+    _themeMode = widget.initialTheme;
+  }
+
+  void _toggleTheme() {
+    final next = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    setState(() => _themeMode = next);
+    SharedPreferences.getInstance().then(
+      (prefs) => prefs.setBool(_prefKey, next == ThemeMode.dark),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

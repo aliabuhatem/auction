@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app/app.dart';
 import 'injection_container.dart' as di;
 import 'firebase_options.dart';
@@ -47,7 +48,10 @@ Future<void> main() async {
   // ── Dependency injection ──────────────────────────────────────────────────
   await di.init();
 
-  runApp(const AuctionApp());
+  // Read persisted dark-mode preference synchronously (prefs already loaded).
+  final isDark = di.sl<SharedPreferences>().getBool('dark_mode') ?? false;
+
+  runApp(AuctionApp(initialTheme: isDark ? ThemeMode.dark : ThemeMode.light));
 
   // ── Notification service ──────────────────────────────────────────────────
   // Deferred so the first frame paints before FCM token negotiation begins.

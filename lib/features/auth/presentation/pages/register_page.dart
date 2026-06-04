@@ -32,8 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, elevation: 0, leading: const BackButton(color: AppColors.textPrimary)),
+      appBar: AppBar(elevation: 0, leading: const BackButton(color: AppColors.textPrimary)),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (ctx, state) async {
           if (state is AuthAuthenticated) {
