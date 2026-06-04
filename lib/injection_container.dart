@@ -14,7 +14,6 @@ import 'features/auctions/domain/usecases/get_auctions_usecase.dart';
 import 'features/auctions/domain/usecases/place_bid_usecase.dart';
 import 'features/auctions/domain/usecases/watch_auction_usecase.dart';
 import 'features/auctions/domain/usecases/watch_auctions_usecase.dart';
-import 'features/auctions/presentation/bloc/auction_detail_bloc.dart';
 import 'features/auctions/presentation/bloc/auction_list_bloc.dart';
 import 'features/auctions/presentation/bloc/bidding_bloc.dart';
 import 'features/auth/data/datasources/auth_remote_datasource.dart';
@@ -138,12 +137,6 @@ Future<void> init() async {
   sl.registerFactory(() => AuctionListBloc(
         getAuctions:   sl(),
         watchAuctions: sl(),
-      ));
-
-  sl.registerFactory(() => AuctionDetailBloc(
-        getAuctionDetail: sl(),
-        watchAuction:     sl(),
-        repository:       sl(),
       ));
 
   sl.registerFactory(() => BiddingBloc(

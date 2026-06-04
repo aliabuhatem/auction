@@ -124,7 +124,7 @@ class _ReferralPageState extends State<ReferralPage> {
                     Text(
                       AppStrings.inviteSubtitle(context),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: AppColors.textSecondary, height: 1.5),
                     ),
 
@@ -143,7 +143,7 @@ class _ReferralPageState extends State<ReferralPage> {
                         children: [
                           Text(
                             AppStrings.yourInviteCode(context),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: AppColors.textSecondary,
                                 fontWeight: FontWeight.w600),
                           ),

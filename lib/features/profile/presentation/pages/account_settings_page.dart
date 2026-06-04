@@ -224,7 +224,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
                     width: 18, height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2))
                 : Text(AppStrings.save(context),
-                    style: TextStyle(
+                    style: const TextStyle(
                         color:      AppColors.primaryRed,
                         fontWeight: FontWeight.w700)),
           ),

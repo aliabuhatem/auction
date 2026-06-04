@@ -91,7 +91,7 @@ class ProfilePage extends StatelessWidget {
                 _section(context, AppStrings.sectionAccountManage(context), [
                   _tile(context, Icons.logout, AppStrings.logout(context), () {
                     context.read<AuthBloc>().add(LogoutRequested());
-                  }, color: Colors.red),
+                  }, color: AppColors.error),
                   _tile(context, Icons.delete_outline, AppStrings.deleteAccount(context),
                       () => _deleteAccount(context),
                       color: Colors.red),
@@ -169,7 +169,7 @@ class ProfilePage extends StatelessWidget {
               onPressed: () => Navigator.pop(ctx, false),
               child: Text(AppStrings.cancel(context))),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(AppStrings.delete(context),
                 style: const TextStyle(color: Colors.white)),

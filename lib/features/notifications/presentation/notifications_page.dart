@@ -144,13 +144,13 @@ class NotificationsPage extends StatelessWidget {
       case 'outbid':
         return AppColors.primaryRed;
       case 'alarm':
-        return Colors.orange;
+        return AppColors.warning;
       case 'won':
-        return Colors.amber;
+        return AppColors.accentGold;
       case 'payment':
-        return Colors.green;
+        return AppColors.success;
       default:
-        return Colors.blue;
+        return AppColors.info;
     }
   }
 
