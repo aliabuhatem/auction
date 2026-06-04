@@ -119,7 +119,8 @@ class _SearchPageState extends State<SearchPage> {
               }
               _debounce = Timer(const Duration(milliseconds: 400), () {
                 _addToHistory(value.trim());
-                context.read<AuctionListBloc>().add(SearchAuctions(value));
+                context.read<AuctionListBloc>()
+                    .add(SearchAuctions(value, category: _selectedCategory));
               });
             },
             onSubmitted: (value) {
@@ -127,6 +128,15 @@ class _SearchPageState extends State<SearchPage> {
             },
           ),
         ),
+        bottom: _searchController.text.isNotEmpty
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(50),
+                child: _CategoryFilterBar(
+                  selected: _selectedCategory,
+                  onSelect: _selectCategory,
+                ),
+              )
+            : null,
       ),
       body: BlocBuilder<AuctionListBloc, AuctionListState>(
         builder: (context, state) {
@@ -242,6 +252,70 @@ class _SearchPageState extends State<SearchPage> {
           Text(AppStrings.noResults(context),
               style: const TextStyle(color: AppColors.textSecondary)),
         ],
+      ),
+    );
+  }
+}
+
+// ── Category filter bar ─────────────────────────────────────────────────────────
+
+class _CategoryFilterBar extends StatelessWidget {
+  final AuctionCategory? selected;
+  final ValueChanged<AuctionCategory?> onSelect;
+  const _CategoryFilterBar({required this.selected, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bg = isDark ? AppColors.darkSurface : Colors.white;
+
+    // null = "All", then every category.
+    final items = <AuctionCategory?>[null, ...AuctionCategory.values];
+
+    return Container(
+      color: bg,
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        itemCount: items.length,
+        itemBuilder: (_, i) {
+          final cat = items[i];
+          final isSelected = selected == cat;
+          final label = cat?.label ?? AppStrings.allCategories(context);
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: GestureDetector(
+              onTap: () => onSelect(cat),
+              behavior: HitTestBehavior.opaque,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  gradient: isSelected ? AppColors.primaryGradient : null,
+                  color: isSelected
+                      ? null
+                      : (isDark ? AppColors.darkCard : AppColors.backgroundGrey),
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    color: isSelected
+                        ? Colors.white
+                        : (isDark
+                            ? const Color(0xFF8892A4)
+                            : AppColors.textSecondary),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

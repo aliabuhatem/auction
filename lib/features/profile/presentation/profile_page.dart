@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../app/app_router.dart';
 import '../../../core/constants/app_colors.dart';
@@ -90,6 +91,10 @@ class ProfilePage extends StatelessWidget {
                 ]),
                 _section(context, AppStrings.sectionMore(context), [
                   _tile(context, Icons.help_outline, AppStrings.help(context), () => _showHelp(context)),
+                  _tile(context, Icons.description_outlined, AppStrings.termsOfService(context),
+                      () => _openUrl('https://vakantieveilingen.nl/voorwaarden')),
+                  _tile(context, Icons.privacy_tip_outlined, AppStrings.privacyPolicy(context),
+                      () => _openUrl('https://vakantieveilingen.nl/privacy')),
                   _tile(context, Icons.info_outline, AppStrings.about(context), () => _showAbout(context)),
                 ]),
                 _section(context, AppStrings.sectionAccountManage(context), [
@@ -110,6 +115,13 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _openUrl(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   void _showHelp(BuildContext context) {
