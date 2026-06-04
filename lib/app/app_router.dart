@@ -292,6 +292,16 @@ final GoRouter appRouter = GoRouter(
       builder:            (_, __) => const NotificationsPage(),
     ),
     GoRoute(
+      path:               AppRoutes.scratchCard,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const ScratchCardPage(),
+    ),
+    GoRoute(
+      path:               AppRoutes.tickets,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const TicketsPage(),
+    ),
+    GoRoute(
       path:               AppRoutes.search,
       parentNavigatorKey: _rootNavigatorKey,
       pageBuilder: (_, state) => CustomTransitionPage(
@@ -372,14 +382,6 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path:    AppRoutes.myAuctions,
           builder: (_, __) => const MyAuctionsPage(),
-        ),
-        GoRoute(
-          path:    AppRoutes.scratchCard,
-          builder: (_, __) => const ScratchCardPage(),
-        ),
-        GoRoute(
-          path:    AppRoutes.tickets,
-          builder: (_, __) => const TicketsPage(),
         ),
         GoRoute(
           path:    AppRoutes.profile,

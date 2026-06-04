@@ -12,17 +12,13 @@ class ShellScaffold extends StatelessWidget {
   static const _paths = [
     AppRoutes.home,
     AppRoutes.myAuctions,
-    AppRoutes.scratchCard,
-    AppRoutes.tickets,
     AppRoutes.profile,
   ];
 
   static const _icons = [
-    (Icons.home_outlined,           Icons.home_rounded),
-    (Icons.gavel_outlined,          Icons.gavel_rounded),
-    (Icons.style_outlined,          Icons.style_rounded),
-    (Icons.local_activity_outlined, Icons.local_activity),
-    (Icons.person_outline_rounded,  Icons.person_rounded),
+    (Icons.home_outlined,          Icons.home_rounded),
+    (Icons.gavel_outlined,         Icons.gavel_rounded),
+    (Icons.person_outline_rounded, Icons.person_rounded),
   ];
 
   int _currentIndex(BuildContext context) {
@@ -36,8 +32,6 @@ class ShellScaffold extends StatelessWidget {
   List<String> _labels(BuildContext context) => [
     AppStrings.navHome(context),
     AppStrings.navAuctions(context),
-    AppStrings.navScratchCard(context),
-    AppStrings.navVouchers(context),
     AppStrings.navProfile(context),
   ];
 

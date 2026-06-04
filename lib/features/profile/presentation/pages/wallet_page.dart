@@ -48,14 +48,21 @@ class _WalletPageState extends State<WalletPage> {
             stream: FirebaseFirestore.instance
                 .collection('wallet_transactions')
                 .where('userId', isEqualTo: uid)
-                .orderBy('createdAt', descending: true)
-                .limit(100)
+                // No orderBy — avoids composite index requirement.
+                // Sorted client-side below.
                 .snapshots(),
             builder: (context, txSnap) {
               if (txSnap.hasError) {
                 return Center(child: Text(AppStrings.txLoadError(context)));
               }
-              final allTx = txSnap.data?.docs ?? [];
+              // Sort descending by createdAt client-side.
+              final allTx = List<QueryDocumentSnapshot>.from(
+                  txSnap.data?.docs ?? [])
+                ..sort((a, b) {
+                  final ta = ((a.data() as Map)['createdAt'] as Timestamp?)?.seconds ?? 0;
+                  final tb = ((b.data() as Map)['createdAt'] as Timestamp?)?.seconds ?? 0;
+                  return tb.compareTo(ta);
+                });
               final filtered = _filterIndex == 0
                   ? allTx
                   : allTx.where((d) {
