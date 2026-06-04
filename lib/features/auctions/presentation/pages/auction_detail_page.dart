@@ -70,6 +70,9 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
           ));
         } else if (state is BiddingLoaded && state.wasOutbid) {
           HapticFeedback.heavyImpact();
+          // Capture bid details before the snackbar is shown.
+          final auctionId = state.auction.id;
+          final nextBid   = state.auction.nextMinBid;
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Row(children: [
               const Icon(Icons.warning_amber_rounded, color: Colors.white),
@@ -83,7 +86,9 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
             action: SnackBarAction(
               label: AppStrings.bidBackLabel(context),
               textColor: Colors.white,
-              onPressed: () {},
+              onPressed: () => context.read<BiddingBloc>().add(
+                    SubmitBid(auctionId: auctionId, amount: nextBid),
+                  ),
             ),
           ));
         }

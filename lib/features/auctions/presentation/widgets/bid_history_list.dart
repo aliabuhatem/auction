@@ -78,7 +78,9 @@ class BidHistoryList extends StatelessWidget {
                   color: textColor,
                 ),
               ),
-              subtitle: Text(DateFormatter.timeAgo(bid.placedAt),
+              subtitle: Text(
+                  DateFormatter.timeAgo(bid.placedAt,
+                      locale: Localizations.localeOf(context).languageCode),
                   style: TextStyle(color: subColor, fontSize: 12)),
               trailing: Text(
                 CurrencyFormatter.format(bid.amount),

@@ -273,7 +273,7 @@ class _PendingPaymentTab extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(AppStrings.orderNotFoundMsg(context)),
-                              backgroundColor: Colors.orange,
+                              backgroundColor: AppColors.warning,
                             ),
                           );
                           return;

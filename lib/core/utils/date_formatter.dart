@@ -47,11 +47,16 @@ class DateFormatter {
 
   // ── Relative time (timeAgo) ───────────────────────────────────────────────
 
-  /// Returns a human-readable relative time string:
-  /// "net nu", "3 minuten geleden", "2 uur geleden", "3 dagen geleden", etc.
-  static String timeAgo(DateTime dt) {
+  /// Returns a human-readable relative time string, locale-aware.
+  /// Pass [locale] from `Localizations.localeOf(context).languageCode`.
+  static String timeAgo(DateTime dt, {String locale = 'nl'}) {
     final diff = DateTime.now().difference(dt);
+    if (locale.startsWith('ar')) return _timeAgoAr(diff);
+    if (locale.startsWith('en')) return _timeAgoEn(diff);
+    return _timeAgoNl(diff);
+  }
 
+  static String _timeAgoNl(Duration diff) {
     if (diff.inSeconds <  5)   return 'net nu';
     if (diff.inSeconds < 60)   return '${diff.inSeconds}s geleden';
     if (diff.inMinutes <  2)   return '1 minuut geleden';
@@ -64,6 +69,36 @@ class DateFormatter {
     if (diff.inDays    < 31)   return '${(diff.inDays / 7).floor()} weken geleden';
     if (diff.inDays    < 365)  return '${(diff.inDays / 30).floor()} maanden geleden';
     return '${(diff.inDays / 365).floor()} jaar geleden';
+  }
+
+  static String _timeAgoEn(Duration diff) {
+    if (diff.inSeconds <  5)   return 'just now';
+    if (diff.inSeconds < 60)   return '${diff.inSeconds}s ago';
+    if (diff.inMinutes <  2)   return '1 minute ago';
+    if (diff.inMinutes < 60)   return '${diff.inMinutes} minutes ago';
+    if (diff.inHours   <  2)   return '1 hour ago';
+    if (diff.inHours   < 24)   return '${diff.inHours} hours ago';
+    if (diff.inDays    <  2)   return 'yesterday';
+    if (diff.inDays    <  7)   return '${diff.inDays} days ago';
+    if (diff.inDays    < 14)   return 'last week';
+    if (diff.inDays    < 31)   return '${(diff.inDays / 7).floor()} weeks ago';
+    if (diff.inDays    < 365)  return '${(diff.inDays / 30).floor()} months ago';
+    return '${(diff.inDays / 365).floor()} year(s) ago';
+  }
+
+  static String _timeAgoAr(Duration diff) {
+    if (diff.inSeconds <  5)   return 'الآن';
+    if (diff.inSeconds < 60)   return 'منذ ${diff.inSeconds}ث';
+    if (diff.inMinutes <  2)   return 'منذ دقيقة';
+    if (diff.inMinutes < 60)   return 'منذ ${diff.inMinutes} دقيقة';
+    if (diff.inHours   <  2)   return 'منذ ساعة';
+    if (diff.inHours   < 24)   return 'منذ ${diff.inHours} ساعة';
+    if (diff.inDays    <  2)   return 'أمس';
+    if (diff.inDays    <  7)   return 'منذ ${diff.inDays} أيام';
+    if (diff.inDays    < 14)   return 'الأسبوع الماضي';
+    if (diff.inDays    < 31)   return 'منذ ${(diff.inDays / 7).floor()} أسابيع';
+    if (diff.inDays    < 365)  return 'منذ ${(diff.inDays / 30).floor()} شهور';
+    return 'منذ ${(diff.inDays / 365).floor()} سنة';
   }
 
   // ── Countdown display ─────────────────────────────────────────────────────

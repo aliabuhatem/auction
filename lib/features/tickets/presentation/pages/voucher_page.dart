@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../data/tickets_remote_datasource.dart';
@@ -65,8 +66,12 @@ class _VoucherDetail extends StatelessWidget {
         title: Text(AppStrings.myVoucher(context)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: () {},
+            icon: const Icon(Icons.share_outlined),
+            tooltip: AppStrings.share(context),
+            onPressed: () => Share.share(
+              '${AppStrings.myVoucher(context)}: ${voucher.auctionTitle}\n'
+              '${AppStrings.voucherCode(context)}: ${voucher.code}',
+            ),
           ),
         ],
       ),
