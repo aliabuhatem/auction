@@ -274,6 +274,19 @@ class AppStrings {
   static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
+  // ── My Auctions — completed tab ──────────────────────────────────────────
+  static String completed(BuildContext context) => get(context, 'completed');
+  static String noCompleted(BuildContext context) => get(context, 'noCompleted');
+  static String paidOn(BuildContext context) => get(context, 'paidOn');
+
+  // ── Search filters ────────────────────────────────────────────────────────
+  static String filterByCategory(BuildContext context) => get(context, 'filterByCategory');
+  static String allCategories(BuildContext context) => get(context, 'allCategories');
+
+  // ── Legal ─────────────────────────────────────────────────────────────────
+  static String termsOfService(BuildContext context) => get(context, 'termsOfService');
+  static String privacyPolicy(BuildContext context) => get(context, 'privacyPolicy');
+
   // ── Bidding sheet ────────────────────────────────────────────────────────
   static String placeBidTitle(BuildContext context) => get(context, 'placeBidTitle');
   static String yourBid(BuildContext context) => get(context, 'yourBid');
@@ -595,6 +608,19 @@ class AppStrings {
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
 
+    // My Auctions — completed
+    'completed': 'Voltooid',
+    'noCompleted': 'Geen voltooide betalingen',
+    'paidOn': 'Betaald op',
+
+    // Search filters
+    'filterByCategory': 'Categorie',
+    'allCategories': 'Alle',
+
+    // Legal
+    'termsOfService': 'Gebruiksvoorwaarden',
+    'privacyPolicy': 'Privacybeleid',
+
     // Bidding sheet
     'placeBidTitle': 'Bod plaatsen',
     'yourBid': 'Jouw bod',
@@ -907,6 +933,19 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
+    // My Auctions — completed
+    'completed': 'Completed',
+    'noCompleted': 'No completed payments',
+    'paidOn': 'Paid on',
+
+    // Search filters
+    'filterByCategory': 'Category',
+    'allCategories': 'All',
+
+    // Legal
+    'termsOfService': 'Terms of Service',
+    'privacyPolicy': 'Privacy Policy',
+
     // Bidding sheet
     'placeBidTitle': 'Place bid',
     'yourBid': 'Your bid',
@@ -1218,6 +1257,19 @@ class AppStrings {
     'deleteForever': 'حذف نهائي',
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
+
+    // My Auctions — completed
+    'completed': 'مكتملة',
+    'noCompleted': 'لا توجد مدفوعات مكتملة',
+    'paidOn': 'مدفوع في',
+
+    // Search filters
+    'filterByCategory': 'الفئة',
+    'allCategories': 'الكل',
+
+    // Legal
+    'termsOfService': 'شروط الاستخدام',
+    'privacyPolicy': 'سياسة الخصوصية',
 
     // Bidding sheet
     'placeBidTitle': 'تقديم مزايدة',

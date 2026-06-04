@@ -66,15 +66,16 @@ class AuctionListBloc extends Bloc<AuctionListEvent, AuctionListState> {
   }
 
   Future<void> _onSearch(SearchAuctions e, Emitter<AuctionListState> emit) async {
-    // Search is one-shot (text filtering) — pause the live stream while active
     _streamSub?.cancel();
     _streamSub = null;
     emit(AuctionListLoading());
-    final result = await getAuctions(GetAuctionsParams(query: e.query));
+    final result = await getAuctions(
+        GetAuctionsParams(query: e.query, category: e.category));
     result.fold(
       (f) => emit(AuctionListError(f.message)),
       (list) => emit(AuctionListLoaded(
-          auctions: list, hasMore: false, currentPage: 1, selectedCategory: null)),
+          auctions: list, hasMore: false, currentPage: 1,
+          selectedCategory: e.category)),
     );
   }
 

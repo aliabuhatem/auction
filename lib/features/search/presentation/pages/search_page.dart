@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../auctions/domain/entities/auction_entity.dart';
 import '../../../auctions/presentation/bloc/auction_list_bloc.dart';
 import '../../../auctions/presentation/widgets/auction_grid.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -19,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   final _searchController = TextEditingController();
   Timer? _debounce;
   List<String> _history = [];
+  AuctionCategory? _selectedCategory;
 
   static const _prefKey  = 'search_history';
   static const _maxItems = 8;
@@ -56,12 +58,21 @@ class _SearchPageState extends State<SearchPage> {
     if (mounted) setState(() => _history = []);
   }
 
-  void _runSearch(String query) {
+  void _runSearch(String query, {AuctionCategory? category}) {
     _searchController.text = query;
     _searchController.selection =
         TextSelection.fromPosition(TextPosition(offset: query.length));
-    _addToHistory(query);
-    context.read<AuctionListBloc>().add(SearchAuctions(query));
+    if (query.trim().isNotEmpty) _addToHistory(query.trim());
+    context.read<AuctionListBloc>().add(
+          SearchAuctions(query, category: category ?? _selectedCategory));
+  }
+
+  void _selectCategory(AuctionCategory? cat) {
+    setState(() => _selectedCategory = cat);
+    final q = _searchController.text;
+    if (q.trim().isNotEmpty) {
+      context.read<AuctionListBloc>().add(SearchAuctions(q, category: cat));
+    }
   }
 
   @override

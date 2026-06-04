@@ -14,8 +14,9 @@ class FilterByCategory extends AuctionListEvent {
 }
 class SearchAuctions extends AuctionListEvent {
   final String query;
-  const SearchAuctions(this.query);
-  @override List<Object> get props => [query];
+  final AuctionCategory? category;
+  const SearchAuctions(this.query, {this.category});
+  @override List<Object?> get props => [query, category];
 }
 class AuctionListStreamUpdated extends AuctionListEvent {
   final List<AuctionEntity> auctions;

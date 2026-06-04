@@ -29,7 +29,28 @@
       "WebFetch(domain:www.bokt.nl)",
       "WebFetch(domain:www.ouders.nl)",
       "Bash(grep -v \"admin\\\\|shade\\\\|withValues\\\\|withOpacity\\\\|//\")",
-      "Bash(grep -v \"admin\\\\|test\\\\|//\\\\|class\\\\|import\\\\|part\\\\|DateTime\\\\|Exception\\\\|Error\\\\|padLeft\\\\|Uri\\\\|type\\\\b\\\\|code\\\\b\\\\|id\\\\b\\\\|uid\\\\b\\\\|token\\\\|message\\\\|e\\\\.\\\\|f\\\\.\\\\|snap\\\\.\\\\|doc\\\\.\\\\|data\\\\.\\\\|state\\\\.\\\\|_\\\\.\\\\|\\\\.dart:#[0-9]\")"
+      "Bash(grep -v \"admin\\\\|test\\\\|//\\\\|class\\\\|import\\\\|part\\\\|DateTime\\\\|Exception\\\\|Error\\\\|padLeft\\\\|Uri\\\\|type\\\\b\\\\|code\\\\b\\\\|id\\\\b\\\\|uid\\\\b\\\\|token\\\\|message\\\\|e\\\\.\\\\|f\\\\.\\\\|snap\\\\.\\\\|doc\\\\.\\\\|data\\\\.\\\\|state\\\\.\\\\|_\\\\.\\\\|\\\\.dart:#[0-9]\")",
+      "Bash(grep -v \"admin\\\\|withValues\\\\|withOpacity\\\\|//\\\\|AppColors\\\\.\")",
+      "Bash(grep -v \"admin\\\\|//\")",
+      "Bash(grep -v \"admin\\\\|AppColors\\\\|test\\\\|//\\\\|app_colors\\\\|app_theme\")",
+      "Bash(grep -v \"admin\\\\|AppColors\\\\|test\\\\|//\\\\|app_colors\\\\|app_theme\\\\|app\\\\.dart\\\\|auction_detail_page\\\\|onboarding_page\\\\|my_auctions_page\\\\|payment_success_page\\\\|bid_history_list\\\\|category_chip\\\\|auction_timer_badge\\\\|bid_button\")",
+      "Bash(grep -v \"admin\\\\|test\\\\|//\")",
+      "Bash(grep -v \"admin\\\\|withValues\\\\|withOpacity\\\\|//\\\\|AppColors\\\\.\\\\|Brightness\\\\.\\\\|SystemUi\\\\|firebase_options\\\\|test\")",
+      "Bash(grep -v \"admin\\\\|AppColors\\\\|test\\\\|//\\\\|app_colors\\\\|app_theme\\\\|app\\\\.dart\\\\|main\\\\.dart\\\\|firebase_options\")",
+      "Bash(grep -v \"admin\\\\|AppColors\\\\|test\\\\|//\\\\|app_colors\\\\|app_theme\\\\|app\\\\.dart\\\\|main\\\\.dart\\\\|firebase_options\\\\|auction_detail_page\\\\|onboarding_page\\\\|my_auctions_page\\\\|payment_success_page\\\\|scratch_card_page\\\\|bid_button\\\\|category_chip\")",
+      "Bash(grep -v \"admin\\\\|AppColors\\\\|test\\\\|//\\\\|app_colors\\\\|app_theme\\\\|app\\\\.dart\\\\|main\\\\.dart\\\\|firebase_options\\\\|auction_detail_page\\\\|onboarding_page\\\\|my_auctions_page\\\\|payment_success_page\\\\|scratch_card_page\\\\|bid_button\\\\|category_chip\\\\|bidding_bloc\\\\|auction_detail_state\\\\|app_router\\\\|shell_scaffold\\\\|auction_list_bloc\\\\|search_page\\\\|home_page\\\\|profile\\\\|referral\\\\|wallet\\\\|notification\\\\|my_auctions_bloc\\\\|splash\\\\|login\\\\|register\\\\|account_settings\\\\|bid_history\\\\|auction_card\\\\|category_filter\")",
+      "Bash(grep -v \"admin\\\\|test\\\\|//\\\\|firebase_options\\\\|_mapDio\\\\|AppException\\\\b\\\\|Error\\\\b\\\\b\\\\|Unsupported\")",
+      "Bash(git commit -m ' *)",
+      "Bash(xargs wc -l)",
+      "Bash(grep -v \"//\\\\|websocket_client\\\\.dart\\\\|api_client\\\\.dart\")",
+      "Bash(grep -v \"//\\\\|injection_container\\\\|websocket_client\\\\|api_client\")",
+      "Bash(grep -v \"//\\\\|api_client\\\\.dart\\\\|injection_container\\\\|auth_bloc\")",
+      "Bash(grep -v \"//\\\\|api_client\\\\.dart\\\\|websocket_client\\\\.dart\")",
+      "Bash(grep -v \"//\\\\|test\")",
+      "Bash(grep -rn \"your-backend\\\\|placeholder\\\\|PLACEHOLDER\\\\|wss://\\\\|https://your\" lib/ --include=\"*.dart\")",
+      "Bash(grep -rn \"wss://\\\\|'https://your-backend\\\\|api_client.*baseUrl\\\\|websocket.*url\" lib/ --include=\"*.dart\")",
+      "Bash(grep -v \"//\")",
+      "Bash(grep -v \"admin\\\\|//\\\\|AppStrings\\\\|test\")"
     ]
   }
 }

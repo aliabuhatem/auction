@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/app_router.dart';
@@ -25,7 +26,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _load();
   }
 
@@ -62,6 +63,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
             Tab(text: AppStrings.won(context)),
             Tab(text: AppStrings.payNow(context)),
             Tab(text: AppStrings.saved(context)),
+            Tab(text: AppStrings.completed(context)),
           ],
         ),
       ),
@@ -118,6 +120,7 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
                 emptyMessage: AppStrings.noSaved(context),
                 onRefresh: _load,
               ),
+              _CompletedOrdersTab(userId: userId),
             ],
           );
         },
@@ -323,6 +326,121 @@ class _PayButtonState extends State<_PayButton> {
                   color: Colors.white, strokeWidth: 2),
             )
           : Text(AppStrings.payNow(context), style: const TextStyle(color: Colors.white)),
+    );
+  }
+}
+
+// ── Completed orders tab ───────────────────────────────────────────────────────
+
+class _CompletedOrdersTab extends StatelessWidget {
+  final String userId;
+  const _CompletedOrdersTab({required this.userId});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('orders')
+          .where('userId', isEqualTo: userId)
+          .where('status', isEqualTo: 'paid')
+          .snapshots(),
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snap.hasError) {
+          return Center(
+            child: Text(AppStrings.orderLoadError(context),
+                style: const TextStyle(color: AppColors.textSecondary)),
+          );
+        }
+
+        final docs = List<QueryDocumentSnapshot>.from(snap.data?.docs ?? [])
+          ..sort((a, b) {
+            final ta = ((a.data() as Map)['updatedAt'] as Timestamp?)?.seconds ?? 0;
+            final tb = ((b.data() as Map)['updatedAt'] as Timestamp?)?.seconds ?? 0;
+            return tb.compareTo(ta);
+          });
+
+        if (docs.isEmpty) {
+          return RefreshIndicator(
+            color: AppColors.primaryRed,
+            onRefresh: () async {},
+            child: ListView(children: [
+              SizedBox(
+                height: 300,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.check_circle_outline,
+                          size: 64, color: AppColors.textHint),
+                      const SizedBox(height: 16),
+                      Text(AppStrings.noCompleted(context),
+                          style: const TextStyle(color: AppColors.textSecondary, fontSize: 16)),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+          );
+        }
+
+        return ListView.separated(
+          padding: const EdgeInsets.all(16),
+          itemCount: docs.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, i) {
+            final d = docs[i].data() as Map<String, dynamic>;
+            final title    = d['auctionTitle'] as String? ?? '';
+            final amount   = (d['amount'] as num?)?.toDouble() ?? 0.0;
+            final voucherId = d['voucherId'] as String?;
+            final ts       = d['updatedAt'] as Timestamp?;
+            final dateStr  = ts != null
+                ? '${AppStrings.paidOn(context)} ${DateFormat.yMMMd(Localizations.localeOf(context).toString()).format(ts.toDate())}'
+                : '';
+
+            return Card(
+              child: ListTile(
+                leading: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.successLight,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.check_rounded, color: AppColors.success),
+                ),
+                title: Text(title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(CurrencyFormatter.format(amount),
+                        style: const TextStyle(
+                            color: AppColors.success, fontWeight: FontWeight.w700)),
+                    if (dateStr.isNotEmpty)
+                      Text(dateStr,
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
+                trailing: voucherId != null
+                    ? TextButton(
+                        onPressed: () =>
+                            context.push(AppRoutes.voucherDetailPath(voucherId)),
+                        child: Text(AppStrings.viewVoucher(context),
+                            style: const TextStyle(fontSize: 12)),
+                      )
+                    : null,
+                isThreeLine: true,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
