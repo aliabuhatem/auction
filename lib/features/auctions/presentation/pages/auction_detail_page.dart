@@ -77,7 +77,7 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             action: SnackBarAction(
-              label: 'Bied terug',
+              label: AppStrings.bidBackLabel(context),
               textColor: Colors.white,
               onPressed: () {},
             ),
@@ -238,7 +238,7 @@ class _ExtensionBanner extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Veiling verlengd met ${seconds}s — iemand bood in de laatste minuut!',
+              AppStrings.auctionExtended(context, seconds),
               style: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13,
               ),
@@ -268,15 +268,15 @@ class _StatusBar extends StatelessWidget {
     if (isWinning && hasAutoBid) {
       bg = const Color(0xFFFFF9E6); fg = const Color(0xFFF59E0B);
       icon = Icons.bolt_rounded;
-      label = 'Auto-bod actief — jij leidt nog steeds.';
+      label = AppStrings.autoBidActiveLeading(context);
     } else if (isWinning) {
       bg = AppColors.successLight; fg = AppColors.success;
       icon = Icons.emoji_events_rounded;
-      label = 'Jij wint! Het huidige bod is van jou.';
+      label = AppStrings.youAreWinning(context);
     } else {
       bg = AppColors.errorLight; fg = AppColors.error;
       icon = Icons.warning_amber_rounded;
-      label = 'Je bent overboden! Bied om terug te pakken.';
+      label = AppStrings.youWereOutbid(context);
     }
 
     return Container(
@@ -461,7 +461,7 @@ class _HeaderSection extends StatelessWidget {
               const SizedBox(width: 12),
               Icon(Icons.people_outline, size: 15, color: textSecondary),
               const SizedBox(width: 4),
-              Text('${auction.watchers} volgers',
+              Text(AppStrings.watcherCount(context, auction.watchers),
                   style: TextStyle(color: textSecondary, fontSize: 13)),
             ],
           ),
@@ -547,8 +547,8 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
   void _setAutoBid() {
     final max = double.tryParse(_customCtrl.text.replaceAll(',', '.'));
     if (max == null || max <= widget.auction.currentBid) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Voer een geldig maximumbedrag in'),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(AppStrings.invalidMaxBid(context)),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
       ));
@@ -622,7 +622,8 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          '${auction.bidCount} biedingen · min. +${CurrencyFormatter.format(auction.minBidIncrement)}',
+                          AppStrings.bidCountMin(context, auction.bidCount,
+                              CurrencyFormatter.format(auction.minBidIncrement)),
                           style: TextStyle(color: textSec, fontSize: 11,
                               fontWeight: FontWeight.w500),
                         ),
@@ -646,13 +647,13 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Snel bieden', style: TextStyle(
+                    Text(AppStrings.quickBid(context), style: TextStyle(
                         color: textSec, fontSize: 12, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 10),
                     Row(
                       children: [
                         _QuickBidChip(
-                          label: 'Min.',
+                          label: AppStrings.minBidLabel(context),
                           amount: minBid,
                           isSelected: _selectedAmount == minBid,
                           onTap: () => setState(() => _selectedAmount = minBid),
@@ -693,7 +694,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                         children: [
                           Icon(Icons.edit_outlined, size: 14, color: textSec),
                           const SizedBox(width: 4),
-                          Text('Eigen bedrag invoeren',
+                          Text(AppStrings.customAmount(context),
                               style: TextStyle(color: textSec, fontSize: 12,
                                   fontWeight: FontWeight.w500)),
                         ],
@@ -788,7 +789,8 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                       foregroundColor: AppColors.primaryRed,
                     ),
                     child: Text(
-                      'Nu kopen — ${CurrencyFormatter.format(auction.buyNowPrice!)}',
+                      AppStrings.buyNow(context,
+                          CurrencyFormatter.format(auction.buyNowPrice!)),
                       style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
                     ),
                   ),
@@ -829,15 +831,16 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                                 children: [
                                   Text(
                                     widget.autoBidMax != null
-                                        ? 'Auto-bod actief: max ${CurrencyFormatter.format(widget.autoBidMax!)}'
-                                        : 'Maximumbod instellen',
+                                        ? AppStrings.autoBidActiveMax(context,
+                                            CurrencyFormatter.format(widget.autoBidMax!))
+                                        : AppStrings.setMaxBid(context),
                                     style: TextStyle(
                                       color: textPrimary,
                                       fontWeight: FontWeight.w700, fontSize: 13,
                                     ),
                                   ),
                                   Text(
-                                    'Wij bieden automatisch als je overboden wordt',
+                                    AppStrings.autoBidSub(context),
                                     style: TextStyle(color: textSec, fontSize: 11),
                                   ),
                                 ],
@@ -867,8 +870,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Wij plaatsen automatisch het minimumbod namens jou '
-                              'wanneer je overboden wordt, tot aan jouw maximum.',
+                              AppStrings.autoBidExplain(context),
                               style: TextStyle(color: textSec, fontSize: 12, height: 1.5),
                             ),
                             const SizedBox(height: 12),
@@ -881,7 +883,7 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                                         decimal: true),
                                     decoration: InputDecoration(
                                       prefixText: '€ ',
-                                      hintText: 'Mijn maximum',
+                                      hintText: AppStrings.myMaximum(context),
                                       contentPadding: const EdgeInsets.symmetric(
                                           horizontal: 14, vertical: 10),
                                       border: OutlineInputBorder(
@@ -916,8 +918,8 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 18, vertical: 12),
                                   ),
-                                  child: const Text('Instellen',
-                                      style: TextStyle(fontWeight: FontWeight.w700)),
+                                  child: Text(AppStrings.setBtn(context),
+                                      style: const TextStyle(fontWeight: FontWeight.w700)),
                                 ),
                               ],
                             ),
@@ -929,9 +931,9 @@ class _BidPanelState extends State<_BidPanel> with SingleTickerProviderStateMixi
                                       ClearAutoBid(widget.auction.id));
                                   setState(() => _showAutoBid = false);
                                 },
-                                child: const Text(
-                                  'Auto-bod verwijderen',
-                                  style: TextStyle(
+                                child: Text(
+                                  AppStrings.removeAutoBid(context),
+                                  style: const TextStyle(
                                       color: AppColors.error,
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600),
@@ -1001,8 +1003,13 @@ class _CountdownBlocksState extends State<_CountdownBlocks> {
 
   @override
   Widget build(BuildContext context) {
+    final lDay  = AppStrings.cdDay(context);
+    final lHour = AppStrings.cdHour(context);
+    final lMin  = AppStrings.cdMin(context);
+    final lSec  = AppStrings.cdSec(context);
+
     if (_remaining.isNegative || _remaining.inSeconds == 0) {
-      return _singleBlock('00', 'sec', isUrgent: true);
+      return _singleBlock('00', lSec, isUrgent: true);
     }
 
     final days    = _remaining.inDays;
@@ -1030,14 +1037,14 @@ class _CountdownBlocksState extends State<_CountdownBlocks> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (days > 0) ...[
-          block(days.toString().padLeft(2, '0'), 'dag'),
+          block(days.toString().padLeft(2, '0'), lDay),
           sep(),
         ],
-        block(hours.toString().padLeft(2, '0'), 'uur'),
+        block(hours.toString().padLeft(2, '0'), lHour),
         sep(),
-        block(minutes.toString().padLeft(2, '0'), 'min'),
+        block(minutes.toString().padLeft(2, '0'), lMin),
         sep(),
-        block(seconds.toString().padLeft(2, '0'), 'sec'),
+        block(seconds.toString().padLeft(2, '0'), lSec),
       ],
     );
   }

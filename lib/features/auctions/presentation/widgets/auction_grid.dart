@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/auction_entity.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/auction_card.dart';
 import '../../../../core/constants/app_dimensions.dart';
 
@@ -11,6 +13,37 @@ class AuctionGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (auctions.isEmpty && !isLoadingMore) {
+      return SliverFillRemaining(
+        hasScrollBody: false,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundGrey,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(Icons.gavel_outlined,
+                    size: 36, color: AppColors.textHint),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                AppStrings.noAuctions(context),
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: AppColors.textSecondary),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       sliver: SliverGrid(

@@ -98,20 +98,24 @@ class _MyAuctionsPageState extends State<MyAuctionsPage>
                 auctions: loaded?.activeBids ?? [],
                 emptyIcon: Icons.gavel,
                 emptyMessage: AppStrings.noActive(context),
+                onRefresh: _load,
               ),
               _AuctionTab(
                 auctions: loaded?.wonAuctions ?? [],
                 emptyIcon: Icons.emoji_events,
                 emptyMessage: AppStrings.noWon(context),
+                onRefresh: _load,
               ),
               _PendingPaymentTab(
                 auctions: loaded?.pendingPayments ?? [],
                 userId: userId,
+                onRefresh: _load,
               ),
               _AuctionTab(
                 auctions: loaded?.watchedAuctions ?? [],
                 emptyIcon: Icons.bookmark_border,
                 emptyMessage: AppStrings.noSaved(context),
+                onRefresh: _load,
               ),
             ],
           );
@@ -125,28 +129,43 @@ class _AuctionTab extends StatelessWidget {
   final List<AuctionEntity> auctions;
   final IconData emptyIcon;
   final String emptyMessage;
+  final VoidCallback onRefresh;
 
   const _AuctionTab({
     required this.auctions,
     required this.emptyIcon,
     required this.emptyMessage,
+    required this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
     if (auctions.isEmpty) {
-      return _EmptyTab(icon: emptyIcon, message: emptyMessage);
+      return RefreshIndicator(
+        color: AppColors.primaryRed,
+        onRefresh: () async => onRefresh(),
+        child: ListView(children: [
+          SizedBox(
+            height: 300,
+            child: _EmptyTab(icon: emptyIcon, message: emptyMessage),
+          ),
+        ]),
+      );
     }
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.72,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+    return RefreshIndicator(
+      color: AppColors.primaryRed,
+      onRefresh: () async => onRefresh(),
+      child: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.72,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: auctions.length,
+        itemBuilder: (context, i) => AuctionCard(auction: auctions[i]),
       ),
-      itemCount: auctions.length,
-      itemBuilder: (context, i) => AuctionCard(auction: auctions[i]),
     );
   }
 }
@@ -173,7 +192,12 @@ class _EmptyTab extends StatelessWidget {
 class _PendingPaymentTab extends StatelessWidget {
   final List<AuctionEntity> auctions;
   final String userId;
-  const _PendingPaymentTab({required this.auctions, required this.userId});
+  final VoidCallback onRefresh;
+  const _PendingPaymentTab({
+    required this.auctions,
+    required this.userId,
+    required this.onRefresh,
+  });
 
   Future<String?> _findOrderId(String auctionId) async {
     final snap = await FirebaseFirestore.instance
@@ -209,14 +233,26 @@ class _PendingPaymentTab extends StatelessWidget {
         ),
         if (auctions.isEmpty)
           Expanded(
-            child: Center(
-              child: Text(AppStrings.noPending(context),
-                  style: const TextStyle(color: Colors.grey)),
+            child: RefreshIndicator(
+              color: AppColors.primaryRed,
+              onRefresh: () async => onRefresh(),
+              child: ListView(children: [
+                SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: Text(AppStrings.noPending(context),
+                        style: const TextStyle(color: Colors.grey)),
+                  ),
+                ),
+              ]),
             ),
           )
         else
           Expanded(
-            child: ListView.separated(
+            child: RefreshIndicator(
+              color: AppColors.primaryRed,
+              onRefresh: () async => onRefresh(),
+              child: ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: auctions.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
@@ -249,6 +285,7 @@ class _PendingPaymentTab extends StatelessWidget {
                 );
               },
             ),
+          ),
           ),
       ],
     );

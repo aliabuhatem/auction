@@ -92,6 +92,37 @@ class AppStrings {
   static String yourSaving(BuildContext context) => get(context, 'yourSaving');
   static String tabDescription(BuildContext context) => get(context, 'tabDescription');
   static String tabBids(BuildContext context) => get(context, 'tabBids');
+  static String bidBackLabel(BuildContext context) => get(context, 'bidBackLabel');
+  static String watcherCount(BuildContext context, int n) =>
+      get(context, 'watcherCount').replaceAll('{n}', '$n');
+  static String quickBid(BuildContext context) => get(context, 'quickBid');
+  static String customAmount(BuildContext context) => get(context, 'customAmount');
+  static String invalidMaxBid(BuildContext context) => get(context, 'invalidMaxBid');
+  static String autoBidActiveLeading(BuildContext context) => get(context, 'autoBidActiveLeading');
+  static String youAreWinning(BuildContext context) => get(context, 'youAreWinning');
+  static String youWereOutbid(BuildContext context) => get(context, 'youWereOutbid');
+  static String auctionExtended(BuildContext context, int seconds) =>
+      get(context, 'auctionExtended').replaceAll('{s}', '$seconds');
+  static String bidCountMin(BuildContext context, int count, String min) =>
+      get(context, 'bidCountMin')
+          .replaceAll('{count}', '$count')
+          .replaceAll('{min}', min);
+  static String autoBidActiveMax(BuildContext context, String amount) =>
+      get(context, 'autoBidActiveMax').replaceAll('{amount}', amount);
+  static String setMaxBid(BuildContext context) => get(context, 'setMaxBid');
+  static String autoBidSub(BuildContext context) => get(context, 'autoBidSub');
+  static String buyNow(BuildContext context, String price) =>
+      get(context, 'buyNow').replaceAll('{price}', price);
+  static String minBidLabel(BuildContext context) => get(context, 'minBidLabel');
+  static String autoBidExplain(BuildContext context) => get(context, 'autoBidExplain');
+  static String myMaximum(BuildContext context) => get(context, 'myMaximum');
+  static String setBtn(BuildContext context) => get(context, 'setBtn');
+  static String removeAutoBid(BuildContext context) => get(context, 'removeAutoBid');
+  static String cdDay(BuildContext context) => get(context, 'cdDay');
+  static String cdHour(BuildContext context) => get(context, 'cdHour');
+  static String cdMin(BuildContext context) => get(context, 'cdMin');
+  static String cdSec(BuildContext context) => get(context, 'cdSec');
+  static String noAuctions(BuildContext context) => get(context, 'noAuctions');
 
   // ── Scratch Card ──────────────────────────────────────────────────────────
   static String scratchCard(BuildContext context) => get(context, 'scratchCard');
@@ -333,6 +364,30 @@ class AppStrings {
     'yourSaving': 'Jij bespaart',
     'tabDescription': 'Beschrijving',
     'tabBids': 'Biedingen',
+    'bidBackLabel': 'Bied terug',
+    'watcherCount': '{n} volgers',
+    'quickBid': 'Snel bieden',
+    'customAmount': 'Eigen bedrag invoeren',
+    'invalidMaxBid': 'Voer een geldig maximumbedrag in',
+    'autoBidActiveLeading': 'Auto-bod actief — jij leidt nog steeds.',
+    'youAreWinning': 'Jij wint! Het huidige bod is van jou.',
+    'youWereOutbid': 'Je bent overboden! Bied om terug te pakken.',
+    'auctionExtended': 'Veiling verlengd met {s}s — iemand bood in de laatste minuut!',
+    'bidCountMin': '{count} biedingen · min. +{min}',
+    'autoBidActiveMax': 'Auto-bod actief: max {amount}',
+    'setMaxBid': 'Maximumbod instellen',
+    'autoBidSub': 'Wij bieden automatisch als je overboden wordt',
+    'buyNow': 'Nu kopen — {price}',
+    'minBidLabel': 'Min.',
+    'autoBidExplain': 'Wij plaatsen automatisch het minimumbod namens jou wanneer je overboden wordt, tot aan jouw maximum.',
+    'myMaximum': 'Mijn maximum',
+    'setBtn': 'Instellen',
+    'removeAutoBid': 'Auto-bod verwijderen',
+    'cdDay': 'dag',
+    'cdHour': 'uur',
+    'cdMin': 'min',
+    'cdSec': 'sec',
+    'noAuctions': 'Geen veilingen',
 
     // Scratch Card
     'scratchCard': 'Kraskaart',
@@ -569,6 +624,30 @@ class AppStrings {
     'yourSaving': 'You save',
     'tabDescription': 'Description',
     'tabBids': 'Bids',
+    'bidBackLabel': 'Bid back',
+    'watcherCount': '{n} followers',
+    'quickBid': 'Quick bid',
+    'customAmount': 'Enter custom amount',
+    'invalidMaxBid': 'Enter a valid maximum amount',
+    'autoBidActiveLeading': 'Auto-bid active — you\'re still leading.',
+    'youAreWinning': 'You\'re winning! The current bid is yours.',
+    'youWereOutbid': 'You\'ve been outbid! Bid to reclaim the lead.',
+    'auctionExtended': 'Auction extended by {s}s — someone bid in the last minute!',
+    'bidCountMin': '{count} bids · min. +{min}',
+    'autoBidActiveMax': 'Auto-bid active: max {amount}',
+    'setMaxBid': 'Set max bid',
+    'autoBidSub': 'We bid automatically when you\'re outbid',
+    'buyNow': 'Buy now — {price}',
+    'minBidLabel': 'Min.',
+    'autoBidExplain': 'We automatically place the minimum bid on your behalf when you\'re outbid, up to your maximum.',
+    'myMaximum': 'My maximum',
+    'setBtn': 'Set',
+    'removeAutoBid': 'Remove auto-bid',
+    'cdDay': 'd',
+    'cdHour': 'h',
+    'cdMin': 'm',
+    'cdSec': 's',
+    'noAuctions': 'No auctions',
 
     // Scratch Card
     'scratchCard': 'Scratch Card',
@@ -805,6 +884,30 @@ class AppStrings {
     'yourSaving': 'توفيرك',
     'tabDescription': 'الوصف',
     'tabBids': 'المزايدات',
+    'bidBackLabel': 'زايد مجدداً',
+    'watcherCount': '{n} متابع',
+    'quickBid': 'مزايدة سريعة',
+    'customAmount': 'أدخل مبلغاً مخصصاً',
+    'invalidMaxBid': 'أدخل مبلغاً أقصى صالحاً',
+    'autoBidActiveLeading': 'العطاء التلقائي نشط — أنت لا تزال في المقدمة.',
+    'youAreWinning': 'أنت فائز! المزايدة الحالية لك.',
+    'youWereOutbid': 'تم تجاوزك! زايد لاسترداد المركز الأول.',
+    'auctionExtended': 'تم تمديد المزاد {s} ثانية — قدّم أحدهم مزايدة في آخر لحظة!',
+    'bidCountMin': '{count} مزايدة · الحد الأدنى +{min}',
+    'autoBidActiveMax': 'العطاء التلقائي نشط: الحد الأقصى {amount}',
+    'setMaxBid': 'تعيين الحد الأقصى',
+    'autoBidSub': 'نزايد تلقائياً عند تجاوزك',
+    'buyNow': 'اشتر الآن — {price}',
+    'minBidLabel': 'الحد الأدنى',
+    'autoBidExplain': 'نضع تلقائياً الحد الأدنى للمزايدة نيابةً عنك عند تجاوزك، حتى حدك الأقصى.',
+    'myMaximum': 'حدي الأقصى',
+    'setBtn': 'تعيين',
+    'removeAutoBid': 'إزالة العطاء التلقائي',
+    'cdDay': 'ي',
+    'cdHour': 'س',
+    'cdMin': 'د',
+    'cdSec': 'ث',
+    'noAuctions': 'لا توجد مزادات',
 
     // Scratch Card
     'scratchCard': 'بطاقة الحظ',
