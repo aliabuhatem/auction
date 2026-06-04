@@ -203,7 +203,7 @@ class _AccountSettingsPageState extends State<AccountSettingsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content:         Text('Fout: ${e.toString()}'),
+            content:         Text(AppStrings.saveFailed(context)),
             backgroundColor: AppColors.error,
           ),
         );

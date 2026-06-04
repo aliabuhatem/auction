@@ -268,6 +268,39 @@ class AppStrings {
   static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
+  // ── Payment page ─────────────────────────────────────────────────────────
+  static String paymentTitle(BuildContext context) => get(context, 'paymentTitle');
+  static String orderNotFound(BuildContext context) => get(context, 'orderNotFound');
+  static String orderAccessDenied(BuildContext context) => get(context, 'orderAccessDenied');
+  static String orderLoadError(BuildContext context) => get(context, 'orderLoadError');
+  static String checkoutNotAvailable(BuildContext context) => get(context, 'checkoutNotAvailable');
+  static String paymentCongrats(BuildContext context) => get(context, 'paymentCongrats');
+  static String labelAuction(BuildContext context) => get(context, 'labelAuction');
+  static String labelOrderNr(BuildContext context) => get(context, 'labelOrderNr');
+  static String labelAmount(BuildContext context) => get(context, 'labelAmount');
+  static String labelPayBefore(BuildContext context) => get(context, 'labelPayBefore');
+  static String securePaymentVia(BuildContext context) => get(context, 'securePaymentVia');
+  static String payingBusy(BuildContext context) => get(context, 'payingBusy');
+  static String payNowAmount(BuildContext context, String amount) =>
+      get(context, 'payNowAmount').replaceAll('{amount}', amount);
+  static String deadlineExpired(BuildContext context) => get(context, 'deadlineExpired');
+  static String deadlineMinutes(BuildContext context, int n) =>
+      get(context, 'deadlineMinutes').replaceAll('{n}', '$n');
+  static String deadlineHours(BuildContext context, int n) =>
+      get(context, 'deadlineHours').replaceAll('{n}', '$n');
+  static String deadlineDays(BuildContext context, int n) =>
+      get(context, 'deadlineDays').replaceAll('{n}', '$n');
+  static String paymentDeadlineExpiredMsg(BuildContext context) => get(context, 'paymentDeadlineExpiredMsg');
+  static String sslSecured(BuildContext context) => get(context, 'sslSecured');
+  static String securePayingWebview(BuildContext context) => get(context, 'securePayingWebview');
+  static String cancelPaymentTitle(BuildContext context) => get(context, 'cancelPaymentTitle');
+  static String cancelPaymentMsg(BuildContext context) => get(context, 'cancelPaymentMsg');
+  static String backBtn(BuildContext context) => get(context, 'backBtn');
+  static String paymentCancelledMsg(BuildContext context) => get(context, 'paymentCancelledMsg');
+  static String paymentFailedRetry(BuildContext context) => get(context, 'paymentFailedRetry');
+  static String paymentFailedGeneric(BuildContext context, String error) =>
+      get(context, 'paymentFailedGeneric').replaceAll('{error}', error);
+
   // ── Bid History ───────────────────────────────────────────────────────────
   static String bidLoadError(BuildContext context) => get(context, 'bidLoadError');
   static String noBids(BuildContext context) => get(context, 'noBids');
@@ -536,6 +569,34 @@ class AppStrings {
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
 
+    // Payment page
+    'paymentTitle': 'Betaling',
+    'orderNotFound': 'Bestelling niet gevonden.',
+    'orderAccessDenied': 'Je hebt geen toegang tot deze bestelling.',
+    'orderLoadError': 'Fout bij laden bestelling. Probeer het opnieuw.',
+    'checkoutNotAvailable': 'Betaallink nog niet beschikbaar. Probeer het opnieuw.',
+    'paymentCongrats': 'Gefeliciteerd! Je hebt gewonnen.',
+    'labelAuction': 'Veiling',
+    'labelOrderNr': 'Bestelnr.',
+    'labelAmount': 'Bedrag',
+    'labelPayBefore': 'Betalen vóór',
+    'securePaymentVia': 'Veilige betaling via Mollie',
+    'payingBusy': 'Bezig...',
+    'payNowAmount': 'Betaal nu € {amount}',
+    'deadlineExpired': 'Verlopen',
+    'deadlineMinutes': '{n} minuten',
+    'deadlineHours': '{n} uur',
+    'deadlineDays': '{n} dag(en)',
+    'paymentDeadlineExpiredMsg': 'De betaaltermijn is verlopen. Neem contact op met support.',
+    'sslSecured': '🔒 Beveiligd door SSL',
+    'securePayingWebview': 'Veilig betalen',
+    'cancelPaymentTitle': 'Betaling annuleren?',
+    'cancelPaymentMsg': 'Wil je de betaling annuleren?',
+    'backBtn': 'Terug',
+    'paymentCancelledMsg': 'Betaling geannuleerd.',
+    'paymentFailedRetry': 'Betaling mislukt. Probeer het opnieuw.',
+    'paymentFailedGeneric': 'Betaling mislukt: {error}',
+
     // Bid history / win
     'bidLoadError': 'Fout bij laden biedingen',
     'noBids': 'Nog geen biedingen',
@@ -802,6 +863,34 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
+    // Payment page
+    'paymentTitle': 'Payment',
+    'orderNotFound': 'Order not found.',
+    'orderAccessDenied': 'You don\'t have access to this order.',
+    'orderLoadError': 'Error loading order. Please try again.',
+    'checkoutNotAvailable': 'Checkout link not available yet. Please try again.',
+    'paymentCongrats': 'Congratulations! You won.',
+    'labelAuction': 'Auction',
+    'labelOrderNr': 'Order no.',
+    'labelAmount': 'Amount',
+    'labelPayBefore': 'Pay before',
+    'securePaymentVia': 'Secure payment via Mollie',
+    'payingBusy': 'Processing...',
+    'payNowAmount': 'Pay now € {amount}',
+    'deadlineExpired': 'Expired',
+    'deadlineMinutes': '{n} minutes',
+    'deadlineHours': '{n} hours',
+    'deadlineDays': '{n} day(s)',
+    'paymentDeadlineExpiredMsg': 'The payment deadline has expired. Please contact support.',
+    'sslSecured': '🔒 Secured by SSL',
+    'securePayingWebview': 'Secure payment',
+    'cancelPaymentTitle': 'Cancel payment?',
+    'cancelPaymentMsg': 'Do you want to cancel the payment?',
+    'backBtn': 'Back',
+    'paymentCancelledMsg': 'Payment cancelled.',
+    'paymentFailedRetry': 'Payment failed. Please try again.',
+    'paymentFailedGeneric': 'Payment failed: {error}',
+
     // Bid history / win
     'bidLoadError': 'Error loading bids',
     'noBids': 'No bids yet',
@@ -1067,6 +1156,34 @@ class AppStrings {
     'deleteForever': 'حذف نهائي',
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
+
+    // Payment page
+    'paymentTitle': 'الدفع',
+    'orderNotFound': 'لم يُعثر على الطلب.',
+    'orderAccessDenied': 'ليس لديك صلاحية الوصول إلى هذا الطلب.',
+    'orderLoadError': 'خطأ في تحميل الطلب. حاول مرة أخرى.',
+    'checkoutNotAvailable': 'رابط الدفع غير متاح بعد. حاول مرة أخرى.',
+    'paymentCongrats': 'تهانينا! لقد فزت.',
+    'labelAuction': 'المزاد',
+    'labelOrderNr': 'رقم الطلب',
+    'labelAmount': 'المبلغ',
+    'labelPayBefore': 'ادفع قبل',
+    'securePaymentVia': 'دفع آمن عبر Mollie',
+    'payingBusy': 'جارٍ المعالجة...',
+    'payNowAmount': 'ادفع الآن € {amount}',
+    'deadlineExpired': 'منتهية الصلاحية',
+    'deadlineMinutes': '{n} دقيقة',
+    'deadlineHours': '{n} ساعة',
+    'deadlineDays': '{n} يوم',
+    'paymentDeadlineExpiredMsg': 'انتهت مهلة الدفع. يرجى التواصل مع الدعم.',
+    'sslSecured': '🔒 مؤمَّن بـ SSL',
+    'securePayingWebview': 'دفع آمن',
+    'cancelPaymentTitle': 'إلغاء الدفع؟',
+    'cancelPaymentMsg': 'هل تريد إلغاء الدفع؟',
+    'backBtn': 'رجوع',
+    'paymentCancelledMsg': 'تم إلغاء الدفع.',
+    'paymentFailedRetry': 'فشل الدفع. حاول مرة أخرى.',
+    'paymentFailedGeneric': 'فشل الدفع: {error}',
 
     // Bid history / win
     'bidLoadError': 'خطأ في تحميل المزايدات',

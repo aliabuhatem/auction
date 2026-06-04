@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_strings.dart';
 
 class PaymentPage extends StatefulWidget {
   final String orderId;
@@ -19,8 +20,8 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   Map<String, dynamic>? _order;
-  bool  _loading    = true;
-  bool  _paying     = false;
+  bool    _loading = true;
+  bool    _paying  = false;
   String? _error;
 
   StreamSubscription? _orderSub;
@@ -38,27 +39,29 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _loadOrder() {
+    // Pre-compute strings before the async gap.
+    final msgNotFound = AppStrings.orderNotFound(context);
+    final msgDenied   = AppStrings.orderAccessDenied(context);
+    final msgError    = AppStrings.orderLoadError(context);
+
     _orderSub = FirebaseFirestore.instance
         .collection('orders')
         .doc(widget.orderId)
         .snapshots()
         .listen((snap) {
       if (!snap.exists) {
-        setState(() { _loading = false; _error = 'Bestelling niet gevonden.'; });
+        setState(() { _loading = false; _error = msgNotFound; });
         return;
       }
       final data = snap.data()!;
       setState(() { _order = data; _loading = false; });
 
-      // Auto-navigate when Firestore marks order as paid (webhook/backend update).
       if (data['status'] == 'paid') {
         _orderSub?.cancel();
         if (mounted) _onPaymentSuccess(data);
       }
     }, onError: (e) {
-      final msg = e.toString().contains('PERMISSION_DENIED')
-          ? 'Je hebt geen toegang tot deze bestelling.'
-          : 'Fout bij laden bestelling. Probeer het opnieuw.';
+      final msg = e.toString().contains('PERMISSION_DENIED') ? msgDenied : msgError;
       setState(() { _loading = false; _error = msg; });
     });
   }
@@ -77,31 +80,29 @@ class _PaymentPageState extends State<PaymentPage> {
 
   Future<void> _startPayment() async {
     if (_order == null) return;
+    // Pre-compute all strings before any async gaps.
+    final msgCheckout   = AppStrings.checkoutNotAvailable(context);
+    final msgCancelled  = AppStrings.paymentCancelledMsg(context);
+    final msgFailed     = AppStrings.paymentFailedRetry(context);
     setState(() => _paying = true);
-
     try {
       final checkoutUrl = _order!['checkoutUrl'] as String?;
-
       if (checkoutUrl == null || checkoutUrl.isEmpty) {
-        // In a real implementation the backend/Cloud Function creates the
-        // Mollie payment and writes checkoutUrl to the order document.
-        // Show a user-friendly error until backend is wired.
-        _showError('Betaallink nog niet beschikbaar. Probeer het opnieuw.');
+        _showError(msgCheckout);
         setState(() => _paying = false);
         return;
       }
-
       if (kIsWeb) {
-        // Web: redirect in the same tab.
         await launchUrl(Uri.parse(checkoutUrl),
             mode: LaunchMode.externalApplication);
       } else {
-        // Mobile: in-app WebView.
         if (mounted) {
           await Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => _MollieWebView(
-              url:     checkoutUrl,
-              orderId: widget.orderId,
+              url:             checkoutUrl,
+              orderId:         widget.orderId,
+              cancelledMsg:    msgCancelled,
+              failedMsg:       msgFailed,
               onSuccess: () {
                 Navigator.of(context).pop();
                 _orderSub?.cancel();
@@ -116,7 +117,8 @@ class _PaymentPageState extends State<PaymentPage> {
         }
       }
     } catch (e) {
-      _showError('Betaling mislukt: ${e.toString()}');
+      // msgFailed pre-computed above — safe after async gap.
+      _showError(msgFailed);
     } finally {
       if (mounted) setState(() => _paying = false);
     }
@@ -124,20 +126,18 @@ class _PaymentPageState extends State<PaymentPage> {
 
   void _showError(String msg) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:          Text(msg),
-        backgroundColor:  AppColors.error,
-        behavior:         SnackBarBehavior.floating,
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content:         Text(msg),
+      backgroundColor: AppColors.error,
+      behavior:        SnackBarBehavior.floating,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:   const Text('Betaling'),
+        title:   Text(AppStrings.paymentTitle(context)),
         leading: BackButton(onPressed: () => context.go(AppRoutes.myAuctions)),
       ),
       body: _loading
@@ -145,9 +145,9 @@ class _PaymentPageState extends State<PaymentPage> {
           : _error != null
               ? _ErrorBody(message: _error!, onRetry: _loadOrder)
               : _OrderSummary(
-                  order:   _order!,
-                  paying:  _paying,
-                  onPay:   _startPayment,
+                  order:  _order!,
+                  paying: _paying,
+                  onPay:  _startPayment,
                 ),
     );
   }
@@ -159,13 +159,14 @@ class _OrderSummary extends StatelessWidget {
   final Map<String, dynamic> order;
   final bool                 paying;
   final VoidCallback         onPay;
-  const _OrderSummary({required this.order, required this.paying, required this.onPay});
+  const _OrderSummary(
+      {required this.order, required this.paying, required this.onPay});
 
   @override
   Widget build(BuildContext context) {
-    final amount    = (order['amount'] as num?)?.toDouble() ?? 0.0;
-    final title     = order['auctionTitle'] as String? ?? 'Veiling';
-    final deadline  = order['paymentDeadline'] != null
+    final amount   = (order['amount'] as num?)?.toDouble() ?? 0.0;
+    final title    = order['auctionTitle'] as String? ?? AppStrings.labelAuction(context);
+    final deadline = order['paymentDeadline'] != null
         ? (order['paymentDeadline'] as Timestamp).toDate()
         : null;
     final isExpired = deadline != null && deadline.isBefore(DateTime.now());
@@ -187,37 +188,42 @@ class _OrderSummary extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(children: [
-                  const Icon(Icons.emoji_events, color: AppColors.accentGold, size: 28),
+                  const Icon(Icons.emoji_events,
+                      color: AppColors.accentGold, size: 28),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Gefeliciteerd! Je hebt gewonnen.',
+                      AppStrings.paymentCongrats(context),
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
+                            fontWeight: FontWeight.w800,
+                          ),
                     ),
                   ),
                 ]),
                 const SizedBox(height: 16),
                 const Divider(),
                 const SizedBox(height: 16),
-                _Row(label: 'Veiling',   value: title),
-                const SizedBox(height: 8),
-                _Row(label: 'Bestelnr.', value: '#${order['id'] ?? ''}'),
+                _Row(label: AppStrings.labelAuction(context), value: title),
                 const SizedBox(height: 8),
                 _Row(
-                  label: 'Bedrag',
+                  label: AppStrings.labelOrderNr(context),
+                  value: '#${order['id'] ?? ''}',
+                ),
+                const SizedBox(height: 8),
+                _Row(
+                  label: AppStrings.labelAmount(context),
                   value: '€ ${amount.toStringAsFixed(2)}',
-                  valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color:      AppColors.primaryRed,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  valueStyle:
+                      Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color:      AppColors.primaryRed,
+                            fontWeight: FontWeight.w900,
+                          ),
                 ),
                 if (deadline != null) ...[
                   const SizedBox(height: 8),
                   _Row(
-                    label: 'Betalen vóór',
-                    value: _formatDeadline(deadline),
+                    label: AppStrings.labelPayBefore(context),
+                    value: _formatDeadline(context, deadline),
                     valueStyle: TextStyle(
                       color:      isExpired ? AppColors.error : AppColors.warning,
                       fontWeight: FontWeight.w700,
@@ -236,13 +242,13 @@ class _OrderSummary extends StatelessWidget {
                 color:        AppColors.errorLight,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(children: [
-                Icon(Icons.warning_rounded, color: AppColors.error),
-                SizedBox(width: 12),
+              child: Row(children: [
+                const Icon(Icons.warning_rounded, color: AppColors.error),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'De betaaltermijn is verlopen. Neem contact op met support.',
-                    style: TextStyle(color: AppColors.error),
+                    AppStrings.paymentDeadlineExpiredMsg(context),
+                    style: const TextStyle(color: AppColors.error),
                   ),
                 ),
               ]),
@@ -252,9 +258,9 @@ class _OrderSummary extends StatelessWidget {
           const SizedBox(height: 32),
 
           // Payment info
-          const Text(
-            'Veilige betaling via Mollie',
-            style: TextStyle(
+          Text(
+            AppStrings.securePaymentVia(context),
+            style: const TextStyle(
               fontSize:   13,
               color:      AppColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -283,18 +289,23 @@ class _OrderSummary extends StatelessWidget {
                   ? const SizedBox(
                       width: 20, height: 20,
                       child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2),
-                    )
+                          color: Colors.white, strokeWidth: 2))
                   : const Icon(Icons.payment_rounded),
-              label: Text(paying ? 'Bezig...' : 'Betaal nu € ${amount.toStringAsFixed(2)}'),
+              label: Text(
+                paying
+                    ? AppStrings.payingBusy(context)
+                    : AppStrings.payNowAmount(
+                        context, amount.toStringAsFixed(2)),
+              ),
             ),
           ),
 
           const SizedBox(height: 16),
-          const Center(
+          Center(
             child: Text(
-              '🔒 Beveiligd door SSL',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              AppStrings.sslSecured(context),
+              style: const TextStyle(
+                  color: AppColors.textSecondary, fontSize: 12),
             ),
           ),
         ],
@@ -302,19 +313,19 @@ class _OrderSummary extends StatelessWidget {
     );
   }
 
-  String _formatDeadline(DateTime dt) {
+  String _formatDeadline(BuildContext context, DateTime dt) {
     final diff = dt.difference(DateTime.now());
-    if (diff.isNegative) return 'Verlopen';
-    if (diff.inHours < 1) return '${diff.inMinutes} minuten';
-    if (diff.inHours < 24) return '${diff.inHours} uur';
-    return '${diff.inDays} dag${diff.inDays == 1 ? '' : 'en'}';
+    if (diff.isNegative) return AppStrings.deadlineExpired(context);
+    if (diff.inHours < 1)  return AppStrings.deadlineMinutes(context, diff.inMinutes);
+    if (diff.inHours < 24) return AppStrings.deadlineHours(context, diff.inHours);
+    return AppStrings.deadlineDays(context, diff.inDays);
   }
 }
 
 class _Row extends StatelessWidget {
-  final String      label;
-  final String      value;
-  final TextStyle?  valueStyle;
+  final String     label;
+  final String     value;
+  final TextStyle? valueStyle;
   const _Row({required this.label, required this.value, this.valueStyle});
 
   @override
@@ -323,7 +334,9 @@ class _Row extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: const TextStyle(color: AppColors.textSecondary)),
-        Text(value, style: valueStyle ?? const TextStyle(fontWeight: FontWeight.w600)),
+        Text(value,
+            style: valueStyle ??
+                const TextStyle(fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -348,8 +361,8 @@ class _PayBadge extends StatelessWidget {
 }
 
 class _ErrorBody extends StatelessWidget {
-  final String        message;
-  final VoidCallback  onRetry;
+  final String       message;
+  final VoidCallback onRetry;
   const _ErrorBody({required this.message, required this.onRetry});
 
   @override
@@ -362,11 +375,14 @@ class _ErrorBody extends StatelessWidget {
           children: [
             const Icon(Icons.error_outline, size: 64, color: AppColors.error),
             const SizedBox(height: 16),
-            Text(message, textAlign: TextAlign.center,
+            Text(message,
+                textAlign: TextAlign.center,
                 style: const TextStyle(color: AppColors.textSecondary)),
             const SizedBox(height: 24),
             ElevatedButton(
-                onPressed: onRetry, child: const Text('Opnieuw proberen')),
+              onPressed: onRetry,
+              child: Text(AppStrings.tryAgain(context)),
+            ),
           ],
         ),
       ),
@@ -379,13 +395,17 @@ class _ErrorBody extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class _MollieWebView extends StatefulWidget {
-  final String    url;
-  final String    orderId;
-  final VoidCallback   onSuccess;
+  final String             url;
+  final String             orderId;
+  final String             cancelledMsg;
+  final String             failedMsg;
+  final VoidCallback       onSuccess;
   final void Function(String) onFailure;
   const _MollieWebView({
     required this.url,
     required this.orderId,
+    required this.cancelledMsg,
+    required this.failedMsg,
     required this.onSuccess,
     required this.onFailure,
   });
@@ -413,11 +433,11 @@ class _MollieWebViewState extends State<_MollieWebView> {
             return NavigationDecision.prevent;
           }
           if (url.contains('payment/cancel') || url.contains('status=cancel')) {
-            widget.onFailure('Betaling geannuleerd.');
+            widget.onFailure(widget.cancelledMsg);
             return NavigationDecision.prevent;
           }
           if (url.contains('payment/fail') || url.contains('status=failed')) {
-            widget.onFailure('Betaling mislukt. Probeer het opnieuw.');
+            widget.onFailure(widget.failedMsg);
             return NavigationDecision.prevent;
           }
           return NavigationDecision.navigate;
@@ -430,27 +450,32 @@ class _MollieWebViewState extends State<_MollieWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Veilig betalen'),
+        title: Text(AppStrings.securePayingWebview(context)),
         leading: IconButton(
           icon:      const Icon(Icons.close),
           onPressed: () {
+            // All strings resolved synchronously here — no async gap.
+            final title     = AppStrings.cancelPaymentTitle(context);
+            final msg       = AppStrings.cancelPaymentMsg(context);
+            final backLabel = AppStrings.backBtn(context);
+            final cancelLbl = AppStrings.cancel(context);
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
-                title:   const Text('Betaling annuleren?'),
-                content: const Text('Wil je de betaling annuleren?'),
+                title:   Text(title),
+                content: Text(msg),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Terug'),
+                    child: Text(backLabel),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      widget.onFailure('Betaling geannuleerd.');
+                      widget.onFailure(widget.cancelledMsg);
                     },
-                    child: const Text('Annuleren',
-                        style: TextStyle(color: AppColors.error)),
+                    child: Text(cancelLbl,
+                        style: const TextStyle(color: AppColors.error)),
                   ),
                 ],
               ),
