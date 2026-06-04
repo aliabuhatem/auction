@@ -50,7 +50,11 @@
       "Bash(grep -rn \"your-backend\\\\|placeholder\\\\|PLACEHOLDER\\\\|wss://\\\\|https://your\" lib/ --include=\"*.dart\")",
       "Bash(grep -rn \"wss://\\\\|'https://your-backend\\\\|api_client.*baseUrl\\\\|websocket.*url\" lib/ --include=\"*.dart\")",
       "Bash(grep -v \"//\")",
-      "Bash(grep -v \"admin\\\\|//\\\\|AppStrings\\\\|test\")"
+      "Bash(grep -v \"admin\\\\|//\\\\|AppStrings\\\\|test\")",
+      "Bash(git reset *)",
+      "Bash(flutter pub *)",
+      "Bash(grep -rn \"isSelected ? Colors.white\\\\|isSelected\\\\s*$\\\\|? Colors.white$\\\\|selected ? Colors.white\" lib/core/widgets/category_chip.dart lib/features/auctions/presentation/pages/auction_detail_page.dart)",
+      "Bash(grep -v \"//\\\\|app_colors\")"
     ]
   }
 }
