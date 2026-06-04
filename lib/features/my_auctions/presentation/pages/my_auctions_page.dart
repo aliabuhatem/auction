@@ -218,10 +218,10 @@ class _PendingPaymentTab extends StatelessWidget {
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16),
-          color: const Color(0xFFFFF3CD),
+          color: AppColors.warningLight,
           child: Row(
             children: [
-              const Icon(Icons.warning_amber, color: Color(0xFFFF9800)),
+              const Icon(Icons.warning_amber, color: AppColors.warning),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

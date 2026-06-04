@@ -98,7 +98,7 @@ class _CategoryChip extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
-                color: isSelected ? Colors.white : Colors.black87,
+                color: isSelected ? Colors.white : AppColors.textPrimary,
               ),
             ),
           ],

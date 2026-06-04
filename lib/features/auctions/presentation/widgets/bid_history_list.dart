@@ -13,7 +13,7 @@ class BidHistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? Colors.white : Colors.black87;
+    final textColor = isDark ? Colors.white : AppColors.textPrimary;
     final subColor  = isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
 
     return StreamBuilder<QuerySnapshot>(
@@ -67,7 +67,7 @@ class BidHistoryList extends StatelessWidget {
                   style: TextStyle(
                     color: isTop
                         ? Colors.white
-                        : (isDark ? Colors.white70 : Colors.black87),
+                        : (isDark ? Colors.white70 : AppColors.textPrimary),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

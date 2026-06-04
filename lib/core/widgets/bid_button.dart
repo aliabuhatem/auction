@@ -82,7 +82,7 @@ class _BidButtonState extends State<BidButton>
           decoration: BoxDecoration(
             gradient: _isEnabled
                 ? const LinearGradient(
-                    colors: [Color(0xFFE63946), Color(0xFFc1121f)],
+                    colors: [AppColors.primaryRed, AppColors.primaryDark],
                     begin:  Alignment.topLeft,
                     end:    Alignment.bottomRight,
                   )

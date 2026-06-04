@@ -143,7 +143,7 @@ class _VoucherDetail extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.black26,
+                              color: AppColors.deepShadow,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(AppStrings.expiredStatus(context),

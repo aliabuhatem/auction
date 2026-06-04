@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../../app/app_router.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 
 class OnboardingPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   static const _slideCount = 3;
 
   static const _slideGradients = [
-    [Color(0xFFE63946), Color(0xFFc1121f)],
+    [AppColors.primaryRed, AppColors.primaryDark],
     [Color(0xFF0F3460), Color(0xFF16213E)],
     [Color(0xFF2ECC71), Color(0xFF27AE60)],
   ];

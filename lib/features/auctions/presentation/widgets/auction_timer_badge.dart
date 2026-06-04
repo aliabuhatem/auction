@@ -14,7 +14,7 @@ class AuctionTimerBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: large ? 12 : 8, vertical: large ? 8 : 4),
       decoration: BoxDecoration(
-        color: isUrgent ? AppColors.primaryRed : Colors.black87,
+        color: isUrgent ? AppColors.primaryRed : AppColors.textPrimary,
         borderRadius: BorderRadius.circular(large ? 12 : 8),
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2))],
       ),

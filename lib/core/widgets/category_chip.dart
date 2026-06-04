@@ -129,14 +129,14 @@ class StatusChip extends StatelessWidget {
 
   factory StatusChip.live() => const StatusChip(
         label:           'LIVE',
-        backgroundColor: Color(0xFFFFEBEE),
+        backgroundColor: AppColors.errorLight,
         textColor:       AppColors.primaryRed,
         icon:            Icons.circle,
       );
 
   factory StatusChip.ending() => const StatusChip(
         label:           'Eindigt bijna',
-        backgroundColor: Color(0xFFFFF3E0),
+        backgroundColor: AppColors.warningLight,
         textColor:       AppColors.warning,
         icon:            Icons.timer,
       );
@@ -150,7 +150,7 @@ class StatusChip extends StatelessWidget {
 
   factory StatusChip.pending() => const StatusChip(
         label:           'Betalen',
-        backgroundColor: Color(0xFFFFF3E0),
+        backgroundColor: AppColors.warningLight,
         textColor:       AppColors.warning,
         icon:            Icons.payment,
       );
