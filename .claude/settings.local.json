@@ -27,7 +27,9 @@
       "WebFetch(domain:www.vakantieveilingen.be)",
       "WebFetch(domain:vakantieveilingen.en.aptoide.com)",
       "WebFetch(domain:www.bokt.nl)",
-      "WebFetch(domain:www.ouders.nl)"
+      "WebFetch(domain:www.ouders.nl)",
+      "Bash(grep -v \"admin\\\\|shade\\\\|withValues\\\\|withOpacity\\\\|//\")",
+      "Bash(grep -v \"admin\\\\|test\\\\|//\\\\|class\\\\|import\\\\|part\\\\|DateTime\\\\|Exception\\\\|Error\\\\|padLeft\\\\|Uri\\\\|type\\\\b\\\\|code\\\\b\\\\|id\\\\b\\\\|uid\\\\b\\\\|token\\\\|message\\\\|e\\\\.\\\\|f\\\\.\\\\|snap\\\\.\\\\|doc\\\\.\\\\|data\\\\.\\\\|state\\\\.\\\\|_\\\\.\\\\|\\\\.dart:#[0-9]\")"
     ]
   }
 }
