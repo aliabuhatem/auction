@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 
@@ -63,7 +64,8 @@ class _WalletPageState extends State<WalletPage> {
 
               final filters = _filters(context);
               return RefreshIndicator(
-                onRefresh: () async {},
+                onRefresh: () async =>
+                    Future.delayed(const Duration(milliseconds: 600)),
                 child: CustomScrollView(
                   slivers: [
                     // Balance header
@@ -244,7 +246,8 @@ class _TxTile extends StatelessWidget {
     final amount  = (data['amount'] as num?)?.toDouble() ?? 0.0;
     final desc    = data['description'] as String? ?? '';
     final ts      = data['createdAt'] as Timestamp?;
-    final date    = ts != null ? _formatDate(ts.toDate()) : '';
+    final locale  = Localizations.localeOf(context).toString();
+    final date    = ts != null ? _formatDate(ts.toDate(), locale) : '';
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -272,9 +275,6 @@ class _TxTile extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime dt) {
-    final months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
-                    'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
-    return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
-  }
+  String _formatDate(DateTime dt, String locale) =>
+      DateFormat.yMMMd(locale).format(dt);
 }

@@ -268,6 +268,15 @@ class AppStrings {
   static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
+  // ── Bid History ───────────────────────────────────────────────────────────
+  static String bidLoadError(BuildContext context) => get(context, 'bidLoadError');
+  static String noBids(BuildContext context) => get(context, 'noBids');
+
+  // ── Win screen ────────────────────────────────────────────────────────────
+  static String youWon(BuildContext context) => get(context, 'youWon');
+  static String winningBid(BuildContext context, String amount) =>
+      get(context, 'winningBid').replaceAll('{amount}', amount);
+
   // ── Shared ────────────────────────────────────────────────────────────────
   static String noActive(BuildContext context) => get(context, 'noActive');
   static String noWon(BuildContext context) => get(context, 'noWon');
@@ -526,6 +535,12 @@ class AppStrings {
     'deleteForever': 'Definitief verwijderen',
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
+
+    // Bid history / win
+    'bidLoadError': 'Fout bij laden biedingen',
+    'noBids': 'Nog geen biedingen',
+    'youWon': 'Gefeliciteerd! Je hebt gewonnen!',
+    'winningBid': 'Winnend bod: {amount}',
 
     // Shared
     'noActive': 'Geen actieve biedingen',
@@ -787,6 +802,12 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
+    // Bid history / win
+    'bidLoadError': 'Error loading bids',
+    'noBids': 'No bids yet',
+    'youWon': 'Congratulations! You won!',
+    'winningBid': 'Winning bid: {amount}',
+
     // Shared
     'noActive': 'No active bids',
     'noWon': 'Nothing won yet',
@@ -1046,6 +1067,12 @@ class AppStrings {
     'deleteForever': 'حذف نهائي',
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
+
+    // Bid history / win
+    'bidLoadError': 'خطأ في تحميل المزايدات',
+    'noBids': 'لا توجد مزايدات بعد',
+    'youWon': 'تهانينا! لقد فزت!',
+    'winningBid': 'المزايدة الفائزة: {amount}',
 
     // Shared
     'noActive': 'لا توجد مزايدات نشطة',

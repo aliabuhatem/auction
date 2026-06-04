@@ -10,8 +10,15 @@ import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../data/tickets_remote_datasource.dart';
 import '../../domain/voucher_entity.dart';
 
-class TicketsPage extends StatelessWidget {
+class TicketsPage extends StatefulWidget {
   const TicketsPage({super.key});
+
+  @override
+  State<TicketsPage> createState() => _TicketsPageState();
+}
+
+class _TicketsPageState extends State<TicketsPage> {
+  var _refreshKey = UniqueKey();
 
   @override
   Widget build(BuildContext context) {
@@ -29,47 +36,79 @@ class TicketsPage extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: FutureBuilder<List<VoucherEntity>>(
+        key: _refreshKey,
         future: TicketsRemoteDatasourceImpl().getMyTickets(userId),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (snap.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.grey),
-                  const SizedBox(height: 12),
-                  Text('Fout: ${snap.error}', style: const TextStyle(color: Colors.grey)),
-                ],
-              ),
+            return RefreshIndicator(
+              color: AppColors.primaryRed,
+              onRefresh: () async =>
+                  setState(() => _refreshKey = UniqueKey()),
+              child: ListView(children: [
+                SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.error_outline,
+                            size: 48, color: Colors.grey),
+                        const SizedBox(height: 12),
+                        Text(AppStrings.errorPrefix(context),
+                            style: const TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
             );
           }
           final vouchers = snap.data ?? [];
           if (vouchers.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.local_activity_outlined, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(AppStrings.noTickets(context),
-                      style: const TextStyle(color: Colors.grey, fontSize: 16)),
-                  const SizedBox(height: 8),
-                  Text(AppStrings.winVoucherHint(context),
-                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                ],
-              ),
+            return RefreshIndicator(
+              color: AppColors.primaryRed,
+              onRefresh: () async =>
+                  setState(() => _refreshKey = UniqueKey()),
+              child: ListView(children: [
+                SizedBox(
+                  height: 400,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.local_activity_outlined,
+                            size: 64, color: Colors.grey),
+                        const SizedBox(height: 16),
+                        Text(AppStrings.noTickets(context),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 16)),
+                        const SizedBox(height: 8),
+                        Text(AppStrings.winVoucherHint(context),
+                            style: const TextStyle(
+                                color: Colors.grey, fontSize: 13)),
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
             );
           }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: vouchers.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
-            itemBuilder: (context, i) => _VoucherCard(
-              voucher: vouchers[i],
-              onTap: () => context.push(AppRoutes.voucherDetailPath(vouchers[i].id)),
+          return RefreshIndicator(
+            color: AppColors.primaryRed,
+            onRefresh: () async =>
+                setState(() => _refreshKey = UniqueKey()),
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: vouchers.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              itemBuilder: (context, i) => _VoucherCard(
+                voucher: vouchers[i],
+                onTap: () =>
+                    context.push(AppRoutes.voucherDetailPath(vouchers[i].id)),
+              ),
             ),
           );
         },

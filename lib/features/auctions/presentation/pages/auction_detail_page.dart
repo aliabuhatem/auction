@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../app/app_routes.dart';
 import '../bloc/bidding_bloc.dart';
 import '../../domain/entities/auction_entity.dart';
 import '../widgets/bid_history_list.dart';
@@ -93,6 +97,10 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
             body: Center(child: Text(state.message,
                 style: const TextStyle(color: AppColors.textSecondary))),
           );
+        }
+
+        if (state is BiddingWon) {
+          return _WinScreen(auction: state.auction);
         }
 
         final auction = switch (state) {
@@ -1278,6 +1286,156 @@ class _TabSection extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Win Screen ────────────────────────────────────────────────────────────────
+
+class _WinScreen extends StatefulWidget {
+  final AuctionEntity auction;
+  const _WinScreen({required this.auction});
+
+  @override
+  State<_WinScreen> createState() => _WinScreenState();
+}
+
+class _WinScreenState extends State<_WinScreen> {
+  bool _findingOrder = false;
+
+  Future<void> _payNow() async {
+    setState(() => _findingOrder = true);
+    try {
+      final userUid = FirebaseAuth.instance.currentUser?.uid;
+      if (userUid == null) {
+        if (mounted) context.push(AppRoutes.myAuctions);
+        return;
+      }
+      final snap = await FirebaseFirestore.instance
+          .collection('orders')
+          .where('auctionId', isEqualTo: widget.auction.id)
+          .where('userId', isEqualTo: userUid)
+          .where('status', isEqualTo: 'pending')
+          .limit(1)
+          .get();
+      if (!mounted) return;
+      if (snap.docs.isNotEmpty) {
+        context.push(AppRoutes.paymentPath(snap.docs.first.id));
+      } else {
+        context.push(AppRoutes.myAuctions);
+      }
+    } catch (_) {
+      if (mounted) context.push(AppRoutes.myAuctions);
+    } finally {
+      if (mounted) setState(() => _findingOrder = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final auction = widget.auction;
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF2ECC71), Color(0xFF27AE60)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Trophy
+                  Container(
+                    width: 110,
+                    height: 110,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.25),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      size: 64,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    AppStrings.youWon(context),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w900,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    auction.title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppStrings.winningBid(
+                        context, CurrencyFormatter.format(auction.currentBid)),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 54,
+                    child: ElevatedButton(
+                      onPressed: _findingOrder ? null : _payNow,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: AppColors.success,
+                        disabledBackgroundColor: Colors.white60,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
+                        textStyle: const TextStyle(
+                            fontWeight: FontWeight.w800, fontSize: 16),
+                      ),
+                      child: _findingOrder
+                          ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: AppColors.success),
+                            )
+                          : Text(AppStrings.payNow(context)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => context.go(AppRoutes.home),
+                    child: Text(
+                      AppStrings.backToHome(context),
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
