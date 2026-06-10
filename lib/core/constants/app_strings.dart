@@ -17,50 +17,68 @@ class AppStrings {
   // ── Auth ──────────────────────────────────────────────────────────────────
   static String login(BuildContext context) => get(context, 'login');
   static String register(BuildContext context) => get(context, 'register');
-  static String welcomeBack(BuildContext context) => get(context, 'welcomeBack');
-  static String loginSubtitle(BuildContext context) => get(context, 'loginSubtitle');
-  static String registerSubtitle(BuildContext context) => get(context, 'registerSubtitle');
+  static String welcomeBack(BuildContext context) =>
+      get(context, 'welcomeBack');
+  static String loginSubtitle(BuildContext context) =>
+      get(context, 'loginSubtitle');
+  static String registerSubtitle(BuildContext context) =>
+      get(context, 'registerSubtitle');
   static String email(BuildContext context) => get(context, 'email');
-  static String emailInvalid(BuildContext context) => get(context, 'emailInvalid');
+  static String emailInvalid(BuildContext context) =>
+      get(context, 'emailInvalid');
   static String password(BuildContext context) => get(context, 'password');
-  static String passwordTooShort(BuildContext context) => get(context, 'passwordTooShort');
-  static String forgotPassword(BuildContext context) => get(context, 'forgotPassword');
-  static String continueWith(BuildContext context) => get(context, 'continueWith');
+  static String passwordTooShort(BuildContext context) =>
+      get(context, 'passwordTooShort');
+  static String forgotPassword(BuildContext context) =>
+      get(context, 'forgotPassword');
+  static String continueWith(BuildContext context) =>
+      get(context, 'continueWith');
   static String google(BuildContext context) => get(context, 'google');
   static String noAccount(BuildContext context) => get(context, 'noAccount');
   static String hasAccount(BuildContext context) => get(context, 'hasAccount');
-  static String createAccount(BuildContext context) => get(context, 'createAccount');
-  static String fieldRequired(BuildContext context) => get(context, 'fieldRequired');
+  static String createAccount(BuildContext context) =>
+      get(context, 'createAccount');
+  static String fieldRequired(BuildContext context) =>
+      get(context, 'fieldRequired');
   static String name(BuildContext context) => get(context, 'name');
-  static String confirmPassword(BuildContext context) => get(context, 'confirmPassword');
-  static String passwordsNoMatch(BuildContext context) => get(context, 'passwordsNoMatch');
+  static String confirmPassword(BuildContext context) =>
+      get(context, 'confirmPassword');
+  static String passwordsNoMatch(BuildContext context) =>
+      get(context, 'passwordsNoMatch');
   static String logout(BuildContext context) => get(context, 'logout');
-  static String forgotPasswordTitle(BuildContext context) => get(context, 'forgotPasswordTitle');
+  static String forgotPasswordTitle(BuildContext context) =>
+      get(context, 'forgotPasswordTitle');
   static String sendBtn(BuildContext context) => get(context, 'sendBtn');
-  static String resetLinkSentMsg(BuildContext context) => get(context, 'resetLinkSentMsg');
+  static String resetLinkSentMsg(BuildContext context) =>
+      get(context, 'resetLinkSentMsg');
   static String sendError(BuildContext context) => get(context, 'sendError');
 
   // ── Onboarding ────────────────────────────────────────────────────────────
-  static String onboard1Title(BuildContext context) => get(context, 'onboard1Title');
-  static String onboard1Body(BuildContext context) => get(context, 'onboard1Body');
-  static String onboard2Title(BuildContext context) => get(context, 'onboard2Title');
-  static String onboard2Body(BuildContext context) => get(context, 'onboard2Body');
-  static String onboard3Title(BuildContext context) => get(context, 'onboard3Title');
-  static String onboard3Body(BuildContext context) => get(context, 'onboard3Body');
+  static String onboard1Title(BuildContext context) =>
+      get(context, 'onboard1Title');
+  static String onboard1Body(BuildContext context) =>
+      get(context, 'onboard1Body');
+  static String onboard2Title(BuildContext context) =>
+      get(context, 'onboard2Title');
+  static String onboard2Body(BuildContext context) =>
+      get(context, 'onboard2Body');
+  static String onboard3Title(BuildContext context) =>
+      get(context, 'onboard3Title');
+  static String onboard3Body(BuildContext context) =>
+      get(context, 'onboard3Body');
   static String skip(BuildContext context) => get(context, 'skip');
   static String getStarted(BuildContext context) => get(context, 'getStarted');
   static String next(BuildContext context) => get(context, 'next');
 
   // ── Navigation & Shell ────────────────────────────────────────────────────
   static String navHome(BuildContext context) => get(context, 'navHome');
-  static String navAuctions(BuildContext context) => get(context, 'navAuctions');
-  static String navScratchCard(BuildContext context) => get(context, 'navScratchCard');
-  static String navVouchers(BuildContext context) => get(context, 'navVouchers');
+  static String navAuctions(BuildContext context) =>
+      get(context, 'navAuctions');
+  static String navScratchCard(BuildContext context) =>
+      get(context, 'navScratchCard');
+  static String navVouchers(BuildContext context) =>
+      get(context, 'navVouchers');
   static String navProfile(BuildContext context) => get(context, 'navProfile');
-  static String navCategories(BuildContext context) => get(context, 'navCategories');
-  static String navSearch(BuildContext context) => get(context, 'navSearch');
-  static String navRecent(BuildContext context) => get(context, 'navRecent');
-  static String navMenu(BuildContext context) => get(context, 'navMenu');
 
   // ── My Auctions ───────────────────────────────────────────────────────────
   static String myAuctions(BuildContext context) => get(context, 'myAuctions');
@@ -69,54 +87,59 @@ class AppStrings {
   static String payNow(BuildContext context) => get(context, 'payNow');
   static String saved(BuildContext context) => get(context, 'saved');
   static String retryBtn(BuildContext context) => get(context, 'retryBtn');
-  static String orderNotFoundMsg(BuildContext context) => get(context, 'orderNotFoundMsg');
+  static String orderNotFoundMsg(BuildContext context) =>
+      get(context, 'orderNotFoundMsg');
 
   // ── Home & Categories ─────────────────────────────────────────────────────
   static String all(BuildContext context) => get(context, 'all');
-  static String sortEndingTime(BuildContext context) => get(context, 'sortEndingTime');
-  static String sortPopular(BuildContext context) => get(context, 'sortPopular');
-  static String viewGallery(BuildContext context) => get(context, 'viewGallery');
-  static String viewList(BuildContext context) => get(context, 'viewList');
-  static String bids(BuildContext context) => get(context, 'bids');
-  static String newsletterTitle(BuildContext context) => get(context, 'newsletterTitle');
-  static String newsletterSubtitle(BuildContext context) => get(context, 'newsletterSubtitle');
-  static String newsletterCta(BuildContext context) => get(context, 'newsletterCta');
-  static String newsletterSuccess(BuildContext context) => get(context, 'newsletterSuccess');
-  static String emailHintNewsletter(BuildContext context) => get(context, 'emailHintNewsletter');
-  static String auctionsCount(BuildContext context, int n) =>
-      '${get(context, 'allAuctions')} ($n)';
-  static String allAuctions(BuildContext context) => get(context, 'allAuctions');
+  static String allAuctions(BuildContext context) =>
+      get(context, 'allAuctions');
   static String endingSoon(BuildContext context) => get(context, 'endingSoon');
-  static String sectionEndingSoon(BuildContext context) => get(context, 'sectionEndingSoon');
-  static String catVacation(BuildContext context) => get(context, 'catVacation');
+  static String sectionEndingSoon(BuildContext context) =>
+      get(context, 'sectionEndingSoon');
+  static String catVacation(BuildContext context) =>
+      get(context, 'catVacation');
   static String catBeauty(BuildContext context) => get(context, 'catBeauty');
   static String catSauna(BuildContext context) => get(context, 'catSauna');
   static String catFood(BuildContext context) => get(context, 'catFood');
-  static String catExperiences(BuildContext context) => get(context, 'catExperiences');
-  static String catProducts(BuildContext context) => get(context, 'catProducts');
+  static String catExperiences(BuildContext context) =>
+      get(context, 'catExperiences');
+  static String catProducts(BuildContext context) =>
+      get(context, 'catProducts');
   static String catSports(BuildContext context) => get(context, 'catSports');
-  static String catWellness(BuildContext context) => get(context, 'catWellness');
-  static String catDayTrips(BuildContext context) => get(context, 'catDayTrips');
-  static String connectionError(BuildContext context) => get(context, 'connectionError');
+  static String catWellness(BuildContext context) =>
+      get(context, 'catWellness');
+  static String catDayTrips(BuildContext context) =>
+      get(context, 'catDayTrips');
+  static String connectionError(BuildContext context) =>
+      get(context, 'connectionError');
 
   // ── Auction Detail ────────────────────────────────────────────────────────
   static String bidPlaced(BuildContext context) => get(context, 'bidPlaced');
   static String outbid(BuildContext context) => get(context, 'outbid');
   static String currentBid(BuildContext context) => get(context, 'currentBid');
   static String endsIn(BuildContext context) => get(context, 'endsIn');
-  static String retailValue(BuildContext context) => get(context, 'retailValue');
+  static String retailValue(BuildContext context) =>
+      get(context, 'retailValue');
   static String yourSaving(BuildContext context) => get(context, 'yourSaving');
-  static String tabDescription(BuildContext context) => get(context, 'tabDescription');
+  static String tabDescription(BuildContext context) =>
+      get(context, 'tabDescription');
   static String tabBids(BuildContext context) => get(context, 'tabBids');
-  static String bidBackLabel(BuildContext context) => get(context, 'bidBackLabel');
+  static String bidBackLabel(BuildContext context) =>
+      get(context, 'bidBackLabel');
   static String watcherCount(BuildContext context, int n) =>
       get(context, 'watcherCount').replaceAll('{n}', '$n');
   static String quickBid(BuildContext context) => get(context, 'quickBid');
-  static String customAmount(BuildContext context) => get(context, 'customAmount');
-  static String invalidMaxBid(BuildContext context) => get(context, 'invalidMaxBid');
-  static String autoBidActiveLeading(BuildContext context) => get(context, 'autoBidActiveLeading');
-  static String youAreWinning(BuildContext context) => get(context, 'youAreWinning');
-  static String youWereOutbid(BuildContext context) => get(context, 'youWereOutbid');
+  static String customAmount(BuildContext context) =>
+      get(context, 'customAmount');
+  static String invalidMaxBid(BuildContext context) =>
+      get(context, 'invalidMaxBid');
+  static String autoBidActiveLeading(BuildContext context) =>
+      get(context, 'autoBidActiveLeading');
+  static String youAreWinning(BuildContext context) =>
+      get(context, 'youAreWinning');
+  static String youWereOutbid(BuildContext context) =>
+      get(context, 'youWereOutbid');
   static String auctionExtended(BuildContext context, int seconds) =>
       get(context, 'auctionExtended').replaceAll('{s}', '$seconds');
   static String bidCountMin(BuildContext context, int count, String min) =>
@@ -129,11 +152,14 @@ class AppStrings {
   static String autoBidSub(BuildContext context) => get(context, 'autoBidSub');
   static String buyNow(BuildContext context, String price) =>
       get(context, 'buyNow').replaceAll('{price}', price);
-  static String minBidLabel(BuildContext context) => get(context, 'minBidLabel');
-  static String autoBidExplain(BuildContext context) => get(context, 'autoBidExplain');
+  static String minBidLabel(BuildContext context) =>
+      get(context, 'minBidLabel');
+  static String autoBidExplain(BuildContext context) =>
+      get(context, 'autoBidExplain');
   static String myMaximum(BuildContext context) => get(context, 'myMaximum');
   static String setBtn(BuildContext context) => get(context, 'setBtn');
-  static String removeAutoBid(BuildContext context) => get(context, 'removeAutoBid');
+  static String removeAutoBid(BuildContext context) =>
+      get(context, 'removeAutoBid');
   static String cdDay(BuildContext context) => get(context, 'cdDay');
   static String cdHour(BuildContext context) => get(context, 'cdHour');
   static String cdMin(BuildContext context) => get(context, 'cdMin');
@@ -141,81 +167,119 @@ class AppStrings {
   static String noAuctions(BuildContext context) => get(context, 'noAuctions');
 
   // ── Scratch Card ──────────────────────────────────────────────────────────
-  static String scratchCard(BuildContext context) => get(context, 'scratchCard');
-  static String scratchToReveal(BuildContext context) => get(context, 'scratchToReveal');
-  static String shareForExtra(BuildContext context) => get(context, 'shareForExtra');
-  static String congratulations(BuildContext context) => get(context, 'congratulations');
-  static String comeBackTomorrow(BuildContext context) => get(context, 'comeBackTomorrow');
-  static String streakTitle(BuildContext context) => get(context, 'streakTitle');
+  static String scratchCard(BuildContext context) =>
+      get(context, 'scratchCard');
+  static String scratchToReveal(BuildContext context) =>
+      get(context, 'scratchToReveal');
+  static String shareForExtra(BuildContext context) =>
+      get(context, 'shareForExtra');
+  static String congratulations(BuildContext context) =>
+      get(context, 'congratulations');
+  static String comeBackTomorrow(BuildContext context) =>
+      get(context, 'comeBackTomorrow');
+  static String streakTitle(BuildContext context) =>
+      get(context, 'streakTitle');
   static String claimPrize(BuildContext context) => get(context, 'claimPrize');
-  static String scratchPrizeAdded(BuildContext context) => get(context, 'scratchPrizeAdded');
-  static String creditReceived(BuildContext context) => get(context, 'creditReceived');
-  static String shareAppMsg(BuildContext context) => get(context, 'shareAppMsg');
+  static String scratchPrizeAdded(BuildContext context) =>
+      get(context, 'scratchPrizeAdded');
+  static String creditReceived(BuildContext context) =>
+      get(context, 'creditReceived');
+  static String shareAppMsg(BuildContext context) =>
+      get(context, 'shareAppMsg');
   static String scratchPrizeWon(BuildContext context, String prize) =>
       get(context, 'scratchPrizeWon').replaceAll('{prize}', prize);
 
   // ── Search ────────────────────────────────────────────────────────────────
   static String searchHint(BuildContext context) => get(context, 'searchHint');
-  static String searchPrompt(BuildContext context) => get(context, 'searchPrompt');
+  static String searchPrompt(BuildContext context) =>
+      get(context, 'searchPrompt');
   static String noResults(BuildContext context) => get(context, 'noResults');
-  static String recentSearches(BuildContext context) => get(context, 'recentSearches');
-  static String recentAuctions(BuildContext context) => get(context, 'recentAuctions');
-  static String recentEmpty(BuildContext context) => get(context, 'recentEmpty');
-  static String clearHistory(BuildContext context) => get(context, 'clearHistory');
+  static String recentSearches(BuildContext context) =>
+      get(context, 'recentSearches');
+  static String recentAuctions(BuildContext context) =>
+      get(context, 'recentAuctions');
+  static String recentEmpty(BuildContext context) =>
+      get(context, 'recentEmpty');
+  static String clearHistory(BuildContext context) =>
+      get(context, 'clearHistory');
 
   // ── Notifications ─────────────────────────────────────────────────────────
-  static String loginForNotifications(BuildContext context) => get(context, 'loginForNotifications');
-  static String markAllRead(BuildContext context) => get(context, 'markAllRead');
-  static String noNotifications(BuildContext context) => get(context, 'noNotifications');
-  static String errorPrefix(BuildContext context) => get(context, 'errorPrefix');
+  static String loginForNotifications(BuildContext context) =>
+      get(context, 'loginForNotifications');
+  static String markAllRead(BuildContext context) =>
+      get(context, 'markAllRead');
+  static String noNotifications(BuildContext context) =>
+      get(context, 'noNotifications');
+  static String errorPrefix(BuildContext context) =>
+      get(context, 'errorPrefix');
   static String minAgo(BuildContext context, int n) =>
       get(context, 'minAgo').replaceAll('{n}', '$n');
   static String hourAgo(BuildContext context, int n) =>
       get(context, 'hourAgo').replaceAll('{n}', '$n');
-  static String daysAgo(BuildContext context, int n) =>
-      get(context, 'daysAgo')
-          .replaceAll('{n}', '$n')
-          // Dutch plural suffix: "1 dag" vs "3 dagen". Other locales don't use {s}.
-          .replaceAll('{s}', n == 1 ? '' : 'en');
+  static String daysAgo(BuildContext context, int n) => get(context, 'daysAgo')
+      .replaceAll('{n}', '$n')
+      // Dutch plural suffix: "1 dag" vs "3 dagen". Other locales don't use {s}.
+      .replaceAll('{s}', n == 1 ? '' : 'en');
 
   // ── Tickets / Vouchers ────────────────────────────────────────────────────
-  static String loginForVouchers(BuildContext context) => get(context, 'loginForVouchers');
+  static String loginForVouchers(BuildContext context) =>
+      get(context, 'loginForVouchers');
   static String myVouchers(BuildContext context) => get(context, 'myVouchers');
-  static String winVoucherHint(BuildContext context) => get(context, 'winVoucherHint');
+  static String winVoucherHint(BuildContext context) =>
+      get(context, 'winVoucherHint');
   static String validUntil(BuildContext context) => get(context, 'validUntil');
   static String usedStatus(BuildContext context) => get(context, 'usedStatus');
-  static String expiredStatus(BuildContext context) => get(context, 'expiredStatus');
-  static String showQrAtCheckin(BuildContext context) => get(context, 'showQrAtCheckin');
-  static String showQrAtBusiness(BuildContext context) => get(context, 'showQrAtBusiness');
-  static String voucherNotFound(BuildContext context) => get(context, 'voucherNotFound');
+  static String expiredStatus(BuildContext context) =>
+      get(context, 'expiredStatus');
+  static String showQrAtCheckin(BuildContext context) =>
+      get(context, 'showQrAtCheckin');
+  static String showQrAtBusiness(BuildContext context) =>
+      get(context, 'showQrAtBusiness');
+  static String voucherNotFound(BuildContext context) =>
+      get(context, 'voucherNotFound');
   static String noTickets(BuildContext context) => get(context, 'noTickets');
   static String myVoucher(BuildContext context) => get(context, 'myVoucher');
-  static String voucherCode(BuildContext context) => get(context, 'voucherCode');
+  static String voucherCode(BuildContext context) =>
+      get(context, 'voucherCode');
   static String showQr(BuildContext context) => get(context, 'showQr');
 
   // ── Payment ───────────────────────────────────────────────────────────────
-  static String paymentSuccess(BuildContext context) => get(context, 'paymentSuccess');
-  static String yourVoucher(BuildContext context) => get(context, 'yourVoucher');
-  static String voucherCreating(BuildContext context) => get(context, 'voucherCreating');
-  static String viewVoucher(BuildContext context) => get(context, 'viewVoucher');
+  static String paymentSuccess(BuildContext context) =>
+      get(context, 'paymentSuccess');
+  static String yourVoucher(BuildContext context) =>
+      get(context, 'yourVoucher');
+  static String voucherCreating(BuildContext context) =>
+      get(context, 'voucherCreating');
+  static String viewVoucher(BuildContext context) =>
+      get(context, 'viewVoucher');
 
   // ── Wallet ────────────────────────────────────────────────────────────────
-  static String loginForWallet(BuildContext context) => get(context, 'loginForWallet');
+  static String loginForWallet(BuildContext context) =>
+      get(context, 'loginForWallet');
   static String wallet(BuildContext context) => get(context, 'wallet');
-  static String walletLoadError(BuildContext context) => get(context, 'walletLoadError');
-  static String txLoadError(BuildContext context) => get(context, 'txLoadError');
-  static String filterReceived(BuildContext context) => get(context, 'filterReceived');
+  static String walletLoadError(BuildContext context) =>
+      get(context, 'walletLoadError');
+  static String txLoadError(BuildContext context) =>
+      get(context, 'txLoadError');
+  static String filterReceived(BuildContext context) =>
+      get(context, 'filterReceived');
   static String filterUsed(BuildContext context) => get(context, 'filterUsed');
   static String txHistory(BuildContext context) => get(context, 'txHistory');
-  static String noTransactions(BuildContext context) => get(context, 'noTransactions');
-  static String biddingCredit(BuildContext context) => get(context, 'biddingCredit');
+  static String noTransactions(BuildContext context) =>
+      get(context, 'noTransactions');
+  static String biddingCredit(BuildContext context) =>
+      get(context, 'biddingCredit');
   static String creditInfo(BuildContext context) => get(context, 'creditInfo');
 
   // ── Referral ──────────────────────────────────────────────────────────────
-  static String inviteFriendsTitle(BuildContext context) => get(context, 'inviteFriendsTitle');
-  static String inviteTitle(BuildContext context) => get(context, 'inviteTitle');
-  static String inviteSubtitle(BuildContext context) => get(context, 'inviteSubtitle');
-  static String yourInviteCode(BuildContext context) => get(context, 'yourInviteCode');
+  static String inviteFriendsTitle(BuildContext context) =>
+      get(context, 'inviteFriendsTitle');
+  static String inviteTitle(BuildContext context) =>
+      get(context, 'inviteTitle');
+  static String inviteSubtitle(BuildContext context) =>
+      get(context, 'inviteSubtitle');
+  static String yourInviteCode(BuildContext context) =>
+      get(context, 'yourInviteCode');
   static String copy(BuildContext context) => get(context, 'copy');
   static String share(BuildContext context) => get(context, 'share');
   static String invited(BuildContext context) => get(context, 'invited');
@@ -230,91 +294,133 @@ class AppStrings {
   static String step3Body(BuildContext context) => get(context, 'step3Body');
   static String referralShareMsg(BuildContext context, String code) =>
       get(context, 'referralShareMsg').replaceAll('{code}', code);
-  static String referralShareSubject(BuildContext context) => get(context, 'referralShareSubject');
+  static String referralShareSubject(BuildContext context) =>
+      get(context, 'referralShareSubject');
 
   // ── Profile ───────────────────────────────────────────────────────────────
   static String profile(BuildContext context) => get(context, 'profile');
-  static String editProfile(BuildContext context) => get(context, 'editProfile');
-  static String notifications(BuildContext context) => get(context, 'notifications');
+  static String editProfile(BuildContext context) =>
+      get(context, 'editProfile');
+  static String notifications(BuildContext context) =>
+      get(context, 'notifications');
   static String darkMode(BuildContext context) => get(context, 'darkMode');
   static String language(BuildContext context) => get(context, 'language');
   static String help(BuildContext context) => get(context, 'help');
-  static String customerService(BuildContext context) => get(context, 'customerService');
+  static String customerService(BuildContext context) =>
+      get(context, 'customerService');
   static String about(BuildContext context) => get(context, 'about');
-  static String deleteAccount(BuildContext context) => get(context, 'deleteAccount');
-  static String defaultUser(BuildContext context) => get(context, 'defaultUser');
-  static String walletAndCredit(BuildContext context) => get(context, 'walletAndCredit');
-  static String inviteFriends(BuildContext context) => get(context, 'inviteFriends');
-  static String sectionAccount(BuildContext context) => get(context, 'sectionAccount');
-  static String sectionMore(BuildContext context) => get(context, 'sectionMore');
-  static String sectionAccountManage(BuildContext context) => get(context, 'sectionAccountManage');
-  static String helpQuestion(BuildContext context) => get(context, 'helpQuestion');
-  static String supportHours(BuildContext context) => get(context, 'supportHours');
+  static String deleteAccount(BuildContext context) =>
+      get(context, 'deleteAccount');
+  static String defaultUser(BuildContext context) =>
+      get(context, 'defaultUser');
+  static String walletAndCredit(BuildContext context) =>
+      get(context, 'walletAndCredit');
+  static String inviteFriends(BuildContext context) =>
+      get(context, 'inviteFriends');
+  static String sectionAccount(BuildContext context) =>
+      get(context, 'sectionAccount');
+  static String sectionMore(BuildContext context) =>
+      get(context, 'sectionMore');
+  static String sectionAccountManage(BuildContext context) =>
+      get(context, 'sectionAccountManage');
+  static String helpQuestion(BuildContext context) =>
+      get(context, 'helpQuestion');
+  static String supportHours(BuildContext context) =>
+      get(context, 'supportHours');
   static String close(BuildContext context) => get(context, 'close');
   static String aboutDesc(BuildContext context) => get(context, 'aboutDesc');
-  static String deleteAccountConfirmMsg(BuildContext context) => get(context, 'deleteAccountConfirmMsg');
+  static String deleteAccountConfirmMsg(BuildContext context) =>
+      get(context, 'deleteAccountConfirmMsg');
   static String langNl(BuildContext context) => get(context, 'langNl');
   static String langEn(BuildContext context) => get(context, 'langEn');
   static String langAr(BuildContext context) => get(context, 'langAr');
   static String cancel(BuildContext context) => get(context, 'cancel');
-  static String reloginToDeleteMsg(BuildContext context) => get(context, 'reloginToDeleteMsg');
+  static String reloginToDeleteMsg(BuildContext context) =>
+      get(context, 'reloginToDeleteMsg');
 
   // ── Re-authentication ─────────────────────────────────────────────────────
-  static String reauthRequired(BuildContext context) => get(context, 'reauthRequired');
-  static String reauthPrompt(BuildContext context) => get(context, 'reauthPrompt');
-  static String incorrectPassword(BuildContext context) => get(context, 'incorrectPassword');
+  static String reauthRequired(BuildContext context) =>
+      get(context, 'reauthRequired');
+  static String reauthPrompt(BuildContext context) =>
+      get(context, 'reauthPrompt');
+  static String incorrectPassword(BuildContext context) =>
+      get(context, 'incorrectPassword');
   static String confirm(BuildContext context) => get(context, 'confirm');
 
   // ── Account Settings ──────────────────────────────────────────────────────
-  static String settingsSaved(BuildContext context) => get(context, 'settingsSaved');
-  static String reloginToChangeName(BuildContext context) => get(context, 'reloginToChangeName');
+  static String settingsSaved(BuildContext context) =>
+      get(context, 'settingsSaved');
+  static String reloginToChangeName(BuildContext context) =>
+      get(context, 'reloginToChangeName');
   static String saveFailed(BuildContext context) => get(context, 'saveFailed');
   static String resetLinkSentTo(BuildContext context, String email) =>
       get(context, 'resetLinkSentTo').replaceAll('{email}', email);
   static String myData(BuildContext context) => get(context, 'myData');
   static String save(BuildContext context) => get(context, 'save');
-  static String personalData(BuildContext context) => get(context, 'personalData');
+  static String personalData(BuildContext context) =>
+      get(context, 'personalData');
   static String phone(BuildContext context) => get(context, 'phone');
   static String security(BuildContext context) => get(context, 'security');
-  static String changePassword(BuildContext context) => get(context, 'changePassword');
-  static String changePasswordSub(BuildContext context) => get(context, 'changePasswordSub');
+  static String changePassword(BuildContext context) =>
+      get(context, 'changePassword');
+  static String changePasswordSub(BuildContext context) =>
+      get(context, 'changePasswordSub');
   static String notifPrefs(BuildContext context) => get(context, 'notifPrefs');
-  static String notifOutbid(BuildContext context) => get(context, 'notifOutbid');
-  static String notifOutbidSub(BuildContext context) => get(context, 'notifOutbidSub');
+  static String notifOutbid(BuildContext context) =>
+      get(context, 'notifOutbid');
+  static String notifOutbidSub(BuildContext context) =>
+      get(context, 'notifOutbidSub');
   static String notifWon(BuildContext context) => get(context, 'notifWon');
-  static String notifWonSub(BuildContext context) => get(context, 'notifWonSub');
-  static String notifAlarms(BuildContext context) => get(context, 'notifAlarms');
-  static String notifAlarmsSub(BuildContext context) => get(context, 'notifAlarmsSub');
+  static String notifWonSub(BuildContext context) =>
+      get(context, 'notifWonSub');
+  static String notifAlarms(BuildContext context) =>
+      get(context, 'notifAlarms');
+  static String notifAlarmsSub(BuildContext context) =>
+      get(context, 'notifAlarmsSub');
   static String notifDeals(BuildContext context) => get(context, 'notifDeals');
-  static String notifDealsSub(BuildContext context) => get(context, 'notifDealsSub');
+  static String notifDealsSub(BuildContext context) =>
+      get(context, 'notifDealsSub');
   static String dangerZone(BuildContext context) => get(context, 'dangerZone');
-  static String confirmDeleteAccountTitle(BuildContext context) => get(context, 'confirmDeleteAccountTitle');
-  static String confirmDeleteAccountMsg(BuildContext context) => get(context, 'confirmDeleteAccountMsg');
-  static String confirmDeletion(BuildContext context) => get(context, 'confirmDeletion');
-  static String typeDeleteToConfirm(BuildContext context) => get(context, 'typeDeleteToConfirm');
-  static String deleteForever(BuildContext context) => get(context, 'deleteForever');
-  static String reloginToDelete(BuildContext context) => get(context, 'reloginToDelete');
+  static String confirmDeleteAccountTitle(BuildContext context) =>
+      get(context, 'confirmDeleteAccountTitle');
+  static String confirmDeleteAccountMsg(BuildContext context) =>
+      get(context, 'confirmDeleteAccountMsg');
+  static String confirmDeletion(BuildContext context) =>
+      get(context, 'confirmDeletion');
+  static String typeDeleteToConfirm(BuildContext context) =>
+      get(context, 'typeDeleteToConfirm');
+  static String deleteForever(BuildContext context) =>
+      get(context, 'deleteForever');
+  static String reloginToDelete(BuildContext context) =>
+      get(context, 'reloginToDelete');
   static String delete(BuildContext context) => get(context, 'delete');
 
   // ── My Auctions — completed tab ──────────────────────────────────────────
   static String completed(BuildContext context) => get(context, 'completed');
-  static String noCompleted(BuildContext context) => get(context, 'noCompleted');
+  static String noCompleted(BuildContext context) =>
+      get(context, 'noCompleted');
   static String paidOn(BuildContext context) => get(context, 'paidOn');
 
   // ── Search filters ────────────────────────────────────────────────────────
-  static String filterByCategory(BuildContext context) => get(context, 'filterByCategory');
-  static String allCategories(BuildContext context) => get(context, 'allCategories');
+  static String filterByCategory(BuildContext context) =>
+      get(context, 'filterByCategory');
+  static String allCategories(BuildContext context) =>
+      get(context, 'allCategories');
 
   // ── Legal ─────────────────────────────────────────────────────────────────
-  static String termsOfService(BuildContext context) => get(context, 'termsOfService');
-  static String privacyPolicy(BuildContext context) => get(context, 'privacyPolicy');
+  static String termsOfService(BuildContext context) =>
+      get(context, 'termsOfService');
+  static String privacyPolicy(BuildContext context) =>
+      get(context, 'privacyPolicy');
 
   // ── Bidding sheet ────────────────────────────────────────────────────────
-  static String placeBidTitle(BuildContext context) => get(context, 'placeBidTitle');
+  static String placeBidTitle(BuildContext context) =>
+      get(context, 'placeBidTitle');
   static String yourBid(BuildContext context) => get(context, 'yourBid');
 
   // ── Core widgets ─────────────────────────────────────────────────────────
-  static String auctionEnded(BuildContext context) => get(context, 'auctionEnded');
+  static String auctionEnded(BuildContext context) =>
+      get(context, 'auctionEnded');
   static String bidAmount(BuildContext context, String amount) =>
       get(context, 'bidAmount').replaceAll('{amount}', amount);
   static String alarmSet(BuildContext context) => get(context, 'alarmSet');
@@ -324,40 +430,59 @@ class AppStrings {
       get(context, 'shareAuction').replaceAll('{title}', title);
 
   // ── Payment page ─────────────────────────────────────────────────────────
-  static String paymentTitle(BuildContext context) => get(context, 'paymentTitle');
-  static String orderNotFound(BuildContext context) => get(context, 'orderNotFound');
-  static String orderAccessDenied(BuildContext context) => get(context, 'orderAccessDenied');
-  static String orderLoadError(BuildContext context) => get(context, 'orderLoadError');
-  static String checkoutNotAvailable(BuildContext context) => get(context, 'checkoutNotAvailable');
-  static String paymentCongrats(BuildContext context) => get(context, 'paymentCongrats');
-  static String labelAuction(BuildContext context) => get(context, 'labelAuction');
-  static String labelOrderNr(BuildContext context) => get(context, 'labelOrderNr');
-  static String labelAmount(BuildContext context) => get(context, 'labelAmount');
-  static String labelPayBefore(BuildContext context) => get(context, 'labelPayBefore');
-  static String securePaymentVia(BuildContext context) => get(context, 'securePaymentVia');
+  static String paymentTitle(BuildContext context) =>
+      get(context, 'paymentTitle');
+  static String orderNotFound(BuildContext context) =>
+      get(context, 'orderNotFound');
+  static String orderAccessDenied(BuildContext context) =>
+      get(context, 'orderAccessDenied');
+  static String orderLoadError(BuildContext context) =>
+      get(context, 'orderLoadError');
+  static String checkoutNotAvailable(BuildContext context) =>
+      get(context, 'checkoutNotAvailable');
+  static String paymentCongrats(BuildContext context) =>
+      get(context, 'paymentCongrats');
+  static String labelAuction(BuildContext context) =>
+      get(context, 'labelAuction');
+  static String labelOrderNr(BuildContext context) =>
+      get(context, 'labelOrderNr');
+  static String labelAmount(BuildContext context) =>
+      get(context, 'labelAmount');
+  static String labelPayBefore(BuildContext context) =>
+      get(context, 'labelPayBefore');
+  static String securePaymentVia(BuildContext context) =>
+      get(context, 'securePaymentVia');
   static String payingBusy(BuildContext context) => get(context, 'payingBusy');
   static String payNowAmount(BuildContext context, String amount) =>
       get(context, 'payNowAmount').replaceAll('{amount}', amount);
-  static String deadlineExpired(BuildContext context) => get(context, 'deadlineExpired');
+  static String deadlineExpired(BuildContext context) =>
+      get(context, 'deadlineExpired');
   static String deadlineMinutes(BuildContext context, int n) =>
       get(context, 'deadlineMinutes').replaceAll('{n}', '$n');
   static String deadlineHours(BuildContext context, int n) =>
       get(context, 'deadlineHours').replaceAll('{n}', '$n');
   static String deadlineDays(BuildContext context, int n) =>
       get(context, 'deadlineDays').replaceAll('{n}', '$n');
-  static String paymentDeadlineExpiredMsg(BuildContext context) => get(context, 'paymentDeadlineExpiredMsg');
+  static String paymentDeadlineExpiredMsg(BuildContext context) =>
+      get(context, 'paymentDeadlineExpiredMsg');
   static String sslSecured(BuildContext context) => get(context, 'sslSecured');
-  static String securePayingWebview(BuildContext context) => get(context, 'securePayingWebview');
-  static String cancelPaymentTitle(BuildContext context) => get(context, 'cancelPaymentTitle');
-  static String cancelPaymentMsg(BuildContext context) => get(context, 'cancelPaymentMsg');
+  static String securePayingWebview(BuildContext context) =>
+      get(context, 'securePayingWebview');
+  static String cancelPaymentTitle(BuildContext context) =>
+      get(context, 'cancelPaymentTitle');
+  static String cancelPaymentMsg(BuildContext context) =>
+      get(context, 'cancelPaymentMsg');
   static String backBtn(BuildContext context) => get(context, 'backBtn');
-  static String paymentCancelledMsg(BuildContext context) => get(context, 'paymentCancelledMsg');
-  static String paymentFailedRetry(BuildContext context) => get(context, 'paymentFailedRetry');
+  static String paymentCancelledMsg(BuildContext context) =>
+      get(context, 'paymentCancelledMsg');
+  static String paymentFailedRetry(BuildContext context) =>
+      get(context, 'paymentFailedRetry');
   static String paymentFailedGeneric(BuildContext context, String error) =>
       get(context, 'paymentFailedGeneric').replaceAll('{error}', error);
 
   // ── Bid History ───────────────────────────────────────────────────────────
-  static String bidLoadError(BuildContext context) => get(context, 'bidLoadError');
+  static String bidLoadError(BuildContext context) =>
+      get(context, 'bidLoadError');
   static String noBids(BuildContext context) => get(context, 'noBids');
 
   // ── Win screen ────────────────────────────────────────────────────────────
@@ -370,9 +495,11 @@ class AppStrings {
   static String noWon(BuildContext context) => get(context, 'noWon');
   static String noSaved(BuildContext context) => get(context, 'noSaved');
   static String noPending(BuildContext context) => get(context, 'noPending');
-  static String pendingPaymentWarning(BuildContext context) => get(context, 'pendingPaymentWarning');
+  static String pendingPaymentWarning(BuildContext context) =>
+      get(context, 'pendingPaymentWarning');
   static String tryAgain(BuildContext context) => get(context, 'tryAgain');
-  static String pageNotFound(BuildContext context) => get(context, 'pageNotFound');
+  static String pageNotFound(BuildContext context) =>
+      get(context, 'pageNotFound');
   static String backToHome(BuildContext context) => get(context, 'backToHome');
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -411,21 +538,20 @@ class AppStrings {
 
     // Onboarding
     'onboard1Title': 'Bied op droomvakanties',
-    'onboard1Body': 'Vind unieke vakanties, uitjes en ervaringen. Bied mee en win voor een fractie van de prijs.',
+    'onboard1Body':
+        'Vind unieke vakanties, uitjes en ervaringen. Bied mee en win voor een fractie van de prijs.',
     'onboard2Title': 'Realtime veilingen',
-    'onboard2Body': 'Volg iedere bieding live. Stel een alarm in zodat je nooit een eindsprint mist.',
+    'onboard2Body':
+        'Volg iedere bieding live. Stel een alarm in zodat je nooit een eindsprint mist.',
     'onboard3Title': 'Win en betaal veilig',
-    'onboard3Body': 'Gewonnen? Betaal eenvoudig en ontvang je voucher direct in de app. Veilig, snel en betrouwbaar.',
+    'onboard3Body':
+        'Gewonnen? Betaal eenvoudig en ontvang je voucher direct in de app. Veilig, snel en betrouwbaar.',
     'skip': 'Overslaan',
     'getStarted': 'Aan de slag',
     'next': 'Volgende',
 
     // Navigation
     'navHome': 'Home',
-    'navCategories': 'Categorie',
-    'navSearch': 'Zoeken',
-    'navRecent': 'Recent',
-    'navMenu': 'Menu',
     'navAuctions': 'Veilingen',
     'navScratchCard': 'Kraskaart',
     'navVouchers': 'Vouchers',
@@ -442,16 +568,6 @@ class AppStrings {
 
     // Home
     'all': 'Alles',
-    'sortEndingTime': 'Aflopende tijd',
-    'sortPopular': 'Populaire veilingen',
-    'viewGallery': 'Galerij',
-    'viewList': 'Lijst',
-    'bids': 'biedingen',
-    'newsletterTitle': 'Mis nooit meer een veiling',
-    'newsletterSubtitle': 'Ontvang de beste deals en nieuwe veilingen in je inbox.',
-    'newsletterCta': 'Aanmelden',
-    'newsletterSuccess': 'Bedankt! Je bent aangemeld voor de nieuwsbrief.',
-    'emailHintNewsletter': 'Je e-mailadres',
     'allAuctions': 'Alle veilingen',
     'endingSoon': 'Loopt bijna af ⏳',
     'sectionEndingSoon': '🔥 Snel sluitend',
@@ -483,14 +599,16 @@ class AppStrings {
     'autoBidActiveLeading': 'Auto-bod actief — jij leidt nog steeds.',
     'youAreWinning': 'Jij wint! Het huidige bod is van jou.',
     'youWereOutbid': 'Je bent overboden! Bied om terug te pakken.',
-    'auctionExtended': 'Veiling verlengd met {s}s — iemand bood in de laatste minuut!',
+    'auctionExtended':
+        'Veiling verlengd met {s}s — iemand bood in de laatste minuut!',
     'bidCountMin': '{count} biedingen · min. +{min}',
     'autoBidActiveMax': 'Auto-bod actief: max {amount}',
     'setMaxBid': 'Maximumbod instellen',
     'autoBidSub': 'Wij bieden automatisch als je overboden wordt',
     'buyNow': 'Nu kopen — {price}',
     'minBidLabel': 'Min.',
-    'autoBidExplain': 'Wij plaatsen automatisch het minimumbod namens jou wanneer je overboden wordt, tot aan jouw maximum.',
+    'autoBidExplain':
+        'Wij plaatsen automatisch het minimumbod namens jou wanneer je overboden wordt, tot aan jouw maximum.',
     'myMaximum': 'Mijn maximum',
     'setBtn': 'Instellen',
     'removeAutoBid': 'Auto-bod verwijderen',
@@ -510,7 +628,8 @@ class AppStrings {
     'claimPrize': 'Prijs claimen',
     'scratchPrizeAdded': '🎉 {prize} is toegevoegd aan je wallet!',
     'creditReceived': 'Tegoed ontvangen',
-    'shareAppMsg': 'Probeer Vakantieveilingen! Download de app en win geweldige prijzen.',
+    'shareAppMsg':
+        'Probeer Vakantieveilingen! Download de app en win geweldige prijzen.',
     'scratchPrizeWon': 'Je hebt {prize} gewonnen!',
 
     // Search
@@ -567,7 +686,8 @@ class AppStrings {
     // Referral
     'inviteFriendsTitle': 'Vrienden uitnodigen',
     'inviteTitle': 'Nodig vrienden uit!',
-    'inviteSubtitle': 'Jij én je vriend ontvangen €5 biedingstegoed\nzodra je vriend zich registreert.',
+    'inviteSubtitle':
+        'Jij én je vriend ontvangen €5 biedingstegoed\nzodra je vriend zich registreert.',
     'yourInviteCode': 'Jouw uitnodigingscode',
     'copy': 'Kopiëren',
     'share': 'Delen',
@@ -576,12 +696,15 @@ class AppStrings {
     'howItWorks': 'Hoe werkt het?',
     'codeCopied': 'Code gekopieerd!',
     'step1Title': 'Deel je code',
-    'step1Body': 'Deel je persoonlijke code met vrienden via WhatsApp, mail of social media.',
+    'step1Body':
+        'Deel je persoonlijke code met vrienden via WhatsApp, mail of social media.',
     'step2Title': 'Vriend registreert',
-    'step2Body': 'Je vriend downloadt de app en voert jouw code in tijdens de registratie.',
+    'step2Body':
+        'Je vriend downloadt de app en voert jouw code in tijdens de registratie.',
     'step3Title': 'Beiden profiteren',
     'step3Body': 'Jullie ontvangen allebei €5 biedingstegoed. Bied mee en win!',
-    'referralShareMsg': 'Gebruik mijn code {code} bij Vakantieveilingen en ontvang €5 biedingstegoed! 🎉\n\nhttps://vakantieveilingen.nl',
+    'referralShareMsg':
+        'Gebruik mijn code {code} bij Vakantieveilingen en ontvang €5 biedingstegoed! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Gratis €5 biedingstegoed',
 
     // Profile
@@ -603,8 +726,10 @@ class AppStrings {
     'helpQuestion': 'Heb je een vraag of probleem?',
     'supportHours': 'Ma–Vr 09:00–17:00',
     'close': 'Sluiten',
-    'aboutDesc': 'Bied mee op exclusieve vakanties, wellness-arrangementen en meer. Elke dag nieuwe veilingen!',
-    'deleteAccountConfirmMsg': 'Weet je zeker dat je je account permanent wilt verwijderen? Al je data, biedingen en vouchers worden verwijderd. Dit kan niet ongedaan worden gemaakt.',
+    'aboutDesc':
+        'Bied mee op exclusieve vakanties, wellness-arrangementen en meer. Elke dag nieuwe veilingen!',
+    'deleteAccountConfirmMsg':
+        'Weet je zeker dat je je account permanent wilt verwijderen? Al je data, biedingen en vouchers worden verwijderd. Dit kan niet ongedaan worden gemaakt.',
     'langNl': 'Nederlands',
     'langEn': 'English',
     'langAr': 'العربية',
@@ -640,7 +765,8 @@ class AppStrings {
     'notifDealsSub': 'Nieuwe veilingen en promoties',
     'dangerZone': 'Gevaarlijk gebied',
     'confirmDeleteAccountTitle': 'Account verwijderen?',
-    'confirmDeleteAccountMsg': 'Weet je zeker dat je je account wil verwijderen? Dit kan niet ongedaan worden gemaakt.',
+    'confirmDeleteAccountMsg':
+        'Weet je zeker dat je je account wil verwijderen? Dit kan niet ongedaan worden gemaakt.',
     'confirmDeletion': 'Bevestig verwijdering',
     'typeDeleteToConfirm': 'Typ DELETE om te bevestigen:',
     'deleteForever': 'Definitief verwijderen',
@@ -677,7 +803,8 @@ class AppStrings {
     'orderNotFound': 'Bestelling niet gevonden.',
     'orderAccessDenied': 'Je hebt geen toegang tot deze bestelling.',
     'orderLoadError': 'Fout bij laden bestelling. Probeer het opnieuw.',
-    'checkoutNotAvailable': 'Betaallink nog niet beschikbaar. Probeer het opnieuw.',
+    'checkoutNotAvailable':
+        'Betaallink nog niet beschikbaar. Probeer het opnieuw.',
     'paymentCongrats': 'Gefeliciteerd! Je hebt gewonnen.',
     'labelAuction': 'Veiling',
     'labelOrderNr': 'Bestelnr.',
@@ -690,7 +817,8 @@ class AppStrings {
     'deadlineMinutes': '{n} minuten',
     'deadlineHours': '{n} uur',
     'deadlineDays': '{n} dag(en)',
-    'paymentDeadlineExpiredMsg': 'De betaaltermijn is verlopen. Neem contact op met support.',
+    'paymentDeadlineExpiredMsg':
+        'De betaaltermijn is verlopen. Neem contact op met support.',
     'sslSecured': '🔒 Beveiligd door SSL',
     'securePayingWebview': 'Veilig betalen',
     'cancelPaymentTitle': 'Betaling annuleren?',
@@ -711,7 +839,8 @@ class AppStrings {
     'noWon': 'Nog niets gewonnen',
     'noSaved': 'Geen opgeslagen veilingen',
     'noPending': 'Geen openstaande betalingen',
-    'pendingPaymentWarning': 'Je hebt gewonnen veilingen die nog betaald moeten worden!',
+    'pendingPaymentWarning':
+        'Je hebt gewonnen veilingen die nog betaald moeten worden!',
     'tryAgain': 'Probeer opnieuw',
     'pageNotFound': 'Pagina niet gevonden',
     'backToHome': 'Terug naar home',
@@ -753,21 +882,20 @@ class AppStrings {
 
     // Onboarding
     'onboard1Title': 'Bid on dream vacations',
-    'onboard1Body': 'Find unique vacations, trips and experiences. Bid and win for a fraction of the price.',
+    'onboard1Body':
+        'Find unique vacations, trips and experiences. Bid and win for a fraction of the price.',
     'onboard2Title': 'Real-time auctions',
-    'onboard2Body': 'Follow every bid live. Set an alarm so you never miss a final sprint.',
+    'onboard2Body':
+        'Follow every bid live. Set an alarm so you never miss a final sprint.',
     'onboard3Title': 'Win and pay safely',
-    'onboard3Body': 'Won? Pay easily and receive your voucher directly in the app. Safe, fast and reliable.',
+    'onboard3Body':
+        'Won? Pay easily and receive your voucher directly in the app. Safe, fast and reliable.',
     'skip': 'Skip',
     'getStarted': 'Get started',
     'next': 'Next',
 
     // Navigation
     'navHome': 'Home',
-    'navCategories': 'Categories',
-    'navSearch': 'Search',
-    'navRecent': 'Recent',
-    'navMenu': 'Menu',
     'navAuctions': 'Auctions',
     'navScratchCard': 'Scratch Card',
     'navVouchers': 'Vouchers',
@@ -784,16 +912,6 @@ class AppStrings {
 
     // Home
     'all': 'All',
-    'sortEndingTime': 'Ending soon',
-    'sortPopular': 'Popular',
-    'viewGallery': 'Gallery',
-    'viewList': 'List',
-    'bids': 'bids',
-    'newsletterTitle': 'Never miss an auction',
-    'newsletterSubtitle': 'Get the best deals and new auctions in your inbox.',
-    'newsletterCta': 'Subscribe',
-    'newsletterSuccess': 'Thanks! You\'re subscribed to the newsletter.',
-    'emailHintNewsletter': 'Your email address',
     'allAuctions': 'All Auctions',
     'endingSoon': 'Ending soon ⏳',
     'sectionEndingSoon': '🔥 Ending Soon',
@@ -825,14 +943,16 @@ class AppStrings {
     'autoBidActiveLeading': 'Auto-bid active — you\'re still leading.',
     'youAreWinning': 'You\'re winning! The current bid is yours.',
     'youWereOutbid': 'You\'ve been outbid! Bid to reclaim the lead.',
-    'auctionExtended': 'Auction extended by {s}s — someone bid in the last minute!',
+    'auctionExtended':
+        'Auction extended by {s}s — someone bid in the last minute!',
     'bidCountMin': '{count} bids · min. +{min}',
     'autoBidActiveMax': 'Auto-bid active: max {amount}',
     'setMaxBid': 'Set max bid',
     'autoBidSub': 'We bid automatically when you\'re outbid',
     'buyNow': 'Buy now — {price}',
     'minBidLabel': 'Min.',
-    'autoBidExplain': 'We automatically place the minimum bid on your behalf when you\'re outbid, up to your maximum.',
+    'autoBidExplain':
+        'We automatically place the minimum bid on your behalf when you\'re outbid, up to your maximum.',
     'myMaximum': 'My maximum',
     'setBtn': 'Set',
     'removeAutoBid': 'Remove auto-bid',
@@ -852,7 +972,8 @@ class AppStrings {
     'claimPrize': 'Claim Prize',
     'scratchPrizeAdded': '🎉 {prize} has been added to your wallet!',
     'creditReceived': 'Credit received',
-    'shareAppMsg': 'Try Holiday Auctions! Download the app and win great prizes.',
+    'shareAppMsg':
+        'Try Holiday Auctions! Download the app and win great prizes.',
     'scratchPrizeWon': 'You won {prize}!',
 
     // Search
@@ -909,7 +1030,8 @@ class AppStrings {
     // Referral
     'inviteFriendsTitle': 'Invite friends',
     'inviteTitle': 'Invite your friends!',
-    'inviteSubtitle': 'You and your friend each receive €5 bidding credit\nonce your friend registers.',
+    'inviteSubtitle':
+        'You and your friend each receive €5 bidding credit\nonce your friend registers.',
     'yourInviteCode': 'Your invite code',
     'copy': 'Copy',
     'share': 'Share',
@@ -918,12 +1040,15 @@ class AppStrings {
     'howItWorks': 'How does it work?',
     'codeCopied': 'Code copied!',
     'step1Title': 'Share your code',
-    'step1Body': 'Share your personal code with friends via WhatsApp, email or social media.',
+    'step1Body':
+        'Share your personal code with friends via WhatsApp, email or social media.',
     'step2Title': 'Friend registers',
-    'step2Body': 'Your friend downloads the app and enters your code during registration.',
+    'step2Body':
+        'Your friend downloads the app and enters your code during registration.',
     'step3Title': 'Both benefit',
     'step3Body': 'You both receive €5 bidding credit. Bid and win!',
-    'referralShareMsg': 'Use my code {code} at Holiday Auctions and receive €5 bidding credit! 🎉\n\nhttps://vakantieveilingen.nl',
+    'referralShareMsg':
+        'Use my code {code} at Holiday Auctions and receive €5 bidding credit! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Free €5 bidding credit',
 
     // Profile
@@ -945,8 +1070,10 @@ class AppStrings {
     'helpQuestion': 'Have a question or issue?',
     'supportHours': 'Mon–Fri 09:00–17:00',
     'close': 'Close',
-    'aboutDesc': 'Bid on exclusive vacations, wellness packages and more. New auctions every day!',
-    'deleteAccountConfirmMsg': 'Are you sure you want to permanently delete your account? All your data, bids and vouchers will be deleted. This cannot be undone.',
+    'aboutDesc':
+        'Bid on exclusive vacations, wellness packages and more. New auctions every day!',
+    'deleteAccountConfirmMsg':
+        'Are you sure you want to permanently delete your account? All your data, bids and vouchers will be deleted. This cannot be undone.',
     'langNl': 'Dutch',
     'langEn': 'English',
     'langAr': 'Arabic',
@@ -982,7 +1109,8 @@ class AppStrings {
     'notifDealsSub': 'New auctions and promotions',
     'dangerZone': 'Danger zone',
     'confirmDeleteAccountTitle': 'Delete account?',
-    'confirmDeleteAccountMsg': 'Are you sure you want to delete your account? This cannot be undone.',
+    'confirmDeleteAccountMsg':
+        'Are you sure you want to delete your account? This cannot be undone.',
     'confirmDeletion': 'Confirm deletion',
     'typeDeleteToConfirm': 'Type DELETE to confirm:',
     'deleteForever': 'Delete permanently',
@@ -1019,7 +1147,8 @@ class AppStrings {
     'orderNotFound': 'Order not found.',
     'orderAccessDenied': 'You don\'t have access to this order.',
     'orderLoadError': 'Error loading order. Please try again.',
-    'checkoutNotAvailable': 'Checkout link not available yet. Please try again.',
+    'checkoutNotAvailable':
+        'Checkout link not available yet. Please try again.',
     'paymentCongrats': 'Congratulations! You won.',
     'labelAuction': 'Auction',
     'labelOrderNr': 'Order no.',
@@ -1032,7 +1161,8 @@ class AppStrings {
     'deadlineMinutes': '{n} minutes',
     'deadlineHours': '{n} hours',
     'deadlineDays': '{n} day(s)',
-    'paymentDeadlineExpiredMsg': 'The payment deadline has expired. Please contact support.',
+    'paymentDeadlineExpiredMsg':
+        'The payment deadline has expired. Please contact support.',
     'sslSecured': '🔒 Secured by SSL',
     'securePayingWebview': 'Secure payment',
     'cancelPaymentTitle': 'Cancel payment?',
@@ -1053,7 +1183,8 @@ class AppStrings {
     'noWon': 'Nothing won yet',
     'noSaved': 'No saved auctions',
     'noPending': 'No pending payments',
-    'pendingPaymentWarning': 'You have won auctions that still need to be paid!',
+    'pendingPaymentWarning':
+        'You have won auctions that still need to be paid!',
     'tryAgain': 'Try again',
     'pageNotFound': 'Page not found',
     'backToHome': 'Back to home',
@@ -1097,19 +1228,17 @@ class AppStrings {
     'onboard1Title': 'زايد على إجازات أحلامك',
     'onboard1Body': 'اعثر على إجازات وتجارب فريدة. زايد وافز بسعر لا يُصدق.',
     'onboard2Title': 'مزادات لحظية',
-    'onboard2Body': 'تابع كل مزايدة مباشرة. اضبط تنبيهًا حتى لا تفوتك نهاية المزاد.',
+    'onboard2Body':
+        'تابع كل مزايدة مباشرة. اضبط تنبيهًا حتى لا تفوتك نهاية المزاد.',
     'onboard3Title': 'افز وادفع بأمان',
-    'onboard3Body': 'فزت؟ ادفع بسهولة واستلم قسيمتك مباشرة في التطبيق. آمن وسريع وموثوق.',
+    'onboard3Body':
+        'فزت؟ ادفع بسهولة واستلم قسيمتك مباشرة في التطبيق. آمن وسريع وموثوق.',
     'skip': 'تخطي',
     'getStarted': 'ابدأ الآن',
     'next': 'التالي',
 
     // Navigation
     'navHome': 'الرئيسية',
-    'navCategories': 'الفئات',
-    'navSearch': 'بحث',
-    'navRecent': 'الأخيرة',
-    'navMenu': 'القائمة',
     'navAuctions': 'المزادات',
     'navScratchCard': 'كرت الحظ',
     'navVouchers': 'القسائم',
@@ -1126,16 +1255,6 @@ class AppStrings {
 
     // Home
     'all': 'الكل',
-    'sortEndingTime': 'ينتهي قريباً',
-    'sortPopular': 'الأكثر شعبية',
-    'viewGallery': 'معرض',
-    'viewList': 'قائمة',
-    'bids': 'مزايدات',
-    'newsletterTitle': 'لا تفوّت أي مزاد',
-    'newsletterSubtitle': 'احصل على أفضل العروض والمزادات الجديدة في بريدك.',
-    'newsletterCta': 'اشترك',
-    'newsletterSuccess': 'شكراً! تم اشتراكك في النشرة البريدية.',
-    'emailHintNewsletter': 'بريدك الإلكتروني',
     'allAuctions': 'جميع المزادات',
     'endingSoon': 'تنتهي قريباً ⏳',
     'sectionEndingSoon': '🔥 تنتهي قريباً',
@@ -1167,14 +1286,16 @@ class AppStrings {
     'autoBidActiveLeading': 'العطاء التلقائي نشط — أنت لا تزال في المقدمة.',
     'youAreWinning': 'أنت فائز! المزايدة الحالية لك.',
     'youWereOutbid': 'تم تجاوزك! زايد لاسترداد المركز الأول.',
-    'auctionExtended': 'تم تمديد المزاد {s} ثانية — قدّم أحدهم مزايدة في آخر لحظة!',
+    'auctionExtended':
+        'تم تمديد المزاد {s} ثانية — قدّم أحدهم مزايدة في آخر لحظة!',
     'bidCountMin': '{count} مزايدة · الحد الأدنى +{min}',
     'autoBidActiveMax': 'العطاء التلقائي نشط: الحد الأقصى {amount}',
     'setMaxBid': 'تعيين الحد الأقصى',
     'autoBidSub': 'نزايد تلقائياً عند تجاوزك',
     'buyNow': 'اشتر الآن — {price}',
     'minBidLabel': 'الحد الأدنى',
-    'autoBidExplain': 'نضع تلقائياً الحد الأدنى للمزايدة نيابةً عنك عند تجاوزك، حتى حدك الأقصى.',
+    'autoBidExplain':
+        'نضع تلقائياً الحد الأدنى للمزايدة نيابةً عنك عند تجاوزك، حتى حدك الأقصى.',
     'myMaximum': 'حدي الأقصى',
     'setBtn': 'تعيين',
     'removeAutoBid': 'إزالة العطاء التلقائي',
@@ -1251,7 +1372,8 @@ class AppStrings {
     // Referral
     'inviteFriendsTitle': 'دعوة الأصدقاء',
     'inviteTitle': 'ادعُ أصدقاءك!',
-    'inviteSubtitle': 'أنت وصديقك تحصلان على رصيد مزايدة €5\nبمجرد تسجيل صديقك.',
+    'inviteSubtitle':
+        'أنت وصديقك تحصلان على رصيد مزايدة €5\nبمجرد تسجيل صديقك.',
     'yourInviteCode': 'كودك الدعوي',
     'copy': 'نسخ',
     'share': 'مشاركة',
@@ -1260,12 +1382,14 @@ class AppStrings {
     'howItWorks': 'كيف يعمل؟',
     'codeCopied': 'تم نسخ الكود!',
     'step1Title': 'شارك كودك',
-    'step1Body': 'شارك كودك الشخصي مع الأصدقاء عبر واتساب أو البريد أو التواصل الاجتماعي.',
+    'step1Body':
+        'شارك كودك الشخصي مع الأصدقاء عبر واتساب أو البريد أو التواصل الاجتماعي.',
     'step2Title': 'صديقك يسجل',
     'step2Body': 'يحمّل صديقك التطبيق ويدخل كودك أثناء التسجيل.',
     'step3Title': 'كلاكما يستفيد',
     'step3Body': 'تحصلان معًا على رصيد €5. زايدا وافوزا!',
-    'referralShareMsg': 'استخدم كودي {code} في مزادات العطلات واحصل على رصيد مزايدة €5! 🎉\n\nhttps://vakantieveilingen.nl',
+    'referralShareMsg':
+        'استخدم كودي {code} في مزادات العطلات واحصل على رصيد مزايدة €5! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'رصيد مزايدة مجاني €5',
 
     // Profile
@@ -1287,8 +1411,10 @@ class AppStrings {
     'helpQuestion': 'هل لديك سؤال أو مشكلة؟',
     'supportHours': 'الإثنين–الجمعة 09:00–17:00',
     'close': 'إغلاق',
-    'aboutDesc': 'زايد على إجازات وعروض صحية حصرية والمزيد. مزادات جديدة كل يوم!',
-    'deleteAccountConfirmMsg': 'هل أنت متأكد من حذف حسابك نهائياً؟ سيتم حذف جميع بياناتك ومزايداتك وقسائمك. لا يمكن التراجع عن ذلك.',
+    'aboutDesc':
+        'زايد على إجازات وعروض صحية حصرية والمزيد. مزادات جديدة كل يوم!',
+    'deleteAccountConfirmMsg':
+        'هل أنت متأكد من حذف حسابك نهائياً؟ سيتم حذف جميع بياناتك ومزايداتك وقسائمك. لا يمكن التراجع عن ذلك.',
     'langNl': 'الهولندية',
     'langEn': 'الإنجليزية',
     'langAr': 'العربية',
@@ -1324,7 +1450,8 @@ class AppStrings {
     'notifDealsSub': 'مزادات وعروض جديدة',
     'dangerZone': 'منطقة خطر',
     'confirmDeleteAccountTitle': 'حذف الحساب؟',
-    'confirmDeleteAccountMsg': 'هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن ذلك.',
+    'confirmDeleteAccountMsg':
+        'هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن ذلك.',
     'confirmDeletion': 'تأكيد الحذف',
     'typeDeleteToConfirm': 'اكتب DELETE للتأكيد:',
     'deleteForever': 'حذف نهائي',
