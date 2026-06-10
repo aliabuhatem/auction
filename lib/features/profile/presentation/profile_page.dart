@@ -78,6 +78,8 @@ class ProfilePage extends StatelessWidget {
                       () => context.push(AppRoutes.wallet)),
                   _tile(context, Icons.style_outlined, AppStrings.scratchCard(context),
                       () => context.push(AppRoutes.scratchCard)),
+                  _tile(context, Icons.gavel_outlined, AppStrings.myAuctions(context),
+                      () => context.push(AppRoutes.myAuctions)),
                   _tile(context, Icons.local_activity_outlined, AppStrings.myVouchers(context),
                       () => context.push(AppRoutes.tickets)),
                   _tile(context, Icons.person_add_outlined, AppStrings.inviteFriends(context),

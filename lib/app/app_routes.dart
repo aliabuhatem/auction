@@ -8,6 +8,7 @@ class AppRoutes {
   static const login           = '/auth/login';
   static const register        = '/auth/register';
   static const home            = '/home';
+  static const categories      = '/categorieen';
   static const search          = '/search';
   static const auctionDetail   = '/auction/:id';
   // Nested under /home — path is relative 'category' → full path '/home/category'
@@ -21,6 +22,8 @@ class AppRoutes {
   static const wallet          = '/wallet';
   static const referral        = '/referral';
   static const notifications   = '/notifications';
+  static const recentAuctions  = '/recente-veilingen';
+  static const allAuctions     = '/veilingen';
   // ── Static info pages ──────────────────────────────────────────────────────
   static const howItWorks      = '/info/hoe-het-werkt';
   static const about           = '/info/over-ons';

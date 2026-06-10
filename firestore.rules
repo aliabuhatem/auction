@@ -109,6 +109,15 @@ service cloud.firestore {
                             request.auth.uid == request.resource.data.userId;
     }
 
+    // ── Recently viewed ───────────────────────────────────────────────────────
+    // Own read/write — denormalised view history (recently_viewed/{uid_auctionId}).
+    match /recently_viewed/{entryId} {
+      allow read, write: if isAuth() &&
+                            request.auth.uid == resource.data.userId;
+      allow create:      if isAuth() &&
+                            request.auth.uid == request.resource.data.userId;
+    }
+
     // ── Alarms ────────────────────────────────────────────────────────────────
     // Own read/write.
     match /alarms/{alarmId} {
@@ -155,6 +164,15 @@ service cloud.firestore {
     match /banners/{bannerId} {
       allow read:   if true;
       allow write:  if isAdmin();
+    }
+
+    // ── Newsletters ─────────────────────────────────────────────────────────────
+    // Anyone may subscribe (create/merge own email doc); only admins can read.
+    match /newsletters/{email} {
+      allow read:   if isAdmin();
+      allow create: if true;
+      allow update: if true;
+      allow delete: if isAdmin();
     }
 
     // ── Config ────────────────────────────────────────────────────────────────

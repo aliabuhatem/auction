@@ -57,6 +57,10 @@ class AppStrings {
   static String navScratchCard(BuildContext context) => get(context, 'navScratchCard');
   static String navVouchers(BuildContext context) => get(context, 'navVouchers');
   static String navProfile(BuildContext context) => get(context, 'navProfile');
+  static String navCategories(BuildContext context) => get(context, 'navCategories');
+  static String navSearch(BuildContext context) => get(context, 'navSearch');
+  static String navRecent(BuildContext context) => get(context, 'navRecent');
+  static String navMenu(BuildContext context) => get(context, 'navMenu');
 
   // ── My Auctions ───────────────────────────────────────────────────────────
   static String myAuctions(BuildContext context) => get(context, 'myAuctions');
@@ -69,6 +73,18 @@ class AppStrings {
 
   // ── Home & Categories ─────────────────────────────────────────────────────
   static String all(BuildContext context) => get(context, 'all');
+  static String sortEndingTime(BuildContext context) => get(context, 'sortEndingTime');
+  static String sortPopular(BuildContext context) => get(context, 'sortPopular');
+  static String viewGallery(BuildContext context) => get(context, 'viewGallery');
+  static String viewList(BuildContext context) => get(context, 'viewList');
+  static String bids(BuildContext context) => get(context, 'bids');
+  static String newsletterTitle(BuildContext context) => get(context, 'newsletterTitle');
+  static String newsletterSubtitle(BuildContext context) => get(context, 'newsletterSubtitle');
+  static String newsletterCta(BuildContext context) => get(context, 'newsletterCta');
+  static String newsletterSuccess(BuildContext context) => get(context, 'newsletterSuccess');
+  static String emailHintNewsletter(BuildContext context) => get(context, 'emailHintNewsletter');
+  static String auctionsCount(BuildContext context, int n) =>
+      '${get(context, 'allAuctions')} ($n)';
   static String allAuctions(BuildContext context) => get(context, 'allAuctions');
   static String endingSoon(BuildContext context) => get(context, 'endingSoon');
   static String sectionEndingSoon(BuildContext context) => get(context, 'sectionEndingSoon');
@@ -143,6 +159,8 @@ class AppStrings {
   static String searchPrompt(BuildContext context) => get(context, 'searchPrompt');
   static String noResults(BuildContext context) => get(context, 'noResults');
   static String recentSearches(BuildContext context) => get(context, 'recentSearches');
+  static String recentAuctions(BuildContext context) => get(context, 'recentAuctions');
+  static String recentEmpty(BuildContext context) => get(context, 'recentEmpty');
   static String clearHistory(BuildContext context) => get(context, 'clearHistory');
 
   // ── Notifications ─────────────────────────────────────────────────────────
@@ -404,6 +422,10 @@ class AppStrings {
 
     // Navigation
     'navHome': 'Home',
+    'navCategories': 'Categorie',
+    'navSearch': 'Zoeken',
+    'navRecent': 'Recent',
+    'navMenu': 'Menu',
     'navAuctions': 'Veilingen',
     'navScratchCard': 'Kraskaart',
     'navVouchers': 'Vouchers',
@@ -420,6 +442,16 @@ class AppStrings {
 
     // Home
     'all': 'Alles',
+    'sortEndingTime': 'Aflopende tijd',
+    'sortPopular': 'Populaire veilingen',
+    'viewGallery': 'Galerij',
+    'viewList': 'Lijst',
+    'bids': 'biedingen',
+    'newsletterTitle': 'Mis nooit meer een veiling',
+    'newsletterSubtitle': 'Ontvang de beste deals en nieuwe veilingen in je inbox.',
+    'newsletterCta': 'Aanmelden',
+    'newsletterSuccess': 'Bedankt! Je bent aangemeld voor de nieuwsbrief.',
+    'emailHintNewsletter': 'Je e-mailadres',
     'allAuctions': 'Alle veilingen',
     'endingSoon': 'Loopt bijna af ⏳',
     'sectionEndingSoon': '🔥 Snel sluitend',
@@ -486,6 +518,8 @@ class AppStrings {
     'searchPrompt': 'Begin met typen om te zoeken',
     'noResults': 'Geen veilingen gevonden',
     'recentSearches': 'Recente zoekopdrachten',
+    'recentAuctions': 'Recente veilingen',
+    'recentEmpty': 'Je hebt nog geen veilingen bekeken',
     'clearHistory': 'Wis',
 
     // Notifications
@@ -730,6 +764,10 @@ class AppStrings {
 
     // Navigation
     'navHome': 'Home',
+    'navCategories': 'Categories',
+    'navSearch': 'Search',
+    'navRecent': 'Recent',
+    'navMenu': 'Menu',
     'navAuctions': 'Auctions',
     'navScratchCard': 'Scratch Card',
     'navVouchers': 'Vouchers',
@@ -746,6 +784,16 @@ class AppStrings {
 
     // Home
     'all': 'All',
+    'sortEndingTime': 'Ending soon',
+    'sortPopular': 'Popular',
+    'viewGallery': 'Gallery',
+    'viewList': 'List',
+    'bids': 'bids',
+    'newsletterTitle': 'Never miss an auction',
+    'newsletterSubtitle': 'Get the best deals and new auctions in your inbox.',
+    'newsletterCta': 'Subscribe',
+    'newsletterSuccess': 'Thanks! You\'re subscribed to the newsletter.',
+    'emailHintNewsletter': 'Your email address',
     'allAuctions': 'All Auctions',
     'endingSoon': 'Ending soon ⏳',
     'sectionEndingSoon': '🔥 Ending Soon',
@@ -812,6 +860,8 @@ class AppStrings {
     'searchPrompt': 'Start typing to search',
     'noResults': 'No auctions found',
     'recentSearches': 'Recent searches',
+    'recentAuctions': 'Recent auctions',
+    'recentEmpty': 'You haven\'t viewed any auctions yet',
     'clearHistory': 'Clear',
 
     // Notifications
@@ -1056,6 +1106,10 @@ class AppStrings {
 
     // Navigation
     'navHome': 'الرئيسية',
+    'navCategories': 'الفئات',
+    'navSearch': 'بحث',
+    'navRecent': 'الأخيرة',
+    'navMenu': 'القائمة',
     'navAuctions': 'المزادات',
     'navScratchCard': 'كرت الحظ',
     'navVouchers': 'القسائم',
@@ -1072,6 +1126,16 @@ class AppStrings {
 
     // Home
     'all': 'الكل',
+    'sortEndingTime': 'ينتهي قريباً',
+    'sortPopular': 'الأكثر شعبية',
+    'viewGallery': 'معرض',
+    'viewList': 'قائمة',
+    'bids': 'مزايدات',
+    'newsletterTitle': 'لا تفوّت أي مزاد',
+    'newsletterSubtitle': 'احصل على أفضل العروض والمزادات الجديدة في بريدك.',
+    'newsletterCta': 'اشترك',
+    'newsletterSuccess': 'شكراً! تم اشتراكك في النشرة البريدية.',
+    'emailHintNewsletter': 'بريدك الإلكتروني',
     'allAuctions': 'جميع المزادات',
     'endingSoon': 'تنتهي قريباً ⏳',
     'sectionEndingSoon': '🔥 تنتهي قريباً',
@@ -1138,6 +1202,8 @@ class AppStrings {
     'searchPrompt': 'ابدأ الكتابة للبحث',
     'noResults': 'لم يُعثر على مزادات',
     'recentSearches': 'عمليات البحث الأخيرة',
+    'recentAuctions': 'المزادات الأخيرة',
+    'recentEmpty': 'لم تشاهد أي مزادات بعد',
     'clearHistory': 'مسح',
 
     // Notifications

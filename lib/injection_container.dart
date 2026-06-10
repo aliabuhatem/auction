@@ -40,6 +40,12 @@ import 'features/payment/domain/payment_repository.dart';
 import 'features/profile/data/profile_remote_datasource.dart';
 import 'features/profile/data/profile_repository_impl.dart';
 import 'features/profile/domain/profile_repository.dart';
+import 'features/recent/data/recent_remote_datasource.dart';
+import 'features/recent/data/recent_repository_impl.dart';
+import 'features/recent/domain/recent_repository.dart';
+import 'features/recent/presentation/bloc/recent_bloc.dart';
+import 'features/newsletter/data/newsletter_datasource.dart';
+import 'features/banners/data/banner_datasource.dart';
 
 final sl = GetIt.instance;
 
@@ -129,6 +135,24 @@ Future<void> init() async {
     () => ProfileRepositoryImpl(datasource: sl()),
   );
 
+  // ── Recently viewed ───────────────────────────────────────────────────────────
+  sl.registerLazySingleton<RecentRemoteDatasource>(
+    () => RecentRemoteDatasourceImpl(firestore: sl()),
+  );
+  sl.registerLazySingleton<RecentRepository>(
+    () => RecentRepositoryImpl(remote: sl(), auth: sl()),
+  );
+
+  // ── Newsletter ────────────────────────────────────────────────────────────────
+  sl.registerLazySingleton<NewsletterDatasource>(
+    () => NewsletterDatasourceImpl(firestore: sl()),
+  );
+
+  // ── Banners ───────────────────────────────────────────────────────────────────
+  sl.registerLazySingleton<BannerDatasource>(
+    () => BannerDatasourceImpl(firestore: sl()),
+  );
+
   // ── BLoCs (factories — fresh instance per page) ───────────────────────────────
   sl.registerFactory(() => LocaleBloc(sl<SharedPreferences>()));
 
@@ -148,4 +172,6 @@ Future<void> init() async {
         repository:        sl(),
         auctionRepository: sl(),
       ));
+
+  sl.registerFactory(() => RecentBloc(repository: sl()));
 }

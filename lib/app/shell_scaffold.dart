@@ -1,78 +1,70 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'app_router.dart';
 import '../core/constants/app_colors.dart';
 import '../core/constants/app_strings.dart';
 
+/// Bottom-nav shell — 5 tabs matching the live site:
+/// Home · Categorie · Zoeken (center, elevated) · Recent · Menu.
+/// Backed by a [StatefulNavigationShell] so each tab keeps its own state.
 class ShellScaffold extends StatelessWidget {
-  final Widget child;
-  const ShellScaffold({super.key, required this.child});
+  final StatefulNavigationShell navigationShell;
+  const ShellScaffold({super.key, required this.navigationShell});
 
-  static const _paths = [
-    AppRoutes.home,
-    AppRoutes.myAuctions,
-    AppRoutes.profile,
-  ];
+  // Tab 2 (Zoeken) is the elevated centre button.
+  static const _searchIndex = 2;
 
-  static const _icons = [
-    (Icons.home_outlined,          Icons.home_rounded),
-    (Icons.gavel_outlined,         Icons.gavel_rounded),
-    (Icons.person_outline_rounded, Icons.person_rounded),
-  ];
-
-  int _currentIndex(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
-    for (int i = 0; i < _paths.length; i++) {
-      if (location.startsWith(_paths[i])) return i;
-    }
-    return 0;
+  void _goBranch(int index) {
+    navigationShell.goBranch(
+      index,
+      // Re-tapping the active tab pops to its root.
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
-
-  List<String> _labels(BuildContext context) => [
-    AppStrings.navHome(context),
-    AppStrings.navAuctions(context),
-    AppStrings.navProfile(context),
-  ];
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = _currentIndex(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final labels = _labels(context);
-
-    final tabs = List.generate(_paths.length, (i) => _TabItem(
-      icon:       _icons[i].$1,
-      activeIcon: _icons[i].$2,
-      label:      labels[i],
-      path:       _paths[i],
-    ));
 
     return Scaffold(
       extendBody: true,
-      body: child,
-      bottomNavigationBar: _PremiumBottomNav(
-        currentIndex: currentIndex,
+      body: navigationShell,
+      bottomNavigationBar: _ShellBottomNav(
+        currentIndex: navigationShell.currentIndex,
         isDark: isDark,
-        onTap: (i) => context.go(_paths[i]),
-        tabs: tabs,
+        onTap: _goBranch,
+        labels: [
+          AppStrings.navHome(context),
+          AppStrings.navCategories(context),
+          AppStrings.navSearch(context),
+          AppStrings.navRecent(context),
+          AppStrings.navMenu(context),
+        ],
       ),
     );
   }
 }
 
-class _PremiumBottomNav extends StatelessWidget {
+class _ShellBottomNav extends StatelessWidget {
   final int currentIndex;
   final bool isDark;
   final ValueChanged<int> onTap;
-  final List<_TabItem> tabs;
+  final List<String> labels;
 
-  const _PremiumBottomNav({
+  const _ShellBottomNav({
     required this.currentIndex,
     required this.isDark,
     required this.onTap,
-    required this.tabs,
+    required this.labels,
   });
+
+  static const _icons = <(IconData, IconData)>[
+    (Icons.home_outlined, Icons.home_rounded),
+    (Icons.grid_view_outlined, Icons.grid_view_rounded),
+    (Icons.search_rounded, Icons.search_rounded), // centre — handled separately
+    (Icons.history_outlined, Icons.history_rounded),
+    (Icons.person_outline_rounded, Icons.person_rounded),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -96,12 +88,22 @@ class _PremiumBottomNav extends StatelessWidget {
           child: SafeArea(
             top: false,
             child: SizedBox(
-              height: 62,
+              height: 64,
               child: Row(
-                children: List.generate(tabs.length, (i) {
+                children: List.generate(5, (i) {
+                  if (i == ShellScaffold._searchIndex) {
+                    return Expanded(
+                      child: _CenterSearchButton(
+                        selected: currentIndex == i,
+                        onTap: () => onTap(i),
+                      ),
+                    );
+                  }
                   return Expanded(
                     child: _NavItem(
-                      tab: tabs[i],
+                      icon: _icons[i].$1,
+                      activeIcon: _icons[i].$2,
+                      label: labels[i],
                       isSelected: currentIndex == i,
                       isDark: isDark,
                       onTap: () => onTap(i),
@@ -117,14 +119,49 @@ class _PremiumBottomNav extends StatelessWidget {
   }
 }
 
+class _CenterSearchButton extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+  const _CenterSearchButton({required this.selected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Center(
+        child: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            gradient: AppColors.goldGradient,
+            shape: BoxShape.circle,
+            boxShadow: AppColors.goldGlow(opacity: selected ? 0.55 : 0.35),
+            border: Border.all(
+              color: AppColors.textOnGold.withValues(alpha: 0.25),
+              width: 2,
+            ),
+          ),
+          child: const Icon(Icons.search_rounded,
+              color: AppColors.textOnGold, size: 26),
+        ),
+      ),
+    );
+  }
+}
+
 class _NavItem extends StatefulWidget {
-  final _TabItem tab;
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
   final bool isSelected;
   final bool isDark;
   final VoidCallback onTap;
 
   const _NavItem({
-    required this.tab,
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
     required this.isSelected,
     required this.isDark,
     required this.onTap,
@@ -134,14 +171,16 @@ class _NavItem extends StatefulWidget {
   State<_NavItem> createState() => _NavItemState();
 }
 
-class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin {
+class _NavItemState extends State<_NavItem>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnim;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
     _scaleAnim = Tween<double>(begin: 1.0, end: 0.88)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
@@ -155,10 +194,7 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
   @override
   Widget build(BuildContext context) {
     final selected = widget.isSelected;
-    final iconColor = selected
-        ? AppColors.primaryRed
-        : (widget.isDark ? const Color(0xFF4A5568) : AppColors.navUnselected);
-    final labelColor = selected
+    final color = selected
         ? AppColors.primaryRed
         : (widget.isDark ? const Color(0xFF4A5568) : AppColors.navUnselected);
 
@@ -178,49 +214,38 @@ class _NavItemState extends State<_NavItem> with SingleTickerProviderStateMixin 
             AnimatedContainer(
               duration: const Duration(milliseconds: 220),
               curve: Curves.easeInOut,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
               decoration: BoxDecoration(
                 color: selected
                     ? AppColors.gold.withValues(alpha: 0.14)
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: selected
-                    ? [BoxShadow(color: AppColors.gold.withValues(alpha: 0.25), blurRadius: 12)]
+                    ? [
+                        BoxShadow(
+                            color: AppColors.gold.withValues(alpha: 0.25),
+                            blurRadius: 12)
+                      ]
                     : null,
               ),
-              child: Icon(
-                selected ? widget.tab.activeIcon : widget.tab.icon,
-                color: iconColor,
-                size: 24,
-              ),
+              child: Icon(selected ? widget.activeIcon : widget.icon,
+                  color: color, size: 23),
             ),
             const SizedBox(height: 2),
             AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 200),
               style: TextStyle(
-                fontSize:   10,
+                fontSize: 10,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 letterSpacing: 0.2,
-                color:      labelColor,
+                color: color,
               ),
-              child: Text(widget.tab.label),
+              child: Text(widget.label),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-class _TabItem {
-  final IconData icon;
-  final IconData activeIcon;
-  final String   label;
-  final String   path;
-  const _TabItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.path,
-  });
 }

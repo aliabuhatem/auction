@@ -102,6 +102,14 @@
       "collectionGroup": "orders",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "status",    "order": "ASCENDING" },
+        { "fieldPath": "expiresAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "orders",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "userId",  "order": "ASCENDING" },
         { "fieldPath": "status",  "order": "ASCENDING" }
       ]
@@ -164,6 +172,14 @@
       ]
     },
     {
+      "collectionGroup": "alarms",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "triggered", "order": "ASCENDING" },
+        { "fieldPath": "notifyAt",  "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "scratch_cards",
       "queryScope": "COLLECTION",
       "fields": [
@@ -186,13 +202,6 @@
         { "fieldPath": "userId",    "order": "ASCENDING" },
         { "fieldPath": "type",      "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "audit_log",
-      "queryScope": "COLLECTION",
-      "fields": [
-        { "fieldPath": "performedAt", "order": "DESCENDING" }
       ]
     },
     {
@@ -241,6 +250,22 @@
       "fields": [
         { "fieldPath": "referrerId", "order": "ASCENDING" },
         { "fieldPath": "createdAt",  "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "recently_viewed",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userId",   "order": "ASCENDING" },
+        { "fieldPath": "viewedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "banners",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "isActive",  "order": "ASCENDING" },
+        { "fieldPath": "sortOrder", "order": "ASCENDING" }
       ]
     }
   ],

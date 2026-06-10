@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../app/app_routes.dart';
+import '../../../banners/presentation/widgets/home_banner_carousel.dart';
+import '../../../newsletter/presentation/widgets/newsletter_signup.dart';
 import '../bloc/auction_list_bloc.dart';
 import '../widgets/auction_grid.dart';
 import '../../../../core/widgets/auction_card.dart';
@@ -170,7 +173,7 @@ class _AppBarSliver extends StatelessWidget {
         _AppBarIconButton(
           icon: Icons.search_rounded,
           isDark: isDark,
-          onTap: () => context.push('/search'),
+          onTap: () => context.go(AppRoutes.search),
         ),
         const SizedBox(width: 4),
         _UnreadBellButton(isDark: isDark),
@@ -331,6 +334,9 @@ class _ContentView extends StatelessWidget {
           context.read<AuctionListBloc>().add(RefreshAuctions()),
       child: CustomScrollView(
         slivers: [
+          // ── Promo banners (active campaigns) ──────────────────────────────
+          const SliverToBoxAdapter(child: HomeBannerCarousel()),
+
           // ── Featured / ending soon ────────────────────────────────────────
           if (state.endingSoonAuctions.isNotEmpty) ...[
             _SectionHeader(
@@ -346,13 +352,18 @@ class _ContentView extends StatelessWidget {
           // ── All auctions grid ─────────────────────────────────────────────
           _SectionHeader(
             title: AppStrings.allAuctions(context),
-            onMore: null,
+            onMore: () => context.push(AppRoutes.allAuctions),
           ),
           AuctionGrid(
             auctions: state.auctions,
             hasMore: state.hasMore,
             isLoadingMore: state.isLoadingMore,
           ),
+
+          // ── Newsletter signup ─────────────────────────────────────────────
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
+          const SliverToBoxAdapter(child: NewsletterSignup()),
+
           const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),

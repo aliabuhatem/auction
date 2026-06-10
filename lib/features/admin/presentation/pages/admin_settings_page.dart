@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -52,6 +53,8 @@ class _SettingsBody extends StatelessWidget {
                 flex: 3,
                 child: Column(children: [
                   _AppSettingsCard(),
+                  const SizedBox(height: 16),
+                  _BannersCard(),
                   const SizedBox(height: 16),
                   _QuickLinksCard(),
                 ]),
@@ -233,6 +236,347 @@ class _AppSettingsCardState extends State<_AppSettingsCard> {
                 ),
               ),
             ]),
+    );
+  }
+}
+
+// ── Banner management ─────────────────────────────────────────────────────────
+// CRUD on the `banners` collection that powers the home-page promo carousel.
+// Banners are added by image URL (Storage or external) to avoid a file upload
+// dependency here; the home carousel reads `imageUrl` directly.
+
+class _BannersCard extends StatelessWidget {
+  final _db = FirebaseFirestore.instance;
+
+  Future<void> _audit(String action, String targetId, Map<String, dynamic>? after) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid ?? 'unknown';
+    await _db.collection('audit_log').add({
+      'adminId':     uid,
+      'adminName':   FirebaseAuth.instance.currentUser?.email ?? 'admin',
+      'action':      action,
+      'targetType':  'banner',
+      'targetId':    targetId,
+      'after':       after,
+      'performedAt': DateTime.now().toIso8601String(),
+    });
+  }
+
+  Future<void> _toggleActive(String id, bool value) async {
+    await _db.collection('banners').doc(id).update({'isActive': value});
+    await _audit('banner_toggle', id, {'isActive': value});
+  }
+
+  Future<void> _delete(String id) async {
+    await _db.collection('banners').doc(id).delete();
+    await _audit('banner_delete', id, null);
+  }
+
+  Future<void> _openEditor(BuildContext context, {String? id, Map<String, dynamic>? existing}) async {
+    final result = await showDialog<Map<String, dynamic>>(
+      context: context,
+      builder: (_) => _BannerEditorDialog(existing: existing),
+    );
+    if (result == null) return;
+    if (id == null) {
+      final ref = await _db.collection('banners').add({
+        ...result,
+        'createdAt': DateTime.now().toIso8601String(),
+      });
+      await _audit('banner_create', ref.id, result);
+    } else {
+      await _db.collection('banners').doc(id).update(result);
+      await _audit('banner_update', id, result);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _Card(
+      title: 'Promo banners',
+      icon: Icons.view_carousel_rounded,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StreamBuilder<QuerySnapshot>(
+            stream: _db.collection('banners').orderBy('sortOrder').snapshots(),
+            builder: (context, snap) {
+              if (snap.connectionState == ConnectionState.waiting) {
+                return const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                      child: CircularProgressIndicator(
+                          color: AppColors.primaryRed)),
+                );
+              }
+              final docs = snap.data?.docs ?? [];
+              if (docs.isEmpty) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Text('Nog geen banners. Voeg er een toe.',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF8B9CB6))),
+                );
+              }
+              return Column(
+                children: docs.map((doc) {
+                  final d = doc.data() as Map<String, dynamic>;
+                  return _BannerRow(
+                    imageUrl: d['imageUrl'] as String? ?? '',
+                    title: d['title'] as String? ?? '(geen titel)',
+                    linkType: d['linkType'] as String? ?? 'none',
+                    isActive: d['isActive'] as bool? ?? false,
+                    onToggle: (v) => _toggleActive(doc.id, v),
+                    onEdit: () => _openEditor(context, id: doc.id, existing: d),
+                    onDelete: () => _delete(doc.id),
+                  );
+                }).toList(),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => _openEditor(context),
+              icon: const Icon(Icons.add_rounded, size: 18),
+              label: const Text('Banner toevoegen'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primaryRed,
+                side: const BorderSide(color: AppColors.primaryRed),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BannerRow extends StatelessWidget {
+  final String imageUrl;
+  final String title;
+  final String linkType;
+  final bool isActive;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _BannerRow({
+    required this.imageUrl,
+    required this.title,
+    required this.linkType,
+    required this.isActive,
+    required this.onToggle,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FC),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFF0F0F5)),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: SizedBox(
+              width: 64,
+              height: 40,
+              child: imageUrl.isEmpty
+                  ? const ColoredBox(
+                      color: Color(0xFFE8EAF0),
+                      child: Icon(Icons.image_outlined,
+                          size: 18, color: Color(0xFF8B9CB6)))
+                  : Image.network(imageUrl, fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const ColoredBox(
+                          color: Color(0xFFE8EAF0),
+                          child: Icon(Icons.broken_image_outlined,
+                              size: 18, color: Color(0xFF8B9CB6)))),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1A1D27))),
+                Text('Link: $linkType',
+                    style: const TextStyle(
+                        fontSize: 10, color: Color(0xFF8B9CB6))),
+              ],
+            ),
+          ),
+          Switch(
+            value: isActive,
+            onChanged: onToggle,
+            activeThumbColor: AppColors.primaryRed,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          IconButton(
+            onPressed: onEdit,
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            color: const Color(0xFF8B9CB6),
+            visualDensity: VisualDensity.compact,
+          ),
+          IconButton(
+            onPressed: onDelete,
+            icon: const Icon(Icons.delete_outline_rounded, size: 18),
+            color: Colors.red,
+            visualDensity: VisualDensity.compact,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BannerEditorDialog extends StatefulWidget {
+  final Map<String, dynamic>? existing;
+  const _BannerEditorDialog({this.existing});
+
+  @override
+  State<_BannerEditorDialog> createState() => _BannerEditorDialogState();
+}
+
+class _BannerEditorDialogState extends State<_BannerEditorDialog> {
+  late final TextEditingController _imageUrl;
+  late final TextEditingController _title;
+  late final TextEditingController _linkId;
+  late final TextEditingController _linkUrl;
+  late final TextEditingController _sortOrder;
+  String _linkType = 'none';
+  bool _isActive = true;
+
+  static const _linkTypes = ['none', 'auction', 'category', 'external'];
+
+  @override
+  void initState() {
+    super.initState();
+    final e = widget.existing;
+    _imageUrl = TextEditingController(text: e?['imageUrl'] as String? ?? '');
+    _title = TextEditingController(text: e?['title'] as String? ?? '');
+    _linkId = TextEditingController(text: e?['linkId'] as String? ?? '');
+    _linkUrl = TextEditingController(text: e?['linkUrl'] as String? ?? '');
+    _sortOrder =
+        TextEditingController(text: (e?['sortOrder'] as num?)?.toString() ?? '0');
+    _linkType = e?['linkType'] as String? ?? 'none';
+    _isActive = e?['isActive'] as bool? ?? true;
+  }
+
+  @override
+  void dispose() {
+    _imageUrl.dispose();
+    _title.dispose();
+    _linkId.dispose();
+    _linkUrl.dispose();
+    _sortOrder.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    if (_imageUrl.text.trim().isEmpty) return;
+    Navigator.pop(context, {
+      'imageUrl': _imageUrl.text.trim(),
+      'title': _title.text.trim(),
+      'linkType': _linkType,
+      'linkId': _linkId.text.trim().isEmpty ? null : _linkId.text.trim(),
+      'linkUrl': _linkUrl.text.trim().isEmpty ? null : _linkUrl.text.trim(),
+      'sortOrder': int.tryParse(_sortOrder.text.trim()) ?? 0,
+      'isActive': _isActive,
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(widget.existing == null ? 'Banner toevoegen' : 'Banner bewerken'),
+      content: SizedBox(
+        width: 380,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _Label('Afbeelding-URL *'),
+              _TextField(controller: _imageUrl, hint: 'https://…/banner.jpg'),
+              const SizedBox(height: 12),
+              const _Label('Titel'),
+              _TextField(controller: _title, hint: 'WK-campagne'),
+              const SizedBox(height: 12),
+              const _Label('Link type'),
+              DropdownButtonFormField<String>(
+                initialValue: _linkType,
+                items: _linkTypes
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                    .toList(),
+                onChanged: (v) => setState(() => _linkType = v ?? 'none'),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(color: Color(0xFFE8EAF0))),
+                ),
+              ),
+              if (_linkType == 'auction' || _linkType == 'category') ...[
+                const SizedBox(height: 12),
+                _Label(_linkType == 'auction' ? 'Veiling-ID' : 'Categorie-slug'),
+                _TextField(controller: _linkId),
+              ],
+              if (_linkType == 'external') ...[
+                const SizedBox(height: 12),
+                const _Label('Externe URL'),
+                _TextField(controller: _linkUrl, hint: 'https://…'),
+              ],
+              const SizedBox(height: 12),
+              const _Label('Volgorde'),
+              _TextField(
+                  controller: _sortOrder, keyboard: TextInputType.number),
+              const SizedBox(height: 8),
+              Row(children: [
+                Switch(
+                  value: _isActive,
+                  onChanged: (v) => setState(() => _isActive = v),
+                  activeThumbColor: AppColors.primaryRed,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                const SizedBox(width: 8),
+                const Text('Actief', style: TextStyle(fontSize: 13)),
+              ]),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Annuleren'),
+        ),
+        ElevatedButton(
+          onPressed: _save,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryRed,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Opslaan'),
+        ),
+      ],
     );
   }
 }

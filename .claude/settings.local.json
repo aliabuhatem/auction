@@ -61,7 +61,18 @@
       "Bash(xargs grep -ln \"class.*Scaffold\\\\|AdminScaffold\\\\|extends StatelessWidget\")",
       "Bash(flutter test *)",
       "Bash(xargs grep -ln \"class\")",
-      "Bash(sed -n '1,60p' lib/features/auctions/presentation/bloc/auction_detail_bloc.dart)"
+      "Bash(sed -n '1,60p' lib/features/auctions/presentation/bloc/auction_detail_bloc.dart)",
+      "Bash(sed -n '1,40p' lib/features/auctions/presentation/widgets/auction_grid.dart)",
+      "Bash(sed -n '1,30p' lib/features/auctions/data/models/auction_model.dart)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('firestore.indexes.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('firebase.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('functions/package.json','utf8'\\)\\); JSON.parse\\(require\\('fs'\\).readFileSync\\('functions/tsconfig.json','utf8'\\)\\); console.log\\('All JSON valid'\\)\")",
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(sed -n '10,45p' lib/features/notifications/notification_service.dart)",
+      "Bash(sed -n '30,55p' lib/features/notifications/presentation/notifications_page.dart)",
+      "Bash(firebase --version)",
+      "Bash(firebase login:list)",
+      "Bash(firebase use *)",
+      "Bash(firebase deploy *)"
     ]
   }
 }

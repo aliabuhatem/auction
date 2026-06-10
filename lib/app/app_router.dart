@@ -22,7 +22,11 @@ import '../features/auth/presentation/pages/onboarding_page.dart';
 import '../features/auctions/presentation/pages/home_page.dart';
 import '../features/auctions/presentation/pages/auction_detail_page.dart';
 import '../features/auctions/presentation/pages/category_page.dart';
+import '../features/auctions/presentation/pages/categories_page.dart';
+import '../features/auctions/presentation/pages/all_auctions_page.dart';
+import '../features/auctions/presentation/bloc/auction_list_bloc.dart';
 import '../features/auctions/presentation/bloc/bidding_bloc.dart';
+import '../features/auctions/domain/entities/auction_entity.dart' as auc show AuctionCategory;
 
 // ── My Auctions ───────────────────────────────────────────────────────────────
 import '../features/my_auctions/presentation/pages/my_auctions_page.dart';
@@ -47,6 +51,10 @@ import '../features/profile/presentation/pages/referral_page.dart';
 
 // ── Notifications ─────────────────────────────────────────────────────────────
 import '../features/notifications/presentation/notifications_page.dart';
+
+// ── Recently viewed ───────────────────────────────────────────────────────────
+import '../features/recent/presentation/bloc/recent_bloc.dart';
+import '../features/recent/presentation/pages/recent_auctions_page.dart';
 
 // ── Static info pages ─────────────────────────────────────────────────────────
 import '../features/info/presentation/pages/how_it_works_page.dart';
@@ -149,7 +157,6 @@ class _GoRouterRefreshStream extends ChangeNotifier {
 // ─────────────────────────────────────────────────────────────────────────────
 
 final _rootNavigatorKey  = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 final GoRouter appRouter = GoRouter(
   navigatorKey:        _rootNavigatorKey,
@@ -312,16 +319,6 @@ final GoRouter appRouter = GoRouter(
       builder:            (_, __) => const TicketsPage(),
     ),
     GoRoute(
-      path:               AppRoutes.search,
-      parentNavigatorKey: _rootNavigatorKey,
-      pageBuilder: (_, state) => CustomTransitionPage(
-        key:   state.pageKey,
-        child: const SearchPage(),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-      ),
-    ),
-    GoRoute(
       path:               AppRoutes.auctionDetail,
       parentNavigatorKey: _rootNavigatorKey,
       builder: (_, state) => BlocProvider(
@@ -372,6 +369,27 @@ final GoRouter appRouter = GoRouter(
       builder:            (_, __) => const ReferralPage(),
     ),
 
+    // ── All auctions browse ───────────────────────────────────────────────────
+    GoRoute(
+      path:               AppRoutes.allAuctions,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (_, state) => BlocProvider(
+        create: (_) => di.sl<AuctionListBloc>(),
+        child: AllAuctionsPage(
+          initialCategory: state.extra is auc.AuctionCategory
+              ? state.extra as auc.AuctionCategory
+              : null,
+        ),
+      ),
+    ),
+
+    // ── My auctions (overlay, reached from the Menu tab) ──────────────────────
+    GoRoute(
+      path:               AppRoutes.myAuctions,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const MyAuctionsPage(),
+    ),
+
     // ── Static info pages (public, overlay above the bottom-nav shell) ────────
     GoRoute(
       path:               AppRoutes.howItWorks,
@@ -399,30 +417,70 @@ final GoRouter appRouter = GoRouter(
       builder:            (_, __) => const TermsPage(),
     ),
 
-    // ── Bottom-nav shell ──────────────────────────────────────────────────────
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder:      (_, state, child) => ShellScaffold(child: child),
-      routes: [
-        GoRoute(
-          path:    AppRoutes.home,
-          builder: (_, __) => const HomePage(),
+    // ── Bottom-nav shell — 5 tabs (Home · Categorie · Zoeken · Recent · Menu) ──
+    // StatefulShellRoute.indexedStack keeps each tab's navigation state alive.
+    StatefulShellRoute.indexedStack(
+      builder: (_, __, navigationShell) =>
+          ShellScaffold(navigationShell: navigationShell),
+      branches: [
+        // 0 — Home
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path:    'category',
-              builder: (_, state) => CategoryPage(
-                category: state.extra as dynamic,
+              path:    AppRoutes.home,
+              builder: (_, __) => const HomePage(),
+              routes: [
+                GoRoute(
+                  path:    'category',
+                  builder: (_, state) => CategoryPage(
+                    category: state.extra as dynamic,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        // 1 — Categorie
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path:    AppRoutes.categories,
+              builder: (_, __) => const CategoriesPage(),
+            ),
+          ],
+        ),
+        // 2 — Zoeken (own AuctionListBloc so it doesn't mutate Home's list)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path:    AppRoutes.search,
+              builder: (_, __) => BlocProvider(
+                create: (_) => di.sl<AuctionListBloc>(),
+                child: const SearchPage(),
               ),
             ),
           ],
         ),
-        GoRoute(
-          path:    AppRoutes.myAuctions,
-          builder: (_, __) => const MyAuctionsPage(),
+        // 3 — Recent
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path:    AppRoutes.recentAuctions,
+              builder: (_, __) => BlocProvider(
+                create: (_) => di.sl<RecentBloc>(),
+                child: const RecentAuctionsPage(),
+              ),
+            ),
+          ],
         ),
-        GoRoute(
-          path:    AppRoutes.profile,
-          builder: (_, __) => const ProfilePage(),
+        // 4 — Menu
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path:    AppRoutes.profile,
+              builder: (_, __) => const ProfilePage(),
+            ),
+          ],
         ),
       ],
     ),

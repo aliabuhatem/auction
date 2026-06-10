@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../app/app_routes.dart';
+import '../../../../injection_container.dart' as di;
+import '../../../recent/domain/recent_repository.dart';
 import '../bloc/bidding_bloc.dart';
 import '../../domain/entities/auction_entity.dart';
 import '../widgets/bid_history_list.dart';
@@ -29,18 +33,23 @@ class AuctionDetailPage extends StatefulWidget {
 class _AuctionDetailPageState extends State<AuctionDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late ConfettiController _confettiController;
   int _imageIndex = 0;
+  bool _viewRecorded = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _confettiController =
+        ConfettiController(duration: const Duration(milliseconds: 900));
     context.read<BiddingBloc>().add(LoadAuctionForBidding(widget.auctionId));
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -48,8 +57,15 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
   Widget build(BuildContext context) {
     return BlocConsumer<BiddingBloc, BiddingState>(
       listener: (context, state) {
+        // Record the view once, as soon as the auction is available, so it
+        // appears under "Recente veilingen".
+        if (!_viewRecorded && state is BiddingLoaded) {
+          _viewRecorded = true;
+          di.sl<RecentRepository>().recordView(state.auction);
+        }
         if (state is BiddingSuccess) {
           HapticFeedback.mediumImpact();
+          _confettiController.play();
           final msg = state.isAutoBid
               ? '🤖 Auto-bod geplaatst: ${CurrencyFormatter.format(state.auction.currentBid)}'
               : AppStrings.bidPlaced(context);
@@ -133,7 +149,9 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
-          child: Scaffold(
+          child: Stack(
+            children: [
+              Scaffold(
             backgroundColor: isDark ? AppColors.darkBackground : AppColors.backgroundLight,
             extendBodyBehindAppBar: true,
             body: CustomScrollView(
@@ -228,6 +246,30 @@ class _AuctionDetailPageState extends State<AuctionDetailPage>
                 ),
               ],
             ),
+          ),
+              // ── Confetti overlay — fires on a successful bid ────────────
+              Align(
+                alignment: Alignment.topCenter,
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  blastDirection: math.pi / 2,
+                  emissionFrequency: 0.05,
+                  numberOfParticles: 20,
+                  maxBlastForce: 18,
+                  minBlastForce: 8,
+                  gravity: 0.25,
+                  shouldLoop: false,
+                  colors: const [
+                    AppColors.gold,
+                    AppColors.goldBright,
+                    AppColors.purple,
+                    AppColors.accentBright,
+                    AppColors.success,
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },
