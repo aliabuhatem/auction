@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/admin_auction_entity.dart';
@@ -58,8 +59,11 @@ class AdminAuctionFormBloc
           'status':      event.status.firestoreValue,
           'images':      event.images,
           'location':    event.location,
-          'startAt':     event.startAt.toIso8601String(),
-          'endsAt':      event.endsAt.toIso8601String(),
+          // Must stay Firestore Timestamps (create writes Timestamps too).
+          // Writing ISO strings here corrupted endsAt/startAt and crashed the
+          // mobile app's `as Timestamp?` cast when browsing auctions.
+          'startAt':     Timestamp.fromDate(event.startAt),
+          'endsAt':      Timestamp.fromDate(event.endsAt),
         });
         final updated = await _ds.getAuction(event.auctionId!);
         emit(AdminAuctionFormSaved(updated, isEdit: true));

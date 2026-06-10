@@ -118,7 +118,13 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
 
       final d   = doc.data()! as Map<String, dynamic>;
       final cur = (d['currentBid'] as num).toDouble();
-      final end = (d['endsAt'] as Timestamp).toDate();
+      // endsAt may be a Timestamp (created) or an ISO String (older edits).
+      final rawEnd = d['endsAt'];
+      final end = rawEnd is Timestamp
+          ? rawEnd.toDate()
+          : (rawEnd is String
+              ? (DateTime.tryParse(rawEnd) ?? DateTime.now())
+              : DateTime.now());
       final inc = (d['minBidIncrement'] as num?)?.toDouble() ?? 1.0;
       final extSec = (d['extensionSeconds'] as int?) ?? 30;
 

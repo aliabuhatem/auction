@@ -47,7 +47,7 @@ class AuctionModel extends AuctionEntity {
       currentBid:       (d['currentBid'] as num?)?.toDouble() ?? 1.0,
       startingBid:      (d['startingBid'] as num?)?.toDouble() ?? 1.0,
       bidCount:         (d['bidCount'] as int?) ?? 0,
-      endsAt:           (d['endsAt'] as Timestamp?)?.toDate() ??
+      endsAt:           _parseDate(d['endsAt']) ??
                         DateTime.now().add(const Duration(days: 1)),
       status:           _parseStatus(d['status']),
       category:         _parseCategory(d['category']),
@@ -60,7 +60,7 @@ class AuctionModel extends AuctionEntity {
       watchers:         (d['watchers'] as int?) ?? 0,
       extensionSeconds: (d['extensionSeconds'] as int?) ?? 30,
       lastBidderId:     d['lastBidderId'] as String?,
-      createdAt:        (d['createdAt'] as Timestamp?)?.toDate(),
+      createdAt:        _parseDate(d['createdAt']),
       viewCount:        (d['viewCount'] as int?) ?? 0,
       shippingCost:     (d['shippingCost'] as num?)?.toDouble(),
       shippingMethod:   d['shippingMethod'] as String?,
@@ -144,5 +144,18 @@ class AuctionModel extends AuctionEntity {
       case 'daytrips':    return AuctionCategory.dayTrips;
       default:            return AuctionCategory.vacation;
     }
+  }
+
+  /// Tolerant date parser — Firestore docs may carry a `Timestamp`, an ISO
+  /// `String`, or epoch millis (`int`). Admin auction edits historically wrote
+  /// ISO strings while creates wrote Timestamps, so reads must handle both to
+  /// avoid "type 'String' is not a subtype of 'Timestamp?'" crashes.
+  static DateTime? _parseDate(dynamic v) {
+    if (v == null) return null;
+    if (v is Timestamp) return v.toDate();
+    if (v is DateTime) return v;
+    if (v is String) return DateTime.tryParse(v);
+    if (v is int) return DateTime.fromMillisecondsSinceEpoch(v);
+    return null;
   }
 }
