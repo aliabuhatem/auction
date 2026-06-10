@@ -20,7 +20,8 @@ class AuctionListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? AppColors.textOnDark : AppColors.textPrimaryLight;
+    final textPrimary =
+        isDark ? AppColors.textOnDark : AppColors.textPrimaryLight;
     final textSecondary =
         isDark ? const Color(0xFF8892A4) : AppColors.textSecondary;
     final remaining = auction.endsAt.difference(DateTime.now());

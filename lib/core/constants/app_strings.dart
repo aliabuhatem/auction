@@ -606,6 +606,9 @@ class AppStrings {
 
     // Auction Detail
     'bidPlaced': 'Bod geplaatst!',
+
+    // Shared plurals
+    'bids': 'biedingen',
     'outbid': 'Je bent overboden! Bied opnieuw.',
     'currentBid': 'Huidig bod',
     'endsIn': 'Eindigt over',
