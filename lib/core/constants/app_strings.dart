@@ -15,7 +15,7 @@ class AppStrings {
   static String tagline(BuildContext context) => get(context, 'tagline');
 
   // ── Shared plurals ─────────────────────────────────────────────────────
-  static String bids(BuildContext context) => get(context, 'bids');
+  // (bids method already exists below; removed duplicate)
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   static String login(BuildContext context) => get(context, 'login');
@@ -100,8 +100,38 @@ class AppStrings {
 
   // ── Home & Categories ─────────────────────────────────────────────────────
   static String all(BuildContext context) => get(context, 'all');
+  static String sortEndingTime(BuildContext context) =>
+      get(context, 'sortEndingTime');
+  static String sortPopular(BuildContext context) =>
+      get(context, 'sortPopular');
+  static String viewGallery(BuildContext context) =>
+      get(context, 'viewGallery');
+  static String viewList(BuildContext context) => get(context, 'viewList');
+  static String bids(BuildContext context) => get(context, 'bids');
+  static String auctionsCount(BuildContext context, int n) =>
+      '${get(context, 'allAuctions')} ($n)';
+
+  static String allCategories(BuildContext context) =>
+      get(context, 'allCategories');
+
+  static String newsletterTitle(BuildContext context) =>
+      get(context, 'newsletterTitle');
+
+  static String newsletterSubtitle(BuildContext context) =>
+      get(context, 'newsletterSubtitle');
+
+  static String emailHintNewsletter(BuildContext context) =>
+      get(context, 'emailHintNewsletter');
+
+  static String newsletterCta(BuildContext context) =>
+      get(context, 'newsletterCta');
+
+  static String newsletterSuccess(BuildContext context) =>
+      get(context, 'newsletterSuccess');
+
   static String allAuctions(BuildContext context) =>
       get(context, 'allAuctions');
+
   static String endingSoon(BuildContext context) => get(context, 'endingSoon');
   static String sectionEndingSoon(BuildContext context) =>
       get(context, 'sectionEndingSoon');
@@ -197,7 +227,7 @@ class AppStrings {
   static String scratchPrizeWon(BuildContext context, String prize) =>
       get(context, 'scratchPrizeWon').replaceAll('{prize}', prize);
 
-  // ── Search ────────────────────────────────────────────────────────────────
+  // ── Search ───────────────────────────────────────────────────────────────
   static String searchHint(BuildContext context) => get(context, 'searchHint');
   static String searchPrompt(BuildContext context) =>
       get(context, 'searchPrompt');
@@ -211,7 +241,7 @@ class AppStrings {
   static String clearHistory(BuildContext context) =>
       get(context, 'clearHistory');
 
-  // ── Notifications ─────────────────────────────────────────────────────────
+  // ── Notifications ────────────────────────────────────────────────────────
   static String loginForNotifications(BuildContext context) =>
       get(context, 'loginForNotifications');
   static String markAllRead(BuildContext context) =>
@@ -226,7 +256,6 @@ class AppStrings {
       get(context, 'hourAgo').replaceAll('{n}', '$n');
   static String daysAgo(BuildContext context, int n) => get(context, 'daysAgo')
       .replaceAll('{n}', '$n')
-      // Dutch plural suffix: "1 dag" vs "3 dagen". Other locales don't use {s}.
       .replaceAll('{s}', n == 1 ? '' : 'en');
 
   // ── Tickets / Vouchers ────────────────────────────────────────────────────
@@ -251,7 +280,7 @@ class AppStrings {
       get(context, 'voucherCode');
   static String showQr(BuildContext context) => get(context, 'showQr');
 
-  // ── Payment ───────────────────────────────────────────────────────────────
+  // ── Payment Success ───────────────────────────────────────────────────────
   static String paymentSuccess(BuildContext context) =>
       get(context, 'paymentSuccess');
   static String yourVoucher(BuildContext context) =>
@@ -261,7 +290,7 @@ class AppStrings {
   static String viewVoucher(BuildContext context) =>
       get(context, 'viewVoucher');
 
-  // ── Wallet ────────────────────────────────────────────────────────────────
+  // ── Wallet ───────────────────────────────────────────────────────────────
   static String loginForWallet(BuildContext context) =>
       get(context, 'loginForWallet');
   static String wallet(BuildContext context) => get(context, 'wallet');
@@ -409,19 +438,13 @@ class AppStrings {
       get(context, 'noCompleted');
   static String paidOn(BuildContext context) => get(context, 'paidOn');
 
-  // ── Search filters ────────────────────────────────────────────────────────
-  static String filterByCategory(BuildContext context) =>
-      get(context, 'filterByCategory');
-  static String allCategories(BuildContext context) =>
-      get(context, 'allCategories');
-
-  // ── Legal ─────────────────────────────────────────────────────────────────
+  // ── Legal ───────────────────────────────────────────────────────────────
   static String termsOfService(BuildContext context) =>
       get(context, 'termsOfService');
   static String privacyPolicy(BuildContext context) =>
       get(context, 'privacyPolicy');
 
-  // ── Bidding sheet ────────────────────────────────────────────────────────
+  // ── Bidding sheet ───────────────────────────────────────────────────────
   static String placeBidTitle(BuildContext context) =>
       get(context, 'placeBidTitle');
   static String yourBid(BuildContext context) => get(context, 'yourBid');
@@ -488,17 +511,15 @@ class AppStrings {
   static String paymentFailedGeneric(BuildContext context, String error) =>
       get(context, 'paymentFailedGeneric').replaceAll('{error}', error);
 
-  // ── Bid History ───────────────────────────────────────────────────────────
+  // ── Bid history / win ─────────────────────────────────────────────────────
   static String bidLoadError(BuildContext context) =>
       get(context, 'bidLoadError');
   static String noBids(BuildContext context) => get(context, 'noBids');
-
-  // ── Win screen ────────────────────────────────────────────────────────────
   static String youWon(BuildContext context) => get(context, 'youWon');
   static String winningBid(BuildContext context, String amount) =>
       get(context, 'winningBid').replaceAll('{amount}', amount);
 
-  // ── Shared ────────────────────────────────────────────────────────────────
+  // ── Shared ───────────────────────────────────────────────────────────────
   static String noActive(BuildContext context) => get(context, 'noActive');
   static String noWon(BuildContext context) => get(context, 'noWon');
   static String noSaved(BuildContext context) => get(context, 'noSaved');
@@ -511,28 +532,18 @@ class AppStrings {
   static String backToHome(BuildContext context) => get(context, 'backToHome');
 
   // ─────────────────────────────────────────────────────────────────────────
-  // Newsletter
-  // ─────────────────────────────────────────────────────────────────────────
-  static String newsletterTitle(BuildContext context) =>
-      get(context, 'newsletterTitle');
-  static String newsletterSubtitle(BuildContext context) =>
-      get(context, 'newsletterSubtitle');
-  static String emailHintNewsletter(BuildContext context) =>
-      get(context, 'emailHintNewsletter');
-  static String newsletterCta(BuildContext context) =>
-      get(context, 'newsletterCta');
-  static String newsletterSuccess(BuildContext context) =>
-      get(context, 'newsletterSuccess');
-
-  // ─────────────────────────────────────────────────────────────────────────
   // Dutch
   // ─────────────────────────────────────────────────────────────────────────
   static const Map<String, String> _nl = {
-    // App
     'appName': 'Vakantieveilingen',
     'tagline': 'Bied op exclusieve aanbiedingen',
 
-    // Auth
+    'bids': 'biedingen',
+    'sortEndingTime': 'Aflopende tijd',
+    'sortPopular': 'Populaire veilingen',
+    'viewGallery': 'Galerij',
+    'viewList': 'Lijst',
+
     'login': 'Inloggen',
     'register': 'Registreren',
     'welcomeBack': 'Welkom terug!',
@@ -558,7 +569,6 @@ class AppStrings {
     'resetLinkSentMsg': 'Reset-link verstuurd. Check je e-mail.',
     'sendError': 'Fout bij versturen',
 
-    // Onboarding
     'onboard1Title': 'Bied op droomvakanties',
     'onboard1Body':
         'Vind unieke vakanties, uitjes en ervaringen. Bied mee en win voor een fractie van de prijs.',
@@ -572,14 +582,16 @@ class AppStrings {
     'getStarted': 'Aan de slag',
     'next': 'Volgende',
 
-    // Navigation
     'navHome': 'Home',
     'navAuctions': 'Veilingen',
     'navScratchCard': 'Kraskaart',
     'navVouchers': 'Vouchers',
     'navProfile': 'Profiel',
+    'navCategories': 'Categorieën',
+    'navSearch': 'Zoeken',
+    'navRecent': 'Recent',
+    'navMenu': 'Menu',
 
-    // My Auctions
     'myAuctions': 'Mijn veilingen',
     'active': 'Actief',
     'won': 'Gewonnen',
@@ -588,7 +600,6 @@ class AppStrings {
     'retryBtn': 'Opnieuw proberen',
     'orderNotFoundMsg': 'Geen openstaande bestelling gevonden',
 
-    // Home
     'all': 'Alles',
     'allAuctions': 'Alle veilingen',
     'endingSoon': 'Loopt bijna af ⏳',
@@ -604,11 +615,7 @@ class AppStrings {
     'catDayTrips': 'Dagtrips',
     'connectionError': 'Verbindingsfout',
 
-    // Auction Detail
     'bidPlaced': 'Bod geplaatst!',
-
-    // Shared plurals
-    'bids': 'biedingen',
     'outbid': 'Je bent overboden! Bied opnieuw.',
     'currentBid': 'Huidig bod',
     'endsIn': 'Eindigt over',
@@ -643,7 +650,6 @@ class AppStrings {
     'cdSec': 'sec',
     'noAuctions': 'Geen veilingen',
 
-    // Scratch Card
     'scratchCard': 'Kraskaart',
     'scratchToReveal': 'Kras de kaart om je prijs te onthullen!',
     'shareForExtra': 'Deel de app voor een extra kraskaart',
@@ -657,7 +663,6 @@ class AppStrings {
         'Probeer Vakantieveilingen! Download de app en win geweldige prijzen.',
     'scratchPrizeWon': 'Je hebt {prize} gewonnen!',
 
-    // Search
     'searchHint': 'Zoek een veiling...',
     'searchPrompt': 'Begin met typen om te zoeken',
     'noResults': 'Geen veilingen gevonden',
@@ -666,7 +671,6 @@ class AppStrings {
     'recentEmpty': 'Je hebt nog geen veilingen bekeken',
     'clearHistory': 'Wis',
 
-    // Notifications
     'loginForNotifications': 'Log in om meldingen te zien',
     'markAllRead': 'Alles lezen',
     'noNotifications': 'Geen meldingen',
@@ -675,7 +679,6 @@ class AppStrings {
     'hourAgo': '{n} uur geleden',
     'daysAgo': '{n} dag{s} geleden',
 
-    // Tickets / Vouchers
     'loginForVouchers': 'Log in om je vouchers te zien',
     'myVouchers': 'Mijn vouchers',
     'winVoucherHint': 'Win een veiling om een voucher te ontvangen',
@@ -690,13 +693,11 @@ class AppStrings {
     'voucherCode': 'Vouchercode',
     'showQr': 'Toon deze QR-code bij het inchecken',
 
-    // Payment Success
     'paymentSuccess': 'Betaling geslaagd!',
     'yourVoucher': 'Je voucher',
     'voucherCreating': 'Voucher wordt aangemaakt...',
     'viewVoucher': 'Bekijk voucher',
 
-    // Wallet
     'loginForWallet': 'Log in om je wallet te bekijken',
     'wallet': 'Wallet',
     'walletLoadError': 'Fout bij laden wallet. Probeer het opnieuw.',
@@ -708,7 +709,6 @@ class AppStrings {
     'biddingCredit': 'Biedingstegoeden',
     'creditInfo': 'Tegoed geldig voor biedingen in de app',
 
-    // Referral
     'inviteFriendsTitle': 'Vrienden uitnodigen',
     'inviteTitle': 'Nodig vrienden uit!',
     'inviteSubtitle':
@@ -732,7 +732,6 @@ class AppStrings {
         'Gebruik mijn code {code} bij Vakantieveilingen en ontvang €5 biedingstegoed! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Gratis €5 biedingstegoed',
 
-    // Profile
     'profile': 'Profiel',
     'editProfile': 'Profiel bewerken',
     'notifications': 'Meldingen',
@@ -761,13 +760,11 @@ class AppStrings {
     'cancel': 'Annuleren',
     'reloginToDeleteMsg': 'Log opnieuw in om je account te verwijderen.',
 
-    // Re-authentication
     'reauthRequired': 'Inloggen vereist',
     'reauthPrompt': 'Voer je wachtwoord in om je account te verwijderen.',
     'incorrectPassword': 'Onjuist wachtwoord. Probeer het opnieuw.',
     'confirm': 'Bevestigen',
 
-    // Account Settings
     'settingsSaved': 'Instellingen opgeslagen!',
     'reloginToChangeName': 'Log opnieuw in om je naam te wijzigen.',
     'saveFailed': 'Opslaan mislukt. Probeer het opnieuw.',
@@ -798,24 +795,19 @@ class AppStrings {
     'reloginToDelete': 'Log opnieuw in om je account te verwijderen.',
     'delete': 'Verwijderen',
 
-    // My Auctions — completed
     'completed': 'Voltooid',
     'noCompleted': 'Geen voltooide betalingen',
     'paidOn': 'Betaald op',
 
-    // Search filters
     'filterByCategory': 'Categorie',
     'allCategories': 'Alle',
 
-    // Legal
     'termsOfService': 'Gebruiksvoorwaarden',
     'privacyPolicy': 'Privacybeleid',
 
-    // Bidding sheet
     'placeBidTitle': 'Bod plaatsen',
     'yourBid': 'Jouw bod',
 
-    // Core widgets
     'auctionEnded': 'Afgelopen',
     'bidAmount': 'Bied {amount}',
     'alarmSet': 'Alarm ingesteld ✓',
@@ -823,7 +815,6 @@ class AppStrings {
     'bidNow': 'Bied nu',
     'shareAuction': 'Check deze veiling: {title}',
 
-    // Payment page
     'paymentTitle': 'Betaling',
     'orderNotFound': 'Bestelling niet gevonden.',
     'orderAccessDenied': 'Je hebt geen toegang tot deze bestelling.',
@@ -853,13 +844,12 @@ class AppStrings {
     'paymentFailedRetry': 'Betaling mislukt. Probeer het opnieuw.',
     'paymentFailedGeneric': 'Betaling mislukt: {error}',
 
-    // Bid history / win
     'bidLoadError': 'Fout bij laden biedingen',
     'noBids': 'Nog geen biedingen',
+
     'youWon': 'Gefeliciteerd! Je hebt gewonnen!',
     'winningBid': 'Winnend bod: {amount}',
 
-    // Shared
     'noActive': 'Geen actieve biedingen',
     'noWon': 'Nog niets gewonnen',
     'noSaved': 'Geen opgeslagen veilingen',
@@ -869,17 +859,27 @@ class AppStrings {
     'tryAgain': 'Probeer opnieuw',
     'pageNotFound': 'Pagina niet gevonden',
     'backToHome': 'Terug naar home',
+
+    // Newsletter
+    'newsletterTitle': 'Ontvang het nieuwste nieuws!',
+    'newsletterSubtitle':
+        'Schrijf je in voor updates en exclusieve aanbiedingen.',
+    'emailHintNewsletter': 'jij@example.com',
+    'newsletterCta': 'Inschrijven',
+    'newsletterSuccess': 'Inschrijving gelukt! Welkom!',
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
   // English
-  // ─────────────────────────────────────────────────────────────────────────
   static const Map<String, String> _en = {
-    // App
     'appName': 'Holiday Auctions',
     'tagline': 'Bid on exclusive deals',
 
-    // Auth
+    'bids': 'bids',
+    'sortEndingTime': 'Ending soon',
+    'sortPopular': 'Popular',
+    'viewGallery': 'Gallery',
+    'viewList': 'List',
+
     'login': 'Login',
     'register': 'Register',
     'welcomeBack': 'Welcome back!',
@@ -905,7 +905,6 @@ class AppStrings {
     'resetLinkSentMsg': 'Reset link sent. Check your email.',
     'sendError': 'Error sending',
 
-    // Onboarding
     'onboard1Title': 'Bid on dream vacations',
     'onboard1Body':
         'Find unique vacations, trips and experiences. Bid and win for a fraction of the price.',
@@ -913,20 +912,20 @@ class AppStrings {
     'onboard2Body':
         'Follow every bid live. Set an alarm so you never miss a final sprint.',
     'onboard3Title': 'Win and pay safely',
-    'onboard3Body':
-        'Won? Pay easily and receive your voucher directly in the app. Safe, fast and reliable.',
     'skip': 'Skip',
     'getStarted': 'Get started',
     'next': 'Next',
 
-    // Navigation
     'navHome': 'Home',
     'navAuctions': 'Auctions',
     'navScratchCard': 'Scratch Card',
     'navVouchers': 'Vouchers',
     'navProfile': 'Profile',
+    'navCategories': 'Categories',
+    'navSearch': 'Search',
+    'navRecent': 'Recent',
+    'navMenu': 'Menu',
 
-    // My Auctions
     'myAuctions': 'My Auctions',
     'active': 'Active',
     'won': 'Won',
@@ -935,7 +934,6 @@ class AppStrings {
     'retryBtn': 'Try again',
     'orderNotFoundMsg': 'No pending order found',
 
-    // Home
     'all': 'All',
     'allAuctions': 'All Auctions',
     'endingSoon': 'Ending soon ⏳',
@@ -951,7 +949,6 @@ class AppStrings {
     'catDayTrips': 'Day Trips',
     'connectionError': 'Connection error',
 
-    // Auction Detail
     'bidPlaced': 'Bid placed!',
     'outbid': 'You have been outbid! Bid again.',
     'currentBid': 'Current bid',
@@ -965,19 +962,19 @@ class AppStrings {
     'quickBid': 'Quick bid',
     'customAmount': 'Enter custom amount',
     'invalidMaxBid': 'Enter a valid maximum amount',
-    'autoBidActiveLeading': 'Auto-bid active — you\'re still leading.',
-    'youAreWinning': 'You\'re winning! The current bid is yours.',
-    'youWereOutbid': 'You\'ve been outbid! Bid to reclaim the lead.',
+    'autoBidActiveLeading': "Auto-bid active — you're still leading.",
+    'youAreWinning': "You're winning! The current bid is yours.",
+    'youWereOutbid': "You've been outbid! Bid to reclaim the lead.",
     'auctionExtended':
         'Auction extended by {s}s — someone bid in the last minute!',
     'bidCountMin': '{count} bids · min. +{min}',
     'autoBidActiveMax': 'Auto-bid active: max {amount}',
     'setMaxBid': 'Set max bid',
-    'autoBidSub': 'We bid automatically when you\'re outbid',
+    'autoBidSub': "We bid automatically when you're outbid",
     'buyNow': 'Buy now — {price}',
     'minBidLabel': 'Min.',
     'autoBidExplain':
-        'We automatically place the minimum bid on your behalf when you\'re outbid, up to your maximum.',
+        "We automatically place the minimum bid on your behalf when you're outbid, up to your maximum.",
     'myMaximum': 'My maximum',
     'setBtn': 'Set',
     'removeAutoBid': 'Remove auto-bid',
@@ -987,7 +984,6 @@ class AppStrings {
     'cdSec': 's',
     'noAuctions': 'No auctions',
 
-    // Scratch Card
     'scratchCard': 'Scratch Card',
     'scratchToReveal': 'Scratch the card to reveal your prize!',
     'shareForExtra': 'Share the app for an extra scratch card',
@@ -1001,16 +997,14 @@ class AppStrings {
         'Try Holiday Auctions! Download the app and win great prizes.',
     'scratchPrizeWon': 'You won {prize}!',
 
-    // Search
     'searchHint': 'Search for an auction...',
     'searchPrompt': 'Start typing to search',
     'noResults': 'No auctions found',
     'recentSearches': 'Recent searches',
     'recentAuctions': 'Recent auctions',
-    'recentEmpty': 'You haven\'t viewed any auctions yet',
+    'recentEmpty': "You haven't viewed any auctions yet",
     'clearHistory': 'Clear',
 
-    // Notifications
     'loginForNotifications': 'Log in to see notifications',
     'markAllRead': 'Mark all read',
     'noNotifications': 'No notifications',
@@ -1019,7 +1013,6 @@ class AppStrings {
     'hourAgo': '{n} hr ago',
     'daysAgo': '{n} day(s) ago',
 
-    // Tickets / Vouchers
     'loginForVouchers': 'Log in to see your vouchers',
     'myVouchers': 'My vouchers',
     'winVoucherHint': 'Win an auction to receive a voucher',
@@ -1034,13 +1027,11 @@ class AppStrings {
     'voucherCode': 'Voucher Code',
     'showQr': 'Show this QR code at check-in',
 
-    // Payment Success
     'paymentSuccess': 'Payment successful!',
     'yourVoucher': 'Your voucher',
     'voucherCreating': 'Creating voucher...',
     'viewVoucher': 'View voucher',
 
-    // Wallet
     'loginForWallet': 'Log in to view your wallet',
     'wallet': 'Wallet',
     'walletLoadError': 'Error loading wallet. Please try again.',
@@ -1052,7 +1043,6 @@ class AppStrings {
     'biddingCredit': 'Bidding credit',
     'creditInfo': 'Credit valid for bids in the app',
 
-    // Referral
     'inviteFriendsTitle': 'Invite friends',
     'inviteTitle': 'Invite your friends!',
     'inviteSubtitle':
@@ -1076,7 +1066,6 @@ class AppStrings {
         'Use my code {code} at Holiday Auctions and receive €5 bidding credit! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Free €5 bidding credit',
 
-    // Profile
     'profile': 'Profile',
     'editProfile': 'Edit Profile',
     'notifications': 'Notifications',
@@ -1105,13 +1094,11 @@ class AppStrings {
     'cancel': 'Cancel',
     'reloginToDeleteMsg': 'Please log in again to delete your account.',
 
-    // Re-authentication
     'reauthRequired': 'Re-authentication required',
     'reauthPrompt': 'Enter your password to delete your account.',
     'incorrectPassword': 'Incorrect password. Please try again.',
     'confirm': 'Confirm',
 
-    // Account Settings
     'settingsSaved': 'Settings saved!',
     'reloginToChangeName': 'Please log in again to change your name.',
     'saveFailed': 'Save failed. Please try again.',
@@ -1142,24 +1129,19 @@ class AppStrings {
     'reloginToDelete': 'Please log in again to delete your account.',
     'delete': 'Delete',
 
-    // My Auctions — completed
     'completed': 'Completed',
     'noCompleted': 'No completed payments',
     'paidOn': 'Paid on',
 
-    // Search filters
     'filterByCategory': 'Category',
     'allCategories': 'All',
 
-    // Legal
     'termsOfService': 'Terms of Service',
     'privacyPolicy': 'Privacy Policy',
 
-    // Bidding sheet
     'placeBidTitle': 'Place bid',
     'yourBid': 'Your bid',
 
-    // Core widgets
     'auctionEnded': 'Ended',
     'bidAmount': 'Bid {amount}',
     'alarmSet': 'Alarm set ✓',
@@ -1167,13 +1149,9 @@ class AppStrings {
     'bidNow': 'Bid now',
     'shareAuction': 'Check out this auction: {title}',
 
-    // Payment page
     'paymentTitle': 'Payment',
-
-    // Shared plurals
-    'bids': 'bids',
     'orderNotFound': 'Order not found.',
-    'orderAccessDenied': 'You don\'t have access to this order.',
+    'orderAccessDenied': "You don't have access to this order.",
     'orderLoadError': 'Error loading order. Please try again.',
     'checkoutNotAvailable':
         'Checkout link not available yet. Please try again.',
@@ -1200,13 +1178,12 @@ class AppStrings {
     'paymentFailedRetry': 'Payment failed. Please try again.',
     'paymentFailedGeneric': 'Payment failed: {error}',
 
-    // Bid history / win
     'bidLoadError': 'Error loading bids',
     'noBids': 'No bids yet',
+
     'youWon': 'Congratulations! You won!',
     'winningBid': 'Winning bid: {amount}',
 
-    // Shared
     'noActive': 'No active bids',
     'noWon': 'Nothing won yet',
     'noSaved': 'No saved auctions',
@@ -1216,17 +1193,26 @@ class AppStrings {
     'tryAgain': 'Try again',
     'pageNotFound': 'Page not found',
     'backToHome': 'Back to home',
+
+    // Newsletter
+    'newsletterTitle': 'Get the latest news!',
+    'newsletterSubtitle': 'Subscribe for updates and exclusive deals.',
+    'emailHintNewsletter': 'you@example.com',
+    'newsletterCta': 'Subscribe',
+    'newsletterSuccess': 'Subscription successful! Welcome!',
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
   // Arabic
-  // ─────────────────────────────────────────────────────────────────────────
   static const Map<String, String> _ar = {
-    // App
     'appName': 'مزادات العطلات',
     'tagline': 'زايد على عروض حصرية',
 
-    // Auth
+    'bids': 'المزايدات',
+    'sortEndingTime': 'ينتهي قريباً',
+    'sortPopular': 'الأكثر شعبية',
+    'viewGallery': 'معرض',
+    'viewList': 'قائمة',
+
     'login': 'تسجيل الدخول',
     'register': 'تسجيل',
     'welcomeBack': 'مرحباً بعودتك!',
@@ -1252,7 +1238,6 @@ class AppStrings {
     'resetLinkSentMsg': 'تم إرسال رابط الإعادة. تحقق من بريدك الإلكتروني.',
     'sendError': 'خطأ في الإرسال',
 
-    // Onboarding
     'onboard1Title': 'زايد على إجازات أحلامك',
     'onboard1Body': 'اعثر على إجازات وتجارب فريدة. زايد وافز بسعر لا يُصدق.',
     'onboard2Title': 'مزادات لحظية',
@@ -1265,14 +1250,16 @@ class AppStrings {
     'getStarted': 'ابدأ الآن',
     'next': 'التالي',
 
-    // Navigation
     'navHome': 'الرئيسية',
     'navAuctions': 'المزادات',
     'navScratchCard': 'كرت الحظ',
     'navVouchers': 'القسائم',
     'navProfile': 'الملف الشخصي',
+    'navCategories': 'التصنيفات',
+    'navSearch': 'بحث',
+    'navRecent': 'الأحدث',
+    'navMenu': 'قائمة',
 
-    // My Auctions
     'myAuctions': 'مزاداتي',
     'active': 'نشط',
     'won': 'فزت بها',
@@ -1281,7 +1268,6 @@ class AppStrings {
     'retryBtn': 'حاول مرة أخرى',
     'orderNotFoundMsg': 'لم يُعثر على طلب معلق',
 
-    // Home
     'all': 'الكل',
     'allAuctions': 'جميع المزادات',
     'endingSoon': 'تنتهي قريباً ⏳',
@@ -1297,7 +1283,6 @@ class AppStrings {
     'catDayTrips': 'رحلات يومية',
     'connectionError': 'خطأ في الاتصال',
 
-    // Auction Detail
     'bidPlaced': 'تم تقديم المزايدة!',
     'outbid': 'تم تجاوز مزايدتك! قدّم مزايدة جديدة.',
     'currentBid': 'المزايدة الحالية',
@@ -1333,7 +1318,6 @@ class AppStrings {
     'cdSec': 'ث',
     'noAuctions': 'لا توجد مزادات',
 
-    // Scratch Card
     'scratchCard': 'بطاقة الحظ',
     'scratchToReveal': 'امسح البطاقة للكشف عن جائزتك!',
     'shareForExtra': 'شارك التطبيق للحصول على بطاقة إضافية',
@@ -1346,7 +1330,6 @@ class AppStrings {
     'shareAppMsg': 'جرّب مزادات العطلات! حمّل التطبيق وافز بجوائز رائعة.',
     'scratchPrizeWon': 'لقد فزت بـ {prize}!',
 
-    // Search
     'searchHint': 'ابحث عن مزاد...',
     'searchPrompt': 'ابدأ الكتابة للبحث',
     'noResults': 'لم يُعثر على مزادات',
@@ -1355,7 +1338,6 @@ class AppStrings {
     'recentEmpty': 'لم تشاهد أي مزادات بعد',
     'clearHistory': 'مسح',
 
-    // Notifications
     'loginForNotifications': 'سجل دخولك لرؤية الإشعارات',
     'markAllRead': 'تحديد الكل كمقروء',
     'noNotifications': 'لا توجد إشعارات',
@@ -1364,7 +1346,6 @@ class AppStrings {
     'hourAgo': 'منذ {n} ساعة',
     'daysAgo': 'منذ {n} يوم',
 
-    // Tickets / Vouchers
     'loginForVouchers': 'سجل دخولك لرؤية قسائمك',
     'myVouchers': 'قسائمي',
     'winVoucherHint': 'افز بمزاد للحصول على قسيمة',
@@ -1379,13 +1360,11 @@ class AppStrings {
     'voucherCode': 'رمز القسيمة',
     'showQr': 'أظهر رمز QR هذا عند تسجيل الوصول',
 
-    // Payment Success
     'paymentSuccess': 'تمّ الدفع بنجاح!',
     'yourVoucher': 'قسيمتك',
     'voucherCreating': 'جارٍ إنشاء القسيمة...',
     'viewVoucher': 'عرض القسيمة',
 
-    // Wallet
     'loginForWallet': 'سجل دخولك لعرض محفظتك',
     'wallet': 'المحفظة',
     'walletLoadError': 'خطأ في تحميل المحفظة. حاول مرة أخرى.',
@@ -1397,7 +1376,6 @@ class AppStrings {
     'biddingCredit': 'رصيد المزايدة',
     'creditInfo': 'الرصيد صالح للمزايدة في التطبيق',
 
-    // Referral
     'inviteFriendsTitle': 'دعوة الأصدقاء',
     'inviteTitle': 'ادعُ أصدقاءك!',
     'inviteSubtitle':
@@ -1420,7 +1398,6 @@ class AppStrings {
         'استخدم كودي {code} في مزادات العطلات واحصل على رصيد مزايدة €5! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'رصيد مزايدة مجاني €5',
 
-    // Profile
     'profile': 'الملف الشخصي',
     'editProfile': 'تعديل الملف الشخصي',
     'notifications': 'الإشعارات',
@@ -1449,13 +1426,11 @@ class AppStrings {
     'cancel': 'إلغاء',
     'reloginToDeleteMsg': 'سجل دخولك مجدداً لحذف حسابك.',
 
-    // Re-authentication
     'reauthRequired': 'مطلوب إعادة المصادقة',
     'reauthPrompt': 'أدخل كلمة مرورك لحذف حسابك.',
     'incorrectPassword': 'كلمة مرور خاطئة. حاول مرة أخرى.',
     'confirm': 'تأكيد',
 
-    // Account Settings
     'settingsSaved': 'تم حفظ الإعدادات!',
     'reloginToChangeName': 'سجل دخولك مجدداً لتغيير اسمك.',
     'saveFailed': 'فشل الحفظ. حاول مرة أخرى.',
@@ -1486,24 +1461,19 @@ class AppStrings {
     'reloginToDelete': 'سجل دخولك مجدداً لحذف حسابك.',
     'delete': 'حذف',
 
-    // My Auctions — completed
     'completed': 'مكتملة',
     'noCompleted': 'لا توجد مدفوعات مكتملة',
     'paidOn': 'مدفوع في',
 
-    // Search filters
     'filterByCategory': 'الفئة',
     'allCategories': 'الكل',
 
-    // Legal
     'termsOfService': 'شروط الاستخدام',
     'privacyPolicy': 'سياسة الخصوصية',
 
-    // Bidding sheet
     'placeBidTitle': 'تقديم مزايدة',
     'yourBid': 'مزايدتك',
 
-    // Core widgets
     'auctionEnded': 'انتهى',
     'bidAmount': 'زايد بـ {amount}',
     'alarmSet': 'تم ضبط التنبيه ✓',
@@ -1511,7 +1481,6 @@ class AppStrings {
     'bidNow': 'زايد الآن',
     'shareAuction': 'اطلع على هذا المزاد: {title}',
 
-    // Payment page
     'paymentTitle': 'الدفع',
     'orderNotFound': 'لم يُعثر على الطلب.',
     'orderAccessDenied': 'ليس لديك صلاحية الوصول إلى هذا الطلب.',
@@ -1539,16 +1508,12 @@ class AppStrings {
     'paymentFailedRetry': 'فشل الدفع. حاول مرة أخرى.',
     'paymentFailedGeneric': 'فشل الدفع: {error}',
 
-    // Bid history / win
     'bidLoadError': 'خطأ في تحميل المزايدات',
-
-    // Shared plurals
-    'bids': 'المزايدات',
     'noBids': 'لا توجد مزايدات بعد',
+
     'youWon': 'تهانينا! لقد فزت!',
     'winningBid': 'المزايدة الفائزة: {amount}',
 
-    // Shared
     'noActive': 'لا توجد مزايدات نشطة',
     'noWon': 'لم تفز بأي شيء بعد',
     'noSaved': 'لا توجد مزادات محفوظة',
@@ -1557,5 +1522,12 @@ class AppStrings {
     'tryAgain': 'حاول مرة أخرى',
     'pageNotFound': 'الصفحة غير موجودة',
     'backToHome': 'العودة إلى الرئيسية',
+
+    // Newsletter
+    'newsletterTitle': 'احصل على آخر الأخبار!',
+    'newsletterSubtitle': 'اشترك لتلقي التحديثات والعروض الحصرية.',
+    'emailHintNewsletter': 'you@example.com',
+    'newsletterCta': 'اشترك',
+    'newsletterSuccess': 'تمت عملية الاشتراك بنجاح! أهلاً بك!',
   };
 }
