@@ -1169,6 +1169,9 @@ class AppStrings {
 
     // Payment page
     'paymentTitle': 'Payment',
+
+    // Shared plurals
+    'bids': 'bids',
     'orderNotFound': 'Order not found.',
     'orderAccessDenied': 'You don\'t have access to this order.',
     'orderLoadError': 'Error loading order. Please try again.',
