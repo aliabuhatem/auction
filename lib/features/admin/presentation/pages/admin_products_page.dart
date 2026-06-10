@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/admin_product_bloc.dart';
 import '../../domain/entities/admin_product_entity.dart';
 import '../../domain/entities/admin_category_entity.dart';
 import '../../domain/entities/admin_auction_entity.dart';
 import '../../data/datasources/admin_product_datasource.dart';
+import '../../data/datasources/admin_auction_datasource.dart';
+import '../../../../app/app_routes.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../widgets/admin_shell.dart';
 import 'admin_product_form_page.dart';
@@ -261,6 +264,7 @@ class _ProductsTabState extends State<_ProductsTab> {
         product: products[i],
         onEdit: () => _openForm(context, products[i]),
         onDelete: () => _confirmDelete(context, products[i]),
+        onCreateAuction: () => _createAuctionFromProduct(context, products[i]),
         onToggle: (v) => context.read<AdminProductBloc>()
             .add(ToggleProductActive(products[i].id, v)),
       ),
@@ -278,6 +282,55 @@ class _ProductsTabState extends State<_ProductsTab> {
         context.read<AdminProductBloc>().add(LoadAdminProducts());
       }
     });
+  }
+
+  /// One-click: turns a product into a live auction (starting bid €1, runs for
+  /// 7 days). The admin can fine-tune via the "Bewerken" snackbar action.
+  Future<void> _createAuctionFromProduct(
+      BuildContext context, AdminProductEntity product) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final auctionDs = context.read<AdminAuctionDatasource>();
+    final productDs = context.read<AdminProductDatasource>();
+    final bloc      = context.read<AdminProductBloc>();
+    try {
+      final now = DateTime.now();
+      final auction = await auctionDs.createAuction(
+        title:       product.title,
+        description: product.description,
+        category:    product.category,
+        retailValue: product.retailValue,
+        startingBid: 1.0,
+        status:      AuctionStatus.live,
+        startAt:     now,
+        endsAt:      now.add(const Duration(days: 7)),
+        location:    product.location,
+        imageUrls:   product.images,
+      );
+      // Keep the product's usage counter in sync.
+      await productDs.updateProduct(product.id, {
+        'usedInAuctions': product.usedInAuctions + 1,
+      });
+      bloc.add(LoadAdminProducts());
+      messenger.showSnackBar(SnackBar(
+        content: const Text('Veiling aangemaakt — verschijnt nu in de app'),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: 'Bewerken',
+          textColor: Colors.white,
+          onPressed: () => context.go(
+            AppRoutes.adminAuctionEditPath(auction.id),
+            extra: auction,
+          ),
+        ),
+      ));
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(
+        content: Text('Aanmaken mislukt: $e'),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
   }
 
   void _confirmDelete(BuildContext context, AdminProductEntity product) {
@@ -446,12 +499,14 @@ class _ProductCard extends StatelessWidget {
   final AdminProductEntity product;
   final VoidCallback       onEdit;
   final VoidCallback       onDelete;
+  final VoidCallback       onCreateAuction;
   final ValueChanged<bool> onToggle;
 
   const _ProductCard({
     required this.product,
     required this.onEdit,
     required this.onDelete,
+    required this.onCreateAuction,
     required this.onToggle,
   });
 
@@ -518,6 +573,24 @@ class _ProductCard extends StatelessWidget {
                 style: const TextStyle(fontSize: 11, color: Color(0xFF8B9CB6))),
           ],
         )),
+        // One-click: create an auction from this product
+        Tooltip(
+          message: 'Maak veiling van dit product',
+          child: OutlinedButton.icon(
+            onPressed: onCreateAuction,
+            icon: const Icon(Icons.gavel_rounded, size: 15),
+            label: const Text('Maak veiling'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primaryRed,
+              side: const BorderSide(color: AppColors.primaryRed),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
         // Active toggle
         Column(children: [
           Switch(
@@ -540,12 +613,14 @@ class _ProductCard extends StatelessWidget {
               size: 18, color: Color(0xFF8B9CB6)),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           itemBuilder: (_) => [
-            _item('edit',   Icons.edit_outlined,   'Bewerken'),
-            _item('delete', Icons.delete_outline,  'Verwijderen', red: true),
+            _item('auction', Icons.gavel_rounded,   'Maak veiling'),
+            _item('edit',    Icons.edit_outlined,   'Bewerken'),
+            _item('delete',  Icons.delete_outline,  'Verwijderen', red: true),
           ],
           onSelected: (v) {
-            if (v == 'edit')   onEdit();
-            if (v == 'delete') onDelete();
+            if (v == 'auction') onCreateAuction();
+            if (v == 'edit')    onEdit();
+            if (v == 'delete')  onDelete();
           },
         ),
       ]),
