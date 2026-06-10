@@ -51,17 +51,44 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  static const _categories = [
-    (null, 'Alles'),
-    (AuctionCategory.vacation, 'Vakantie'),
-    (AuctionCategory.beauty, 'Beauty'),
-    (AuctionCategory.sauna, 'Sauna'),
-    (AuctionCategory.food, 'Eten'),
-    (AuctionCategory.experiences, 'Beleving'),
-    (AuctionCategory.sports, 'Sport'),
-    (AuctionCategory.wellness, 'Wellness'),
-    (AuctionCategory.dayTrips, 'Dagtrips'),
+  // Category -> localized-label resolver. Labels go through AppStrings so they
+  // translate with the active locale (nl/en/ar) instead of being hardcoded.
+  static const _categories = <AuctionCategory?>[
+    null,
+    AuctionCategory.vacation,
+    AuctionCategory.beauty,
+    AuctionCategory.sauna,
+    AuctionCategory.food,
+    AuctionCategory.experiences,
+    AuctionCategory.sports,
+    AuctionCategory.wellness,
+    AuctionCategory.dayTrips,
   ];
+
+  static String _categoryLabel(BuildContext context, AuctionCategory? cat) {
+    switch (cat) {
+      case null:
+        return AppStrings.all(context);
+      case AuctionCategory.vacation:
+        return AppStrings.catVacation(context);
+      case AuctionCategory.beauty:
+        return AppStrings.catBeauty(context);
+      case AuctionCategory.sauna:
+        return AppStrings.catSauna(context);
+      case AuctionCategory.food:
+        return AppStrings.catFood(context);
+      case AuctionCategory.experiences:
+        return AppStrings.catExperiences(context);
+      case AuctionCategory.sports:
+        return AppStrings.catSports(context);
+      case AuctionCategory.wellness:
+        return AppStrings.catWellness(context);
+      case AuctionCategory.dayTrips:
+        return AppStrings.catDayTrips(context);
+      default:
+        return AppStrings.all(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,14 +238,14 @@ class _CategoryBarDelegate extends SliverPersistentHeaderDelegate {
             itemCount: _HomePageState._categories.length,
             itemBuilder: (_, i) {
               final cat = _HomePageState._categories[i];
-              final isSelected = sel == cat.$1;
+              final isSelected = sel == cat;
               return _CategoryPill(
-                label: cat.$2,
+                label: _HomePageState._categoryLabel(context, cat),
                 isSelected: isSelected,
                 isDark: isDark,
                 onTap: () => context
                     .read<AuctionListBloc>()
-                    .add(FilterByCategory(category: cat.$1)),
+                    .add(FilterByCategory(category: cat)),
               );
             },
           );
@@ -306,8 +333,8 @@ class _ContentView extends StatelessWidget {
         slivers: [
           // ── Featured / ending soon ────────────────────────────────────────
           if (state.endingSoonAuctions.isNotEmpty) ...[
-            const _SectionHeader(
-              title: '🔥 Snel sluitend',
+            _SectionHeader(
+              title: AppStrings.sectionEndingSoon(context),
               onMore: null,
             ),
             SliverToBoxAdapter(
@@ -317,8 +344,8 @@ class _ContentView extends StatelessWidget {
           ],
 
           // ── All auctions grid ─────────────────────────────────────────────
-          const _SectionHeader(
-            title: 'Alle veilingen',
+          _SectionHeader(
+            title: AppStrings.allAuctions(context),
             onMore: null,
           ),
           AuctionGrid(
@@ -360,9 +387,9 @@ class _SectionHeader extends StatelessWidget {
             if (onMore != null)
               GestureDetector(
                 onTap: onMore,
-                child: const Text(
-                  'Alles',
-                  style: TextStyle(
+                child: Text(
+                  AppStrings.all(context),
+                  style: const TextStyle(
                     color: AppColors.primaryRed,
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
@@ -491,9 +518,9 @@ class _ErrorView extends StatelessWidget {
                   size: 36, color: AppColors.error),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Verbindingsfout',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
+            Text(
+              AppStrings.connectionError(context),
+              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18),
             ),
             const SizedBox(height: 8),
             Text(

@@ -48,6 +48,13 @@ import '../features/profile/presentation/pages/referral_page.dart';
 // ── Notifications ─────────────────────────────────────────────────────────────
 import '../features/notifications/presentation/notifications_page.dart';
 
+// ── Static info pages ─────────────────────────────────────────────────────────
+import '../features/info/presentation/pages/how_it_works_page.dart';
+import '../features/info/presentation/pages/customer_service_page.dart';
+import '../features/info/presentation/pages/about_page.dart';
+import '../features/info/presentation/pages/privacy_page.dart';
+import '../features/info/presentation/pages/terms_page.dart';
+
 // ── Admin ─────────────────────────────────────────────────────────────────────
 import '../features/admin/admin_routes.dart';
 import '../features/admin/presentation/pages/admin_login_page.dart';
@@ -176,10 +183,13 @@ final GoRouter appRouter = GoRouter(
     final isOnAuth       = path.startsWith('/auth');
     final isOnSplash     = path == AppRoutes.splash;
     final isOnOnboarding = path == AppRoutes.onboarding;
+    // Static info pages + customer service are public (shown in the logged-out menu).
+    final isPublicInfo   = path.startsWith('/info/') || path == AppRoutes.service;
 
     if (user == null) {
-      // Allow unauthenticated access only to auth pages, splash, and onboarding.
-      if (isOnAuth || isOnSplash || isOnOnboarding) return null;
+      // Allow unauthenticated access to auth pages, splash, onboarding, and the
+      // public information pages.
+      if (isOnAuth || isOnSplash || isOnOnboarding || isPublicInfo) return null;
       return AppRoutes.login;
     }
 
@@ -360,6 +370,33 @@ final GoRouter appRouter = GoRouter(
       path:               AppRoutes.referral,
       parentNavigatorKey: _rootNavigatorKey,
       builder:            (_, __) => const ReferralPage(),
+    ),
+
+    // ── Static info pages (public, overlay above the bottom-nav shell) ────────
+    GoRoute(
+      path:               AppRoutes.howItWorks,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const HowItWorksPage(),
+    ),
+    GoRoute(
+      path:               AppRoutes.service,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const CustomerServicePage(),
+    ),
+    GoRoute(
+      path:               AppRoutes.about,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const AboutPage(),
+    ),
+    GoRoute(
+      path:               AppRoutes.privacy,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const PrivacyPage(),
+    ),
+    GoRoute(
+      path:               AppRoutes.terms,
+      parentNavigatorKey: _rootNavigatorKey,
+      builder:            (_, __) => const TermsPage(),
     ),
 
     // ── Bottom-nav shell ──────────────────────────────────────────────────────

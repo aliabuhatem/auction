@@ -155,7 +155,10 @@ class AppStrings {
   static String hourAgo(BuildContext context, int n) =>
       get(context, 'hourAgo').replaceAll('{n}', '$n');
   static String daysAgo(BuildContext context, int n) =>
-      get(context, 'daysAgo').replaceAll('{n}', '$n');
+      get(context, 'daysAgo')
+          .replaceAll('{n}', '$n')
+          // Dutch plural suffix: "1 dag" vs "3 dagen". Other locales don't use {s}.
+          .replaceAll('{s}', n == 1 ? '' : 'en');
 
   // ── Tickets / Vouchers ────────────────────────────────────────────────────
   static String loginForVouchers(BuildContext context) => get(context, 'loginForVouchers');
@@ -218,6 +221,7 @@ class AppStrings {
   static String darkMode(BuildContext context) => get(context, 'darkMode');
   static String language(BuildContext context) => get(context, 'language');
   static String help(BuildContext context) => get(context, 'help');
+  static String customerService(BuildContext context) => get(context, 'customerService');
   static String about(BuildContext context) => get(context, 'about');
   static String deleteAccount(BuildContext context) => get(context, 'deleteAccount');
   static String defaultUser(BuildContext context) => get(context, 'defaultUser');
@@ -553,6 +557,7 @@ class AppStrings {
     'darkMode': 'Donkere modus',
     'language': 'Taal',
     'help': 'Help & Support',
+    'customerService': 'Klantenservice',
     'about': 'Over ons',
     'deleteAccount': 'Account verwijderen',
     'defaultUser': 'Gebruiker',
@@ -878,6 +883,7 @@ class AppStrings {
     'darkMode': 'Dark Mode',
     'language': 'Language',
     'help': 'Help & Support',
+    'customerService': 'Customer service',
     'about': 'About Us',
     'deleteAccount': 'Delete Account',
     'defaultUser': 'User',
@@ -1203,6 +1209,7 @@ class AppStrings {
     'darkMode': 'الوضع الليلي',
     'language': 'اللغة',
     'help': 'المساعدة والدعم',
+    'customerService': 'خدمة العملاء',
     'about': 'من نحن',
     'deleteAccount': 'حذف الحساب',
     'defaultUser': 'المستخدم',

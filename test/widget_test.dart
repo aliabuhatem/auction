@@ -1,30 +1,66 @@
-// This is a basic Flutter widget test.
+// Smoke tests for the app's localization system (AppStrings).
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// Replaces the default counter boilerplate (which referenced a counter UI this
+// app never had). These tests verify that strings resolve per-locale and that
+// the Dutch plural handling no longer leaks the literal "{s}" placeholder.
 
-import 'package:auction/app/app.dart';
+import 'package:auction/core/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// Pumps a minimal localized app and hands the descendant [BuildContext] back
+/// to [onContext] so AppStrings can be resolved against [locale].
+Future<void> _withLocale(
+  WidgetTester tester,
+  Locale locale,
+  void Function(BuildContext context) onContext,
+) async {
+  await tester.pumpWidget(
+    MaterialApp(
+      locale: locale,
+      supportedLocales: const [Locale('nl'), Locale('en'), Locale('ar')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Builder(
+        builder: (context) {
+          onContext(context);
+          return const SizedBox.shrink();
+        },
+      ),
+    ),
+  );
+}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const AuctionApp());
+  testWidgets('resolves strings per active locale', (tester) async {
+    await _withLocale(tester, const Locale('nl'), (context) {
+      expect(AppStrings.navAuctions(context), 'Veilingen');
+    });
+    await _withLocale(tester, const Locale('en'), (context) {
+      expect(AppStrings.navAuctions(context), 'Auctions');
+    });
+    await _withLocale(tester, const Locale('ar'), (context) {
+      expect(AppStrings.navAuctions(context), 'المزادات');
+    });
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('falls back gracefully for an unsupported locale', (tester) async {
+    await _withLocale(tester, const Locale('fr'), (context) {
+      // No French map -> falls through to Dutch (the base language).
+      expect(AppStrings.navHome(context), 'Home');
+    });
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Dutch daysAgo pluralizes without leaking {s}', (tester) async {
+    await _withLocale(tester, const Locale('nl'), (context) {
+      expect(AppStrings.daysAgo(context, 1), '1 dag geleden');
+      expect(AppStrings.daysAgo(context, 3), '3 dagen geleden');
+      // The placeholder must never survive into the rendered string.
+      expect(AppStrings.daysAgo(context, 3).contains('{s}'), isFalse);
+    });
   });
 }

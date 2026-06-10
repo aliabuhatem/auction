@@ -5,6 +5,7 @@ import '../bloc/admin_auth_bloc.dart';
 import '../../domain/entities/admin_user_entity.dart';
 import '../../../../app/app_routes.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/responsive.dart';
 
 class AdminShell extends StatefulWidget {
   final Widget child;
@@ -68,7 +69,16 @@ class _AdminShellState extends State<AdminShell> {
             child: Column(
               children: [
                 _TopBar(user: user),
-                Expanded(child: widget.child),
+                // Cap the content column on ultra-wide monitors so tables and
+                // forms stay readable instead of stretching edge to edge.
+                // (flutter-build-responsive-layout)
+                Expanded(
+                  child: MaxWidthContent(
+                    maxWidth: Breakpoints.dashboardContent,
+                    alignment: Alignment.topLeft,
+                    child: widget.child,
+                  ),
+                ),
               ],
             ),
           ),
@@ -290,18 +300,25 @@ class _TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('$greeting, ${user?.displayName.split(' ').first ?? ''} 👋',
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14,
-                  color: Color(0xFF1A1D27))),
-              Text(
-                '${_weekday(now.weekday)} ${now.day} ${_month(now.month)} ${now.year}',
-                style: const TextStyle(fontSize: 11, color: Color(0xFF8B9CB6)),
-              ),
-            ],
+          // Flexible so a long admin name can't overflow the top bar.
+          Flexible(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('$greeting, ${user?.displayName.split(' ').first ?? ''} 👋',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14,
+                    color: Color(0xFF1A1D27))),
+                Text(
+                  '${_weekday(now.weekday)} ${now.day} ${_month(now.month)} ${now.year}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 11, color: Color(0xFF8B9CB6)),
+                ),
+              ],
+            ),
           ),
           const Spacer(),
           // Live indicator

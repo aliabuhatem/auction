@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../app/app_router.dart';
 import '../../../core/constants/app_colors.dart';
@@ -90,12 +89,16 @@ class ProfilePage extends StatelessWidget {
                   _tile(context, Icons.language, AppStrings.language(context), () => _showLanguageDialog(context)),
                 ]),
                 _section(context, AppStrings.sectionMore(context), [
-                  _tile(context, Icons.help_outline, AppStrings.help(context), () => _showHelp(context)),
+                  _tile(context, Icons.workspace_premium_outlined, AppStrings.howItWorks(context),
+                      () => context.push(AppRoutes.howItWorks)),
+                  _tile(context, Icons.support_agent_outlined, AppStrings.customerService(context),
+                      () => context.push(AppRoutes.service)),
                   _tile(context, Icons.description_outlined, AppStrings.termsOfService(context),
-                      () => _openUrl('https://vakantieveilingen.nl/voorwaarden')),
+                      () => context.push(AppRoutes.terms)),
                   _tile(context, Icons.privacy_tip_outlined, AppStrings.privacyPolicy(context),
-                      () => _openUrl('https://vakantieveilingen.nl/privacy')),
-                  _tile(context, Icons.info_outline, AppStrings.about(context), () => _showAbout(context)),
+                      () => context.push(AppRoutes.privacy)),
+                  _tile(context, Icons.info_outline, AppStrings.about(context),
+                      () => context.push(AppRoutes.about)),
                 ]),
                 _section(context, AppStrings.sectionAccountManage(context), [
                   _tile(context, Icons.logout, AppStrings.logout(context), () {
@@ -114,63 +117,6 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Future<void> _openUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  void _showHelp(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(AppStrings.help(context)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(AppStrings.helpQuestion(context),
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-            const SizedBox(height: 12),
-            const Row(children: [
-              Icon(Icons.email_outlined, size: 18, color: AppColors.primaryRed),
-              SizedBox(width: 8),
-              Text('support@vakantieveilingen.nl'),
-            ]),
-            const SizedBox(height: 8),
-            Row(children: [
-              const Icon(Icons.schedule_outlined, size: 18, color: AppColors.primaryRed),
-              const SizedBox(width: 8),
-              Text(AppStrings.supportHours(context)),
-            ]),
-          ],
-        ),
-        actions: [
-          ElevatedButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(AppStrings.close(context))),
-        ],
-      ),
-    );
-  }
-
-  void _showAbout(BuildContext context) {
-    showAboutDialog(
-      context: context,
-      applicationName: AppStrings.appName(context),
-      applicationVersion: 'v1.0.0',
-      applicationIcon: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(color: AppColors.primaryRed, borderRadius: BorderRadius.circular(10)),
-        child: const Icon(Icons.gavel, color: Colors.white, size: 28),
-      ),
-      children: [
-        Text(AppStrings.aboutDesc(context)),
-      ],
     );
   }
 

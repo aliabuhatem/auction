@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_dimensions.dart';
+import '../utils/responsive.dart';
 
 Color _shimmerBase(BuildContext ctx) =>
     Theme.of(ctx).brightness == Brightness.dark
@@ -123,8 +124,10 @@ class AuctionGridShimmer extends StatelessWidget {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(AppDimensions.gridPadding),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount:    AppDimensions.gridCrossAxisCount,
+      // Match the real grid's adaptive columns so the loading state lines up
+      // with the loaded state on tablets/foldables.
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: Breakpoints.auctionCardMaxExtent,
         childAspectRatio:  AppDimensions.gridChildAspectRatio,
         crossAxisSpacing:  AppDimensions.gridSpacing,
         mainAxisSpacing:   AppDimensions.gridSpacing,

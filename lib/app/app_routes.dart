@@ -21,6 +21,12 @@ class AppRoutes {
   static const wallet          = '/wallet';
   static const referral        = '/referral';
   static const notifications   = '/notifications';
+  // ── Static info pages ──────────────────────────────────────────────────────
+  static const howItWorks      = '/info/hoe-het-werkt';
+  static const about           = '/info/over-ons';
+  static const privacy         = '/info/privacy';
+  static const terms           = '/info/algemene-voorwaarden';
+  static const service         = '/service';
   // IMPORTANT: paymentSuccess MUST be declared before payment in the route list
   // to prevent 'success' being captured as the :orderId parameter.
   static const paymentSuccess  = '/payment/success';

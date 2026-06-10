@@ -54,7 +54,14 @@
       "Bash(git reset *)",
       "Bash(flutter pub *)",
       "Bash(grep -rn \"isSelected ? Colors.white\\\\|isSelected\\\\s*$\\\\|? Colors.white$\\\\|selected ? Colors.white\" lib/core/widgets/category_chip.dart lib/features/auctions/presentation/pages/auction_detail_page.dart)",
-      "Bash(grep -v \"//\\\\|app_colors\")"
+      "Bash(grep -v \"//\\\\|app_colors\")",
+      "Bash(npx -y skills add https://github.com/flutter/skills --skill flutter-build-responsive-layout --skill flutter-fix-layout-issues --skill flutter-setup-localization --skill flutter-animating-apps --skill flutter-architecting-apps --skill flutter-building-layouts --skill flutter-reducing-app-size --skill flutter-localizing-apps --skill flutter-working-with-databases)",
+      "Bash(npx -y skills add https://github.com/flutter/skills --skill nonexistent-xyz)",
+      "Bash(grep -iA2 \"available\\\\|found\\\\|skills:\")",
+      "Bash(xargs grep -ln \"class.*Scaffold\\\\|AdminScaffold\\\\|extends StatelessWidget\")",
+      "Bash(flutter test *)",
+      "Bash(xargs grep -ln \"class\")",
+      "Bash(sed -n '1,60p' lib/features/auctions/presentation/bloc/auction_detail_bloc.dart)"
     ]
   }
 }

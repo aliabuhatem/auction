@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/auction_card.dart';
 import '../../../../core/constants/app_dimensions.dart';
+import '../../../../core/utils/responsive.dart';
 
 class AuctionGrid extends StatelessWidget {
   final List<AuctionEntity> auctions;
@@ -65,8 +66,11 @@ class AuctionGrid extends StatelessWidget {
           },
           childCount: (hasMore && isLoadingMore) ? auctions.length + 1 : auctions.length,
         ),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: AppDimensions.gridCrossAxisCount,
+        // Adaptive columns: derive the count from available width so the grid
+        // shows 2 cards on a phone and 3+ on tablets/foldables/large windows
+        // without stretching cards unnaturally wide. (flutter-build-responsive-layout)
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: Breakpoints.auctionCardMaxExtent,
           childAspectRatio: AppDimensions.gridChildAspectRatio,
           crossAxisSpacing: AppDimensions.gridSpacing,
           mainAxisSpacing: AppDimensions.gridSpacing,
