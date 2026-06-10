@@ -14,6 +14,9 @@ class AppStrings {
   static String appName(BuildContext context) => get(context, 'appName');
   static String tagline(BuildContext context) => get(context, 'tagline');
 
+  // ── Shared plurals ─────────────────────────────────────────────────────
+  static String bids(BuildContext context) => get(context, 'bids');
+
   // ── Auth ──────────────────────────────────────────────────────────────────
   static String login(BuildContext context) => get(context, 'login');
   static String register(BuildContext context) => get(context, 'register');
@@ -79,6 +82,11 @@ class AppStrings {
   static String navVouchers(BuildContext context) =>
       get(context, 'navVouchers');
   static String navProfile(BuildContext context) => get(context, 'navProfile');
+  static String navCategories(BuildContext context) =>
+      get(context, 'navCategories');
+  static String navSearch(BuildContext context) => get(context, 'navSearch');
+  static String navRecent(BuildContext context) => get(context, 'navRecent');
+  static String navMenu(BuildContext context) => get(context, 'navMenu');
 
   // ── My Auctions ───────────────────────────────────────────────────────────
   static String myAuctions(BuildContext context) => get(context, 'myAuctions');
@@ -501,6 +509,20 @@ class AppStrings {
   static String pageNotFound(BuildContext context) =>
       get(context, 'pageNotFound');
   static String backToHome(BuildContext context) => get(context, 'backToHome');
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Newsletter
+  // ─────────────────────────────────────────────────────────────────────────
+  static String newsletterTitle(BuildContext context) =>
+      get(context, 'newsletterTitle');
+  static String newsletterSubtitle(BuildContext context) =>
+      get(context, 'newsletterSubtitle');
+  static String emailHintNewsletter(BuildContext context) =>
+      get(context, 'emailHintNewsletter');
+  static String newsletterCta(BuildContext context) =>
+      get(context, 'newsletterCta');
+  static String newsletterSuccess(BuildContext context) =>
+      get(context, 'newsletterSuccess');
 
   // ─────────────────────────────────────────────────────────────────────────
   // Dutch

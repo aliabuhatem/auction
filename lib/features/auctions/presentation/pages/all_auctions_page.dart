@@ -11,6 +11,7 @@ import '../widgets/auction_grid.dart';
 import '../widgets/auction_list_tile.dart';
 
 enum _ViewMode { gallery, list }
+
 enum _SortMode { endingTime, popular }
 
 /// /veilingen — browse all auctions with category filter, sort, and a
@@ -70,9 +71,10 @@ class _AllAuctionsPageState extends State<AllAuctionsPage> {
       appBar: AppBar(
         title: BlocBuilder<AuctionListBloc, AuctionListState>(
           builder: (context, state) {
-            final count = state is AuctionListLoaded ? state.auctions.length : 0;
+            final count =
+                state is AuctionListLoaded ? state.auctions.length : 0;
             return Text(
-              AppStrings.auctionsCount(context, count),
+              '${AppStrings.get(context, 'allAuctions')} (${count.toString()})',
               style: const TextStyle(fontWeight: FontWeight.w800),
             );
           },
@@ -179,7 +181,8 @@ class _CategoryBar extends StatelessWidget {
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             padding: const EdgeInsets.symmetric(
-                horizontal: AppDimensions.spaceL, vertical: AppDimensions.spaceS),
+                horizontal: AppDimensions.spaceL,
+                vertical: AppDimensions.spaceS),
             decoration: BoxDecoration(
               gradient: active ? AppColors.goldGradient : null,
               color: active ? null : AppColors.glassFill,
@@ -221,21 +224,21 @@ class _Toolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-          AppDimensions.paddingM, 0, AppDimensions.paddingM, AppDimensions.spaceS),
+      padding: const EdgeInsets.fromLTRB(AppDimensions.paddingM, 0,
+          AppDimensions.paddingM, AppDimensions.spaceS),
       child: Row(
         children: [
           Expanded(
             child: Row(
               children: [
                 _SortPill(
-                  label: AppStrings.sortEndingTime(context),
+                  label: AppStrings.get(context, 'endingSoon'),
                   active: sort == _SortMode.endingTime,
                   onTap: () => onSort(_SortMode.endingTime),
                 ),
                 const SizedBox(width: AppDimensions.spaceS),
                 _SortPill(
-                  label: AppStrings.sortPopular(context),
+                  label: AppStrings.get(context, 'sortPopular'),
                   active: sort == _SortMode.popular,
                   onTap: () => onSort(_SortMode.popular),
                 ),
@@ -245,14 +248,14 @@ class _Toolbar extends StatelessWidget {
           _ViewToggleButton(
             icon: Icons.grid_view_rounded,
             active: view == _ViewMode.gallery,
-            tooltip: AppStrings.viewGallery(context),
+            tooltip: AppStrings.get(context, 'viewGallery'),
             onTap: () => onView(_ViewMode.gallery),
           ),
           const SizedBox(width: AppDimensions.spaceXS),
           _ViewToggleButton(
             icon: Icons.view_agenda_outlined,
             active: view == _ViewMode.list,
-            tooltip: AppStrings.viewList(context),
+            tooltip: AppStrings.get(context, 'viewList'),
             onTap: () => onView(_ViewMode.list),
           ),
         ],

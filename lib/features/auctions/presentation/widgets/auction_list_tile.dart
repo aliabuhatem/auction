@@ -171,7 +171,7 @@ class AuctionListTile extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${auction.bidCount}× ${AppStrings.bids(context)}',
+                              '${auction.bidCount}× ${AppStrings.bids}',
                               style: TextStyle(
                                 fontSize: AppDimensions.fontXS,
                                 color: textSecondary,
