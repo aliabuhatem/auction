@@ -1541,6 +1541,9 @@ class AppStrings {
 
     // Bid history / win
     'bidLoadError': 'خطأ في تحميل المزايدات',
+
+    // Shared plurals
+    'bids': 'المزايدات',
     'noBids': 'لا توجد مزايدات بعد',
     'youWon': 'تهانينا! لقد فزت!',
     'winningBid': 'المزايدة الفائزة: {amount}',
