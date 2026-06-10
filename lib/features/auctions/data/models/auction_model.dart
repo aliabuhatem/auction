@@ -32,7 +32,12 @@ class AuctionModel extends AuctionEntity {
 
   factory AuctionModel.fromFirestore(DocumentSnapshot doc) {
     final d = doc.data() as Map<String, dynamic>;
-    final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ?? [];
+    // The admin dashboard writes auction images to the `images` field, while
+    // older/mobile data uses `imageUrls`. Read either so dashboard-created
+    // auctions show their images on mobile.
+    final urls = (d['imageUrls'] as List<dynamic>?)?.cast<String>() ??
+        (d['images'] as List<dynamic>?)?.cast<String>() ??
+        [];
     return AuctionModel(
       id:               doc.id,
       title:            d['title'] ?? '',

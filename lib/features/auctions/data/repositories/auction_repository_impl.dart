@@ -40,7 +40,9 @@ class AuctionRepositoryImpl implements AuctionRepository {
 
   @override
   Stream<List<AuctionEntity>> watchAuctions({AuctionCategory? category}) =>
-      remote.watchAuctions(category: category?.name);
+      // Use firestoreValue (matches the value the admin writes) — `.name`
+      // diverges for dayTrips ('dayTrips' vs stored 'daytrips').
+      remote.watchAuctions(category: category?.firestoreValue);
 
   @override
   Stream<AuctionEntity> watchAuction(String auctionId) =>
