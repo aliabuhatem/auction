@@ -103,7 +103,14 @@ class AuctionEntity extends Equatable {
   });
 
   Duration get timeRemaining  => endsAt.difference(DateTime.now());
-  bool get isLive             => status == AuctionStatus.live;
+  // An auction is over once its end time passes OR an admin/Cloud Function has
+  // marked it ended/sold. Checking the clock matters because status is flipped
+  // server-side (onAuctionEnd); until that runs, a past auction still reads
+  // `live` in Firestore.
+  bool get hasEnded           => status == AuctionStatus.ended ||
+                                 status == AuctionStatus.sold ||
+                                 timeRemaining.isNegative;
+  bool get isLive             => status == AuctionStatus.live && !hasEnded;
   bool get isEnding           => timeRemaining.inMinutes < 10 && timeRemaining.inSeconds > 0;
   bool get isEndingSoon       => timeRemaining.inSeconds > 0 && timeRemaining.inSeconds <= 60;
   bool get isNew              => createdAt != null &&

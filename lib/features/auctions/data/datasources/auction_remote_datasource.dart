@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../models/auction_model.dart';
 import '../models/bid_model.dart';
@@ -111,6 +112,20 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
   @override
   Future<bool> placeBid(
       String auctionId, double amount, String userId, String? userName) {
+    // INTERIM (Spark plan): bids run as a client-side Firestore transaction.
+    // The matching rule lets an authed user raise currentBid/bidCount/
+    // lastBidderId/endsAt and create their own bid doc. Validation here is
+    // best-effort and trusts the client — once on Blaze, switch to the
+    // `placeBid` Cloud Function (server-authoritative) and lock the rules back.
+    // The security rule requires lastBidderId / bid.userId == auth.uid, so
+    // resolve the real signed-in user rather than trusting the caller's args.
+    final authUser = FirebaseAuth.instance.currentUser;
+    final bidderId = authUser?.uid ?? userId;
+    if (bidderId.isEmpty) {
+      throw Exception('You must be signed in to place a bid');
+    }
+    final bidderName = userName ?? authUser?.displayName ?? 'Anonymous';
+
     return firestore.runTransaction<bool>((tx) async {
       final ref = _auctions.doc(auctionId);
       final doc = await tx.get(ref);
@@ -141,7 +156,7 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
       final updates = <String, dynamic>{
         'currentBid':   amount,
         'bidCount':     FieldValue.increment(1),
-        'lastBidderId': userId,
+        'lastBidderId': bidderId,
       };
       if (timeLeft.inSeconds <= 60) {
         updates['endsAt'] = Timestamp.fromDate(end.add(Duration(seconds: extSec)));
@@ -151,8 +166,8 @@ class AuctionRemoteDatasourceImpl implements AuctionRemoteDatasource {
 
       tx.set(ref.collection('bids').doc(), {
         'auctionId': auctionId,
-        'userId':    userId,
-        'userName':  userName ?? 'Anonymous',
+        'userId':    bidderId,
+        'userName':  bidderName,
         'amount':    amount,
         'placedAt':  FieldValue.serverTimestamp(),
       });

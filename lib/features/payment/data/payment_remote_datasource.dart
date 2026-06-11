@@ -1,33 +1,31 @@
-import 'package:dio/dio.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 abstract class PaymentRemoteDatasource {
-  Future<String> createPayment({required String orderId, required double amount, required String userId});
-  Future<bool> verifyPayment(String paymentId);
+  /// Starts (or reuses) a Mollie checkout for [orderId] and returns the hosted
+  /// checkout URL to open in the WebView / browser.
+  Future<String> createPayment({required String orderId});
 }
 
 class PaymentRemoteDatasourceImpl implements PaymentRemoteDatasource {
-  final Dio _dio;
-  PaymentRemoteDatasourceImpl({Dio? dio}) : _dio = dio ?? Dio();
+  final FirebaseFunctions _functions;
+  PaymentRemoteDatasourceImpl({FirebaseFunctions? functions})
+      : _functions = functions ?? FirebaseFunctions.instance;
 
   @override
-  Future<String> createPayment({required String orderId, required double amount, required String userId}) async {
-    final response = await _dio.post(
-      'https://your-backend.com/api/payments/create',
-      data: {
+  Future<String> createPayment({required String orderId}) async {
+    try {
+      final callable = _functions.httpsCallable('createMolliePayment');
+      final res = await callable.call<Map<String, dynamic>>({
         'orderId': orderId,
-        'amount': amount,
-        'userId': userId,
-        'currency': 'EUR',
-        'redirectUrl': 'auction://payment/result',
-        'webhookUrl': 'https://your-backend.com/webhooks/mollie',
-      },
-    );
-    return response.data['checkoutUrl'] as String;
-  }
-
-  @override
-  Future<bool> verifyPayment(String paymentId) async {
-    final response = await _dio.get('https://your-backend.com/api/payments/$paymentId/status');
-    return response.data['status'] == 'paid';
+      });
+      final url = res.data['checkoutUrl'] as String?;
+      if (url == null || url.isEmpty) {
+        throw Exception('Geen checkout-URL ontvangen.');
+      }
+      return url;
+    } on FirebaseFunctionsException catch (e) {
+      // Surface the server's human-readable message to the UI.
+      throw Exception(e.message ?? 'Betaling starten mislukt.');
+    }
   }
 }

@@ -11,26 +11,10 @@ class PaymentRepositoryImpl implements PaymentRepository {
   @override
   Future<Either<Failure, String>> createPayment({
     required String orderId,
-    required double amount,
-    required String userId,
   }) async {
     try {
-      final url = await datasource.createPayment(
-        orderId: orderId,
-        amount:  amount,
-        userId:  userId,
-      );
+      final url = await datasource.createPayment(orderId: orderId);
       return Right(url);
-    } catch (e) {
-      return Left(ServerFailure(e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, bool>> verifyPayment(String paymentId) async {
-    try {
-      final result = await datasource.verifyPayment(paymentId);
-      return Right(result);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

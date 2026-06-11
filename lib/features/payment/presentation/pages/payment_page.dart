@@ -10,6 +10,8 @@ import '../../../../app/app_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../../../../injection_container.dart' as di;
+import '../../domain/payment_repository.dart';
 
 class PaymentPage extends StatefulWidget {
   final String orderId;
@@ -87,20 +89,27 @@ class _PaymentPageState extends State<PaymentPage> {
     final msgFailed     = AppStrings.paymentFailedRetry(context);
     setState(() => _paying = true);
     try {
-      final checkoutUrl = _order!['checkoutUrl'] as String?;
-      if (checkoutUrl == null || checkoutUrl.isEmpty) {
-        _showError(msgCheckout);
+      // Always go through the server: it creates a fresh Mollie checkout or
+      // reuses an existing open one, so we never trust a stale stored URL.
+      final result =
+          await di.sl<PaymentRepository>().createPayment(orderId: widget.orderId);
+      String? checkoutUrl;
+      String? failMsg;
+      result.fold((f) => failMsg = f.message, (url) => checkoutUrl = url);
+      if (checkoutUrl == null || checkoutUrl!.isEmpty) {
+        _showError(failMsg ?? msgCheckout);
         setState(() => _paying = false);
         return;
       }
+      final url = checkoutUrl!;
       if (kIsWeb) {
-        await launchUrl(Uri.parse(checkoutUrl),
+        await launchUrl(Uri.parse(url),
             mode: LaunchMode.externalApplication);
       } else {
         if (mounted) {
           await Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => _MollieWebView(
-              url:             checkoutUrl,
+              url:             url,
               orderId:         widget.orderId,
               cancelledMsg:    msgCancelled,
               failedMsg:       msgFailed,

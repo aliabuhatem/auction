@@ -33,9 +33,27 @@ service cloud.firestore {
     match /users/{userId} {
       allow read:   if isOwner(userId) || isAdmin();
       allow create: if isOwner(userId);
+      // Allowlist (not denylist): a user may ONLY change these profile/pref
+      // fields on their own doc. Value & stat fields — bidCredits, role,
+      // wonCount, bidsCount, totalSpent, referralCount, isActive, isBanned,
+      // createdAt, referralCode — are intentionally absent, so the client
+      // cannot grant itself credits or tamper with stats. Those are written
+      // only by Cloud Functions / admins.
       allow update: if (isOwner(userId) &&
-                        !request.resource.data.diff(resource.data)
-                          .affectedKeys().hasAny(['role', 'createdAt'])) ||
+                        request.resource.data.diff(resource.data)
+                          .affectedKeys().hasOnly([
+                            'displayName', 'avatarUrl', 'phoneNumber',
+                            'notificationPrefs', 'fcmToken', 'platform',
+                            'watchlist', 'alarms', 'onboardingDone',
+                            'updatedAt',
+                            // TODO(security #4): remove these once the
+                            // scratch-card prize logic moves to a Cloud
+                            // Function. The client should not own promo/value
+                            // fields. Kept temporarily so the current
+                            // client-side scratch card keeps working.
+                            'lastScratchCardDate', 'streakDays',
+                            'scratchCardsUsed', 'prizes'
+                          ])) ||
                        isAdmin();
       allow delete: if isOwner(userId) || isSuperAdmin();
 
@@ -51,10 +69,31 @@ service cloud.firestore {
     match /auctions/{auctionId} {
       allow read:   if true;
       allow create: if isAdmin();
-      allow update: if isAdmin();
       allow delete: if isAdmin();
 
-      // Subcollection: bids inside each auction
+      // INTERIM (Spark plan, no Cloud Functions): an authenticated user may
+      // update ONLY the live-bid fields, and only by raising the price and
+      // naming themselves as the bidder. Admin may update anything.
+      //
+      // TODO(security #1/#2): once on Blaze, deploy the `placeBid` function and
+      // change this back to `allow update: if isAdmin();` so all bid mutation is
+      // server-validated (min increment, deadline, ban checks). The function
+      // bypasses rules via the admin SDK.
+      allow update: if isAdmin() ||
+                       (isAuth() &&
+                        request.resource.data.diff(resource.data).affectedKeys()
+                          .hasOnly([
+                            'currentBid', 'bidCount', 'lastBidderId', 'endsAt',
+                          ]) &&
+                        request.resource.data.currentBid is number &&
+                        request.resource.data.currentBid >
+                          resource.data.currentBid &&
+                        request.resource.data.lastBidderId == request.auth.uid);
+
+      // Subcollection: bids inside each auction.
+      // INTERIM: clients create their own bid doc (validated: own userId,
+      // numeric amount above the current price). Reverts to function-only
+      // (`allow create: if false`) once on Blaze.
       match /bids/{bidId} {
         allow read:   if isAuth();
         allow create: if isAuth() &&
@@ -68,6 +107,7 @@ service cloud.firestore {
     }
 
     // ── Bids (top-level collection for collection-group queries) ──────────────
+    // INTERIM: clients may create their own bid; reverts to function-only on Blaze.
     match /bids/{bidId} {
       allow read:   if isAuth();
       allow create: if isAuth() &&

@@ -19,9 +19,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> register(String email, String password, String name) async {
+  Future<Either<Failure, UserEntity>> register(String email, String password, String name,
+      {String? referralCode}) async {
     try {
-      final user = await datasource.registerWithEmail(email, password, name);
+      final user = await datasource.registerWithEmail(email, password, name,
+          referralCode: referralCode);
       return Right(user);
     } on Exception catch (e) {
       return Left(ServerFailure(_parseFirebaseError(e.toString())));

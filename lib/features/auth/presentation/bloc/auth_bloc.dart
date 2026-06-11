@@ -57,7 +57,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       RegisterRequested e, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     final r = await registerUseCase(
-        RegisterParams(email: e.email, password: e.password, name: e.name));
+        RegisterParams(email: e.email, password: e.password, name: e.name,
+            referralCode: e.referralCode));
     await r.fold(
       (f) async => emit(AuthError(f.message)),
       (u) async {

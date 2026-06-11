@@ -8,9 +8,16 @@ class RegisterUseCase implements UseCase<UserEntity, RegisterParams> {
   final AuthRepository repository;
   RegisterUseCase(this.repository);
   @override
-  Future<Either<Failure, UserEntity>> call(RegisterParams p) => repository.register(p.email, p.password, p.name);
+  Future<Either<Failure, UserEntity>> call(RegisterParams p) =>
+      repository.register(p.email, p.password, p.name, referralCode: p.referralCode);
 }
 class RegisterParams {
   final String email, password, name;
-  const RegisterParams({required this.email, required this.password, required this.name});
+  final String? referralCode;
+  const RegisterParams({
+    required this.email,
+    required this.password,
+    required this.name,
+    this.referralCode,
+  });
 }

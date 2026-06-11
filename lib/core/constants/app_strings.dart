@@ -333,6 +333,8 @@ class AppStrings {
       get(context, 'referralShareMsg').replaceAll('{code}', code);
   static String referralShareSubject(BuildContext context) =>
       get(context, 'referralShareSubject');
+  static String referralCodeOptional(BuildContext context) =>
+      get(context, 'referralCodeOptional');
 
   // ── Profile ───────────────────────────────────────────────────────────────
   static String profile(BuildContext context) => get(context, 'profile');
@@ -731,6 +733,7 @@ class AppStrings {
     'referralShareMsg':
         'Gebruik mijn code {code} bij Vakantieveilingen en ontvang €5 biedingstegoed! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Gratis €5 biedingstegoed',
+    'referralCodeOptional': 'Verwijscode (optioneel)',
 
     'profile': 'Profiel',
     'editProfile': 'Profiel bewerken',
@@ -1065,6 +1068,7 @@ class AppStrings {
     'referralShareMsg':
         'Use my code {code} at Holiday Auctions and receive €5 bidding credit! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'Free €5 bidding credit',
+    'referralCodeOptional': 'Referral code (optional)',
 
     'profile': 'Profile',
     'editProfile': 'Edit Profile',
@@ -1397,6 +1401,7 @@ class AppStrings {
     'referralShareMsg':
         'استخدم كودي {code} في مزادات العطلات واحصل على رصيد مزايدة €5! 🎉\n\nhttps://vakantieveilingen.nl',
     'referralShareSubject': 'رصيد مزايدة مجاني €5',
+    'referralCodeOptional': 'رمز الإحالة (اختياري)',
 
     'profile': 'الملف الشخصي',
     'editProfile': 'تعديل الملف الشخصي',

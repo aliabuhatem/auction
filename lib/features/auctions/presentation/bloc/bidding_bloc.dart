@@ -57,10 +57,16 @@ class BiddingBloc extends Bloc<BiddingEvent, BiddingState> {
   void _onUpdate(AuctionStreamUpdate e, Emitter<BiddingState> emit) {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-    // Winner detection — works regardless of current state
-    if (e.auction.status == AuctionStatus.sold &&
-        currentUserId != null &&
-        e.auction.winnerId == currentUserId) {
+    // Winner detection — works regardless of current state.
+    // An auction ends as `ended` (set by onAuctionEnd / admin) or `sold`; the
+    // winner is `winnerId` when resolved, otherwise the highest bidder
+    // (`lastBidderId`). Both terminal states must trigger the win screen.
+    final isTerminal = e.auction.status == AuctionStatus.ended ||
+        e.auction.status == AuctionStatus.sold;
+    final winnerId = (e.auction.winnerId != null && e.auction.winnerId!.isNotEmpty)
+        ? e.auction.winnerId
+        : e.auction.lastBidderId;
+    if (isTerminal && currentUserId != null && winnerId == currentUserId) {
       emit(BiddingWon(auction: e.auction));
       return;
     }

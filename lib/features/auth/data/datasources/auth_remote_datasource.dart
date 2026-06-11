@@ -6,7 +6,8 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDatasource {
   Future<UserModel> loginWithEmail(String email, String password);
-  Future<UserModel> registerWithEmail(String email, String password, String name);
+  Future<UserModel> registerWithEmail(String email, String password, String name,
+      {String? referralCode});
   Future<UserModel> loginWithGoogle();
   Future<void>      logout();
   Future<UserModel?> getCurrentUser();
@@ -35,7 +36,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
 
   @override
   Future<UserModel> registerWithEmail(
-      String email, String password, String name) async {
+      String email, String password, String name,
+      {String? referralCode}) async {
     final cred = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
 
@@ -49,6 +51,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       uid:   user.uid,
       email: email,
       name:  name,
+      referredByCode: referralCode,
     );
 
     return UserModel.fromFirebaseUser(_auth.currentUser!);
@@ -108,8 +111,13 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
     required String name,
     String?         avatarUrl,
     String?         referralCode,
+    String?         referredByCode,
   }) async {
     final code = referralCode ?? _generateReferralCode(uid);
+    // The code the new user typed in (the referrer's own referralCode). The
+    // onReferralSignup Cloud Function resolves this to the referrer's uid and
+    // grants the reward.
+    final referredBy = referredByCode?.trim().toUpperCase();
 
     await _firestore.collection('users').doc(uid).set({
       'uid':              uid,
@@ -120,6 +128,8 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       'role':             'user',
       'bidCredits':       0.0,
       'referralCode':     code,
+      if (referredBy != null && referredBy.isNotEmpty)
+        'referredByCode': referredBy,
       'onboardingDone':   false,
       'bidsCount':        0,
       'wonCount':         0,

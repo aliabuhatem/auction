@@ -7,6 +7,18 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/constants/app_strings.dart';
 
+/// A "received" transaction. Accepts both the canonical `credit` and the legacy
+/// `earned` value some older docs may carry.
+bool _isCredit(String type) => type == 'credit' || type == 'earned';
+
+/// `createdAt` may be a Firestore [Timestamp] (canonical) or an ISO string
+/// (legacy). Returns null if neither.
+DateTime? _txDate(dynamic raw) {
+  if (raw is Timestamp) return raw.toDate();
+  if (raw is String) return DateTime.tryParse(raw);
+  return null;
+}
+
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
 
@@ -59,15 +71,18 @@ class _WalletPageState extends State<WalletPage> {
               final allTx = List<QueryDocumentSnapshot>.from(
                   txSnap.data?.docs ?? [])
                 ..sort((a, b) {
-                  final ta = ((a.data() as Map)['createdAt'] as Timestamp?)?.seconds ?? 0;
-                  final tb = ((b.data() as Map)['createdAt'] as Timestamp?)?.seconds ?? 0;
+                  final ta = _txDate((a.data() as Map)['createdAt'])
+                          ?.millisecondsSinceEpoch ?? 0;
+                  final tb = _txDate((b.data() as Map)['createdAt'])
+                          ?.millisecondsSinceEpoch ?? 0;
                   return tb.compareTo(ta);
                 });
               final filtered = _filterIndex == 0
                   ? allTx
                   : allTx.where((d) {
                       final type = (d.data() as Map)['type'] as String? ?? '';
-                      return _filterIndex == 1 ? type == 'credit' : type == 'debit';
+                      // 1 = received (credits), 2 = used (debits).
+                      return _filterIndex == 1 ? _isCredit(type) : !_isCredit(type);
                     }).toList();
 
               final filters = _filters(context);
@@ -247,12 +262,12 @@ class _TxTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final type    = data['type'] as String? ?? 'debit';
-    final isCredit = type == 'credit';
+    final isCredit = _isCredit(type);
     final amount  = (data['amount'] as num?)?.toDouble() ?? 0.0;
     final desc    = data['description'] as String? ?? '';
-    final ts      = data['createdAt'] as Timestamp?;
+    final dt      = _txDate(data['createdAt']);
     final locale  = Localizations.localeOf(context).toString();
-    final date    = ts != null ? _formatDate(ts.toDate(), locale) : '';
+    final date    = dt != null ? _formatDate(dt, locale) : '';
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

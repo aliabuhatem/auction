@@ -20,12 +20,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final _email    = TextEditingController();
   final _password = TextEditingController();
   final _confirm  = TextEditingController();
+  final _referral = TextEditingController();
   final _formKey  = GlobalKey<FormState>();
   bool _obscure   = true;
 
   @override
   void dispose() {
     _name.dispose(); _email.dispose(); _password.dispose(); _confirm.dispose();
+    _referral.dispose();
     super.dispose();
   }
 
@@ -91,6 +93,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   decoration: InputDecoration(labelText: AppStrings.confirmPassword(context), prefixIcon: const Icon(Icons.lock_outlined)),
                   validator: (v) => v == _password.text ? null : AppStrings.passwordsNoMatch(context),
                 ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _referral,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    labelText: AppStrings.referralCodeOptional(context),
+                    prefixIcon: const Icon(Icons.card_giftcard_outlined),
+                  ),
+                ),
                 const SizedBox(height: 32),
                 BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) => SizedBox(
@@ -121,10 +132,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
+      final referral = _referral.text.trim();
       context.read<AuthBloc>().add(RegisterRequested(
         name: _name.text.trim(),
         email: _email.text.trim(),
         password: _password.text,
+        referralCode: referral.isEmpty ? null : referral,
       ));
     }
   }
